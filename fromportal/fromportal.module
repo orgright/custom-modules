@@ -1,0 +1,359 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ * Provides orgRight Portal connection functionality
+ *
+ */
+
+/**
+ * Implementation of hook_init()
+ */
+function fromportal_init() {
+  //watchdog('fromportal','Fn: fromportal_init');
+  // Temp - until the taxonomy issues are sorted out
+}
+ 
+/**
+ * Implementation of hook_perm()
+ */
+function fromportal_perm() {
+  //watchdog('fromportal','Fn: orgright_perm');
+  return array(
+    'access orgRight helpdesk',
+    'access orgRight forums',
+    'administer orgRight modules',
+  );
+}   
+
+/**
+ * Implementation of hook_menu()
+ *
+ * Specify the menu items that this module provides
+ */
+function fromportal_menu() {
+  $menu_entries = array();
+  $menu_entries['helpdesk'] = array(
+    'page callback' => 'fromportal_connect',
+    'page arguments' => array('helpdesk'),
+    'access callback' => 'user_access',
+    'access arguments' => array('access orgRight helpdesk'),
+    'type' => MENU_CALLBACK,
+
+  );
+  $menu_entries['documentation'] = array(
+    'page callback' => 'fromportal_connect',
+    'page arguments' => array('documentation'),
+    'access callback' => 'user_access',
+    'access arguments' => array('access orgRight helpdesk'),
+    'type' => MENU_CALLBACK,
+
+  );
+  $menu_entries['forums'] = array(
+    'page callback' => 'fromportal_connect',
+    'page arguments' => array('forums'),
+    'access callback' => 'user_access',
+    'access arguments' => array('access orgRight helpdesk'),
+    'type' => MENU_CALLBACK,
+
+  );
+  // Entries to provide administration functions
+  $menu_entries['admin/orgright'] = array(
+    'title' => 'orgRight',
+    'description' => t('Provide administrative functions for orgRight modules'),
+    'page callback' => 'system_admin_menu_block_page',
+    'file' => 'system.admin.inc',
+    'file path' => drupal_get_path('module', 'system'),
+    'access callback' => 'user_access',
+    'access arguments' => array('administer orgRight modules'),
+    'type' => MENU_NORMAL_ITEM,
+    //'weight' => 0,
+  );
+  $menu_entries['admin/orgright/fromportal'] = array(
+    'title' => 'From Portal',
+    'description' => t('Provide general administrative functions for the fromportal module'),
+    'page callback' => 'fromportal_admin',
+    'access callback' => 'user_access',
+    'access arguments' => array('administer orgRight modules'),
+    'type' => MENU_NORMAL_ITEM,
+    'weight' => 0,
+  );
+  // All menu paths now defined
+  return $menu_entries;
+}
+
+/**
+ * Implementation of hook_menu_alter()
+ *
+ * Suppress direct access to user functions
+ */
+function fromportal_menu_alter(&$menu_entries) {
+  // Disable the menu item by setting its access callback to FALSE
+  //$menu_entries['user/login']['access callback'] = FALSE;
+  $menu_entries['user/register']['access callback'] = FALSE;
+  $menu_entries['user/password']['access callback'] = FALSE;
+  // Unset access arguments to prevent Drupal using user_access()
+  //unset($menu_entries['user/login']['access arguments']);
+  unset($menu_entries['user/register']['access arguments']);
+  unset($menu_entries['user/password']['access arguments']);
+  // Prevent access to forum menu entries for anonymous users
+  $menu_entries['forum']['access arguments'] = array('access orgRight forums');
+}
+
+/**
+ * Page callback routines
+ */
+function fromportal_connect($service = NULL, $site = NULL, $name = NULL) {
+  //watchdog('fromportal','Fn: fromportal_connect: service='.$service.', name='.$name.', site='.$site);
+  // This function will log the requesting user in to the helpdesk site, and
+  // if they are valid, will then pass them on to the requested function
+  if (!$service || !$site || !$name) {
+    return '<h1>Insufficient information to connect to the orgRight Helpdesk</h1>';
+  }
+  // Check that this is a valid user who is permitted to use the helpdesk
+  if (fromportal_confirm_user($site, $name) && fromportal_authenticate_user($site, $name)) {
+    // go to the requested page
+    switch ($service) {
+      case 'helpdesk':
+        drupal_goto('support');
+      case 'documentation':
+        drupal_goto('documentation');
+      case 'forums':
+        drupal_goto('forum');
+      default:
+        drupal_goto('<front>');
+    }
+  }
+  else {
+    return t('<h1>Insufficient privilege to connect to %svc</h1>', array('%svc'=>$service));
+  }
+}
+
+function fromportal_admin() {
+  //watchdog('fromportal','Fn: fromportal_admin');
+  return drupal_get_form('fromportal_admin_form');
+}
+
+function fromportal_admin_form (&$form_state = NULL) {
+  //watchdog('fromportal','Fn: fromportal_admin_form');
+  $form = array();
+  // Check to see whether this is a new form, or a rebuild
+  $form_state['storage']['new_form'] = TRUE;
+  if (isset($form_state['values'])) {
+    // The form has been submitted for edit or delete of a value
+    $form_state['storage']['new_form'] = FALSE;
+  }
+  if ($form_state['storage']['new_form']) {
+    // This is a new form request
+    $form['configure_portalurl'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Configure Portal URL'),
+      '#collapsible' => TRUE,
+      '#collapsed' => FALSE,
+    );
+    $form['configure_portalurl']['portalurl'] = array(
+      '#type' => 'textfield',
+      '#description' => t('Specify the base URL of the orgRight Portal (eg "http://nz.orgright.com"). Include the leading protocol descriptor, but do not include a trailing "/".  *** Currently UNUSED ***'),
+      '#default_value' => fromportal_get_portalurl(),
+      '#weight' => 3,
+    );
+    $form['configure_portalurl']['confirm'] = array(
+      '#type' => 'submit',
+      '#value' => t('Set Portal URL'),
+      '#weight' => 9,
+    );
+    $form['#validate'] = array('fromportal_form_validate');
+    $form['#submit'] = array('fromportal_form_submit');
+    return $form;
+  }
+}
+
+function fromportal_form_validate($form, &$form_state) {
+  //watchdog('fromportal', 'Fn: fromportal_form_validate');
+  $clicked_button = $form_state['clicked_button']['#value'];
+  if ($clicked_button == $form['configure_portalurl']['confirm']['#value']) {
+    $portalurl = $form_state['values']['portalurl'];
+    $ix = strpos($portalurl, ':');
+    $iy = strpos($portalurl, '//');
+    $iz = strpos($portalurl, '.');
+    $iw = strpos($portalurl, '/', $iz);
+    if (!$ix || !$iy || !$iz || $iy < $ix || $iz < $iy || $iw) {
+      form_set_error('portalurl',t('Specified URL is not in correct format.'));
+    }
+  }
+}
+
+function fromportal_form_submit($form, &$form_state) {
+  //watchdog('fromportal', 'Fn: fromportal_form_submit');
+  $clicked_button = $form_state['clicked_button']['#value'];
+  if ($clicked_button == $form['configure_portalurl']['confirm']['#value']) {
+    // ensure that the specified URL is saved
+    variable_set('fromportal_portalurl', $form_state['values']['portalurl']);
+    $message = t('Portal URL has been saved'); 
+  }
+  drupal_set_message($message,'status');
+  $form_state['storage'] = array();
+  $form_state['redirect'] = 'admin/orgright/fromportal';
+}
+
+function fromportal_get_portalurl() {
+  // return the portal URL
+  global $_SERVER;
+  //watchdog('fromportal', 'HTTP Referer ='.$_SERVER['HTTP_REFERER']);
+  $referer = $_SERVER['HTTP_REFERER'];
+  $ix = strpos($referer, '://') + 3;
+  $iz = strpos($referer, '.', $ix);
+  $base = ($iy = strpos($referer, '/', $ix)) ? substr($referer, $ix, $iy-$ix) : substr($referer, $iz+1);
+  return variable_get('fromportal_portalurl', 'http://'.$base);
+}
+
+function fromportal_get_sitename($site_url) {
+  $ix = strpos($site_url, '://') + 3;
+  $iz = strpos($site_url, '.', $ix);
+  return ($iy = strpos($site_url, '/', $ix)) ? substr($site_url, $iy+1) : substr($site_url, $ix, $iz-$ix);
+}
+
+function fromportal_get_callbackurl($site) {
+  // return a callback URL to the calling site
+  return 'http://' . preg_replace(':\+:', '/', $site);
+}
+
+/**
+ * Implementation of hook_xmlrpc
+ */
+function fromportal_xmlrpc() {
+  $methods = array();
+  $methods['fromportal.checkNewNotices'] = 'xmls_fromportal_check_new_notices';
+  $methods['fromportal.retrieveNotice'] = 'xmls_fromportal_retrieve_notice';
+  return $methods;
+}
+
+/**
+ * function to retrieve a list of notices from the helpdesk site
+ */
+function xmls_fromportal_check_new_notices($site = NULL, $name = NULL, $lastnid = 0) {
+  // Return an array of nodes of type story. If passed paramter is null, then start with the oldest
+  // else start with nodes later than the "nid" value passed (which represents the last one retrieved
+  // by the remote site).
+  //watchdog('fromportal', t('Fn: xmls_fromportal_check_new_notices, site=@site, name=@name, lastnid=@nid', array('@site'=>$site,'@name'=>$name,'@nid'=>$lastnid)));
+  if (!$site || !$name) {
+    watchdog('fromportal', t('Check new notices, insufficient information: site=@site, name=@name', array('@site'=>$site, '@name'=>$name)));
+    return FALSE;
+  }
+  // Check that this is a valid user who is permitted to use the helpdesk
+  if (fromportal_confirm_user($site, $name) && fromportal_authenticate_user($site, $name)) {
+    // and retrieve the latest notices
+    $notices = array();
+    $result = db_query("SELECT nid FROM {node} WHERE type = '%s' AND nid > %d AND status = 1 ORDER BY nid", 'notice', $lastnid);
+    while ($notice = db_fetch_array($result)) {
+      if ($notice['nid']) {
+        $notices[] = $notice['nid'];
+      }	
+    }
+    return $notices;
+  }
+  else {
+    watchdog('fromportal', t('Check new notices, invalid user: site=@site, name=@name', array('@site'=>$site, '@name'=>$name)));
+    return FALSE;
+  }
+}
+
+/**
+ * function to retrieve and return a notice from the helpdesk site
+ */
+function xmls_fromportal_retrieve_notice($site = NULL, $name = NULL, $nnid = 0) {
+  //watchdog('fromportal', t('Fn: xmls_fromportal_retrieve_notice, site=@site, name=@name, nid=@nid', array('@site'=>$site,'@name'=>$name,'@nid'=>$nnid)));
+  // Check that this user is authenticated
+  if (!$site || !$name) {
+    watchdog('fromportal', t('Retrieve notice, insufficient information: site=@site, name=@name', array('@site'=>$site, '@name'=>$name)));
+    return FALSE;
+  }
+  // Check that this is a valid user who is permitted to use the helpdesk
+  if (fromportal_confirm_user($site, $name) && fromportal_authenticate_user($site, $name)) {
+    // Check that the node exists and is of type "notice'
+    $type = db_result(db_query("SELECT type FROM {node} WHERE nid = %d", $nnid));
+    if ($type != 'notice') { return NULL; }
+    // Load the specified node from the database
+    $node = node_load($nnid);
+    //watchdog('fromportal', t('Node @nid loaded and returned', array('@nid'=>$nnid)));
+    return $node;
+  }
+  else {
+    watchdog('fromportal', t('Retrieve notice, invalid user: site=@site, name=@name', array('@site'=>$site, '@name'=>$name)));
+    return FALSE;
+  }
+}
+
+/**
+ * function to validate a user connecting to the Helpdesk site
+ */
+function fromportal_confirm_user($site, $name) {
+  // This function will check with the calling site that the user exists
+  // If so, it will ensure that the user is also present in the local database
+  // If the user is not known to the calling site, an error will be returned
+
+  $callback = fromportal_get_callbackurl($site);
+  //watchdog('fromportal','confirm user with: '.$callback);
+  $result = xmlrpc($callback.'/xmlrpc.php', 'orgright.confirmUser', $name);
+  // if user is valid and access is permitted, returned value is current email address
+  // else returned value is NULL.  But first test for XMLRPC errors 
+  if ($error = xmlrpc_error()) {
+    if ($error->code <= 0) { $error->message = t('Outgoing HTTP request failed - socket could not be opened'); }
+    drupal_set_message (t('Can not confirm your eligibility to use Helpdesk - the request returned an error: %msg (@code).',
+      array('%msg' => $error->message, '@code' => $error->code)));
+    $result = NULL;
+  }
+  if (!$result) {
+    return FALSE;
+  }
+  // User is allowed to connect
+  //watchdog('fromportal', t('User %usr confirmed with calling site: %site', array('%usr'=>$name, '%site'=>$callback)));
+  $uname = $name . '.' . fromportal_get_sitename($callback);
+  // either log existing user in or register a new user
+  user_external_login_register($uname, 'fromportal');
+  // update the user object with correct email address and a known password
+  global $user;
+  $user->mail = $result;
+  $user->pass = md5(strtr(strtolower($uname.$result), 'aeiou @','zyxwvba'));
+  db_query("UPDATE {users} SET mail = '%s', pass = '%s' WHERE uid = %d", $user->mail, $user->pass, $user->uid);
+  return TRUE;
+}
+
+function fromportal_authenticate_user($site, $name) {
+  // This function will request a password for the user from the calling site
+  // If the password matches the value in the database, then the user will be logged in.
+
+  // First check the credentials of the user by asking the calling site for a password
+  $callback = fromportal_get_callbackurl($site);
+  //watchdog('fromportal', t('Confirm user "@name" with: @url', array('@name'=>$name, '@url'=>$callback)));
+  $result = xmlrpc($callback.'/xmlrpc.php', 'orgright.getUserPasswd', $name);
+  //watchdog('fromportal', t('Password result = @result', array('@result'=>$result)));
+  // if user is valid, returned value is MD5 password
+  // else returned value is NULL.  But first test for XMLRPC errors 
+  if ($error = xmlrpc_error()) {
+    if ($error->code <= 0) { $error->message = t('Outgoing HTTP request failed - socket could not be opened'); }
+    watchdog('fromportal', t('Cannot authenticate connection - request returned an error: %msg (@code).',
+      array('%msg' => $error->message, '@code' => $error->code)));
+    $result = NULL;
+  }
+  if (!$result) {
+    return FALSE;
+  }
+  // User is valid, so check the password
+  $uname = $name . '.' . fromportal_get_sitename($callback);
+  $usrinfo = db_fetch_object(db_query("SELECT * from {users} WHERE name = '%s'", $uname));
+  if (!$usrinfo || !$usrinfo->uid || $usrinfo->pass != $result) {
+    watchdog('fromportal', t('Invalid name/password for @name from @site', array('@name'=>$name,'@site'=>$site)));
+    return FALSE;
+  }
+  //watchdog('fromportal', t('User %usr authenticated by calling site: %site', array('%usr'=>$name, '%site'=>$callback)));
+  // now load the user account and log the user into this site
+  //$account = user_load($usrinfo->uid);
+  //user_external_login($account);
+  user_external_login_register($uname, 'fromportal');
+  // finalise the login process
+  $edit = array();
+  user_authenticate_finalize($edit);
+  return TRUE;
+}

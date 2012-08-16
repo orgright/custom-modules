@@ -1,0 +1,847 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ * Provides orgRight Meeting Management functionality
+ *
+ * Implements three new node types:
+ *   1) meeting
+ *   2) agenda_item
+ *   3) mtg_item
+ */
+
+/**
+ * Implementation of hook_init()
+ */
+function meeting_init() {
+  //orgright_debug_msg('meeting','Fn: meeting_init',5);
+  // Include the module javascript file for standard functions
+  //drupal_add_js(drupal_get_path('module', 'meeting') . '/meeting.js');
+  /*$node_types = array('meeting', 'agenda_item', 'mtg_item');
+  foreach ($node_types as $type) {
+    // set the default comment module values
+    variable_set('comment_'.$type, '2'); // 0=disabled, 1=read only, 2=read/write
+    variable_set('comment_controls_'.$type, '3'); // 0=above, 1=below, 2=both, 3=disabled
+    variable_set('comment_default_mode_'.$type, '2'); // 1&2=flat, 3&4=threaded, 1&3=collapsed, 2&4=expanded
+    variable_set('comment_default_order'.$type, '2'); // 1=newest first, 2=oldest first
+    variable_set('comment_default_per_page'.$type, '12'); // number of comments to display per page
+    variable_set('comment_form_location_'.$type, '0'); // 0=separate page, 1=below comments
+    variable_set('comment_preview'.$type, '0'); // 0=optional, 1=required
+    variable_set('comment_subject_field_'.$type, '1'); // 0=disabled, 1=enabled
+    // disable file uploads to these node types
+    variable_set('upload_'.$type, '0'); // 0=disabled, 1=enabled
+    // set the node options to published, but not promoted, sticky, or revision
+    variable_set('node_options_'.$type, array('status')); // status(=published), promote, sticky, revision 
+  }*/
+}
+ 
+/**
+ * Implementation of hook_node_info
+ */
+function meeting_node_info() {
+  //orgright_debug_msg('meeting','Fn: meeting_node_info',5);
+  // Return an array of node types defined by this module
+  return array(
+    'meeting' => array(
+      'name' => t('Meeting'),
+      'module' => 'meeting',
+      'description' => t('Specify the details for a meeting'),
+      'has_title' => TRUE,
+      'title_label' => t('Meeting'),
+      'has_body' => TRUE,
+      'body_label' => t('Purpose and expected outcome'),
+      'locked' => TRUE,
+    ),
+    'agenda_item' => array(
+      'name' => t('Agenda item'),
+      'module' => 'meeting',
+      'description' => t('Specify the details for an agenda item'),
+      'has_title' => TRUE,
+      'title_label' => t('Agenda item'),
+      'has_body' => TRUE,
+      'body_label' => t('Agenda item details'),
+      'locked' => TRUE,
+    ),
+    'mtg_item' => array(
+      'name' => t('Meeting item'),
+      'module' => 'meeting',
+      'description' => t('Record an item arising from a meeting'),
+      'has_title' => TRUE,
+      'title_label' => t('Meeting item'),
+      'has_body' => TRUE,
+      'body_label' => t('Meeting item details'),
+      'locked' => TRUE,
+    ),
+  );
+}
+  
+/**
+ * Implementation of hook_perm()
+ */
+function meeting_perm() {
+  //orgright_debug_msg('meeting','Fn: meeting_perm',5);
+  // Define the user permissions for meeting management
+  return array(
+    'view meeting',
+    'create meeting',
+    'update meeting',
+    'delete meeting',
+    'view agenda item',
+    'create agenda item',
+    'update agenda item',
+    'delete agenda item',
+    'view meeting item',
+    'create meeting item',
+    'update meeting item',
+    'delete meeting item',
+  );    
+}   
+
+/**
+ * Implementation of hook_menu()
+ *
+ * Specify the menu items that this module provides
+ */
+function meeting_menu() {
+  //orgright_debug_msg('meeting','Fn: meeting_menu',5);
+  // Entries to provide navigation structure
+  $menu_entries['meeting'] = array(
+    'title' => 'Meeting',
+    'page callback' => 'meeting_management',
+    'file' => 'meeting_menu.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('view meeting'),
+    'type' => MENU_NORMAL_ITEM,
+    'menu_name' => 'orgright',
+    'weight' => 3,
+  );
+  $menu_entries['meeting/meetings'] = array(
+    'title' => 'Meetings',
+    'page callback' => 'meeting_meetings',
+    'file' => 'meeting_menu.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('view meeting'),
+    'type' => MENU_NORMAL_ITEM,
+    'weight' => 1,
+  );
+  $menu_entries['meeting/agenda_items'] = array(
+    'title' => 'Agenda Items',
+    'page callback' => 'meeting_agenda_items',
+    'file' => 'meeting_menu.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('view agenda item'),
+    'type' => MENU_NORMAL_ITEM,
+    'weight' => 2,
+  );
+  $menu_entries['meeting/mtg_items'] = array(
+    'title' => 'Meeting Items',
+    'page callback' => 'meeting_mtg_items',
+    'file' => 'meeting_menu.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('view meeting item'),
+    'type' => MENU_NORMAL_ITEM,
+    'weight' => 3,
+  );
+  $menu_entries['meeting/meetings/list'] = array(
+    'title' => 'List Meetings',
+    'page callback' => 'meeting_meetings_list',
+    'file' => 'meeting_menu.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('view meeting'),
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => 0,
+  );
+  $menu_entries['meeting/meetings/add'] = array(
+    'title' => 'Add Meeting',
+    'page callback' => 'meeting_meetings_add',
+    'file' => 'meeting_menu.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('create meeting'),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 1,
+  );
+  $menu_entries['meeting/meetings/template'] = array(
+    'title' => 'Meeting Templates',
+    'page callback' => 'meeting_meetings_template_list',
+    'file' => 'meeting_menu.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('view meeting'),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 2,
+  );
+  $menu_entries['meeting/meetings/template/list'] = array(
+    'title' => 'List of Template Meetings',
+    'page callback' => 'meeting_meetings_template_list',
+    'file' => 'meeting_menu.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('view meeting'),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 0,
+  );
+  $menu_entries['meeting/meetings/template/add'] = array(
+    'title' => 'Add a Template Meeting',
+    'page callback' => 'meeting_meetings_template_add',
+    'file' => 'meeting_menu.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('create meeting'),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 1,
+  );
+  $menu_entries['meeting/meetings/template/use'] = array(
+    'title' => 'Use a Template Meeting',
+    'page callback' => 'meeting_meetings_template_use',
+    'file' => 'meeting_menu.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('create meeting'),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 2,
+  );
+  $menu_entries['meeting/agenda_items/list'] = array(
+    'title' => 'List Agenda Items',
+    'page callback' => 'meeting_agenda_items_list',
+    'file' => 'meeting_menu.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('view agenda item'),
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => 0,
+  );
+  $menu_entries['meeting/agenda_items/add'] = array(
+    'title' => 'Add Agenda Item',
+    'page callback' => 'meeting_agenda_items_add',
+    'file' => 'meeting_menu.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('create agenda item'),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 1,
+  );
+  $menu_entries['meeting/agenda_items/template'] = array(
+    'title' => 'Agenda Item Templates',
+    'page callback' => 'meeting_agenda_items_template_list',
+    'file' => 'meeting_menu.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('view agenda item'),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 2,
+  );
+  $menu_entries['meeting/agenda_items/template/list'] = array(
+    'title' => 'List of Template Agenda Items',
+    'page callback' => 'meeting_agenda_items_template_list',
+    'file' => 'meeting_menu.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('view agenda item'),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 0,
+  );
+  $menu_entries['meeting/agenda_items/template/add'] = array(
+    'title' => 'Add a Template Agenda Item',
+    'page callback' => 'meeting_agenda_items_template_add',
+    'file' => 'meeting_menu.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('create agenda item'),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 1,
+  );
+  $menu_entries['meeting/mtg_items/list'] = array(
+    'title' => 'List Meeting Items',
+    'page callback' => 'meeting_mtg_items_list',
+    'file' => 'meeting_menu.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('view meeting item'),
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => 0,
+  );
+  $menu_entries['meeting/mtg_items/add'] = array(
+    'title' => 'Add Meeting Item',
+    'page callback' => 'meeting_mtg_items_add',
+    'file' => 'meeting_menu.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('create meeting item'),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 1,
+  );
+  // Entries to provide data for autocomplete fields
+  $menu_entries['meeting/autocomplete/meetings'] = array(
+    'title' => 'Autocomplete Meeting Selection',
+    'page callback' => 'meeting_autocomplete_meetings',
+    'file' => 'meeting_menu.inc',
+    'access callback' => TRUE,
+    'access arguments' => array(),
+    'type' => MENU_CALLBACK,
+    'weight' => 0,
+  );
+  $menu_entries['meeting/autocomplete/locations'] = array(
+    'title' => 'Autocomplete Location Selection',
+    'page callback' => 'meeting_autocomplete_locations',
+    'file' => 'meeting_menu.inc',
+    'access callback' => TRUE,
+    'access arguments' => array(),
+    'type' => MENU_CALLBACK,
+    'weight' => 1,
+  );
+  // Entry to provide for module administration
+  $menu_entries['admin/orgright/meeting'] = array(
+    'title' => 'Meetings',
+    'description' => t('Provide administrative functions for the orgRight meeting module'),
+    'page callback' => 'meeting_admin',
+    'file' => 'meeting_admin.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('administer orgRight modules'),
+    'type' => MENU_NORMAL_ITEM,
+    'weight' => 3,
+  );
+  // Entries to provide node processing tabs
+  // Meeting agenda
+  $menu_entries['node/%/agenda'] = array(
+    'title' => 'View Agenda',
+    'page callback' => 'meeting_meetings_agenda',
+    'page arguments' => array(1),
+    'file' => 'meeting_menu.inc',
+    'access callback' => 'meeting_check_nodetype_and_access',
+    'access arguments' => array(1, 'meeting', 'view meeting'),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 2,
+  );
+  // All menu paths now defined
+  return $menu_entries;
+}
+
+/**
+ * Implementation of hook_menu_alter()
+ *
+ * Suppress the listing of these node types on the "create content" menus
+ */
+function meeting_menu_alter(&$menu_entries) {
+  //orgright_debug_msg('meeting','Fn: meeting_menu_alter',5);
+  // Disable the menu item by setting its access callback to FALSE
+  $menu_entries['node/add/meeting']['access callback'] = FALSE;
+  $menu_entries['node/add/agenda-item']['access callback'] = FALSE;
+  $menu_entries['node/add/mtg-item']['access callback'] = FALSE;
+  // Unset access arguments to prevent Drupal using user_access()
+  unset($menu_entries['node/add/meeting']['access arguments']);
+  unset($menu_entries['node/add/agenda-item']['access arguments']);
+  unset($menu_entries['node/add/mtg-item']['access arguments']);
+}
+
+/**
+ * Implementation of hook_access()
+ */ 
+function meeting_access($op, $node, $account) {
+  //orgright_debug_msg('meeting','Fn: meeting_access',5);
+  // Determine node type ($node will either be the string "type" or a node object)
+  $node_type = ($op == 'create') ? $node : $node->type;
+  // Limit access to the functions provided by this module
+  switch ($node_type) {
+  case 'meeting':
+    return meeting_meeting_access($op, $account);
+  case 'agenda_item':
+    return meeting_agenda_item_access($op, $account);
+  case 'mtg_item':
+    return meeting_mtg_item_access($op, $account);
+  default:
+    return FALSE;
+  }
+}
+
+function meeting_meeting_access($op, $account) {
+  // This is a meeting type node
+  switch ($op) {
+    case 'view':
+      return user_access('view meeting', $account);
+    case 'create':
+      if (orgright_limit_reached('meetings')) { return FALSE; }
+      else { return user_access('create meeting', $account); }
+    case 'update':
+      return user_access('update meeting', $account);
+    case 'delete':
+      return user_access('delete meeting', $account);
+    default:
+      return FALSE;
+  }
+}
+
+function meeting_agenda_item_access($op, $account) {
+  // This node is an agenda item
+  switch ($op) {
+    case 'view':
+      return user_access('view agenda item', $account);
+    case 'create':
+      if (orgright_limit_reached('agenda_items')) { return FALSE; }
+      else { return user_access('create agenda item', $account); }
+    case 'update':
+      return user_access('update agenda item', $account);
+    case 'delete':
+      return user_access('delete agenda item', $account);
+    default:
+      return FALSE;
+  }
+}
+
+function meeting_mtg_item_access($op, $account) {
+  // This node is a meeting item
+  switch ($op) {
+    case 'view':
+      return user_access('view meeting item', $account);
+    case 'create':
+      if (orgright_limit_reached('mtg_items')) { return FALSE; }
+      else { return user_access('create meeting item', $account); }
+    case 'update':
+      return user_access('update meeting item', $account);
+    case 'delete':
+      return user_access('delete meeting item', $account);
+    default:
+      return FALSE;
+  }
+}
+
+/**
+ * Implementation of hook_forms()
+ *
+ * This functions specifies the forms that this module provides,
+ * loads the required include file, and defines the callback function
+ */
+function meeting_forms($form_id, $args) {
+  //orgright_debug_msg('meeting','Fn: meeting_forms, id='.$form_id,5);
+  // Specify the form ids that are provided
+  switch ($form_id) {
+    case 'meeting_meeting_form':
+    case 'meeting_template_form':
+    case 'meeting_template_use_form':
+    case 'meeting_selection_form':
+    case 'meeting_agenda_item_form':
+    case 'meeting_mtg_item_form':
+      module_load_include('inc', 'meeting', 'meeting_form'); 
+      $forms[$form_id] = array(
+        'callback' => $form_id.'_build',
+      );
+      return $forms;
+    case 'meeting_admin_form':
+      module_load_include('inc', 'meeting', 'meeting_admin'); 
+      $forms[$form_id] = array(
+        'callback' => $form_id.'_build',
+      );
+      return $forms;
+    default:
+      return;
+  }
+}
+
+/**
+ * Implementation of hook_form()
+ *
+ * This defines the three forms used to create and edit each of the three
+ * node types implemented by the meeting module.  This hook is called by
+ * the standard Drupal node add and node edit functions.
+ */
+function meeting_form($node, &$form_state) {
+  //orgright_debug_msg('meeting','Fn: meeting_form, node type='.$node->type,5);
+  // Load the additional file to handle form building
+  module_load_include('inc', 'meeting', 'meeting_form'); 
+  // Call the required form function depending on node type
+  if ($node->type == 'meeting') {
+    $form = meeting_meeting_form_build($form_state, $node);
+  }
+  elseif ($node->type == 'agenda_item') {
+    $form = meeting_agenda_item_form_build($form_state, $node);
+  }
+  elseif ($node->type == 'mtg_item') {
+    $form = meeting_mtg_item_form_build($form_state, $node);
+  }
+  else {
+    $form = array();
+  };
+  return $form;
+}
+
+/**
+ * Implementation of hook_validate()
+ * Called after the specified form validation function below
+ */
+function meeting_validate($node, $form) {
+  //orgright_debug_msg('meeting','Fn: meeting_validate, node type='.$node->type,5);
+  if ($node->type == 'meeting') {
+  }
+  elseif ($node->type == 'agenda_item') {
+  }
+  elseif ($node->type == 'mtg_item') {
+  }
+  else {
+    form_set_error('type', t('Form type not recognised'));
+  }
+}
+
+/**
+ * Validate function specified in the form during build
+ * Called before the hook_validate() function above
+ */
+function meeting_form_validate($form, &$form_state) {
+  //orgright_debug_msg('meeting','Fn: meeting_form_validate, id='.$form['#id'],5);
+  // Load the additional file to handle form building
+  module_load_include('inc', 'meeting', 'meeting_form');
+  // and call the function specific to each form type
+  if ($form['#id'] == 'node-form') {
+    // process each node-form separately 
+    if ($form['#node']->type == 'meeting') {
+      meeting_meeting_form_validate($form, $form_state);
+    }
+    elseif ($form['#node']->type == 'agenda_item') {
+      meeting_agenda_item_form_validate($form, $form_state);
+    }
+    elseif ($form['#node']->type == 'mtg_item') {
+      meeting_mtg_item_form_validate($form, $form_state);
+    }
+  }
+  elseif ($form['#id'] == 'meeting-template-use-form') {
+    // Validate the meeting template use form
+    meeting_template_use_form_validate($form, $form_state);
+  }
+  elseif ($form['#id'] == 'meeting-admin-form') {
+    // Load the additional file to handle form building
+    module_load_include('inc', 'meeting', 'meeting_admin');
+    meeting_admin_form_validate($form, $form_state);
+  }
+  else {
+    form_set_error('type', t('Form type not recognised'));
+  }
+}
+
+/**
+ * Standard Drupal node form sumbit callback functions
+ */
+/*
+function meeting_node_form_submit($form, &$form_state) {
+  // Standard Drupal callback for meeting_node_form
+  //orgright_debug_msg('meeting','Fn: meeting_node_form_submit',5);
+  //$form_state['#redirect'] = 'meeting/meetings'; 
+}
+
+function agenda_item_node_form_submit($form, &$form_state) {
+  // Standard Drupal callback for agenda_item_node_form
+  //orgright_debug_msg('meeting','Fn: agenda_item_node_form_submit',5);
+  //$form_state['#redirect'] = 'meeting/agenda_items'; 
+}
+
+function mtg_item_node_form_submit($form, &$form_state) {
+  // Standard Drupal callback for mtg_item_node_form
+  //orgright_debug_msg('Fn: mtg_item_node_form_submit');
+  //$form_state['#redirect'] = 'meeting/mtg_items'; 
+}
+*/
+
+/**
+ * Submit function specified in the form during build
+ * Called before the hook_submit() function above
+ */
+function meeting_form_submit($form, &$form_state) {
+  //orgright_debug_msg('meeting','Fn: meeting_form_submit, id='.$form['#id'],5);
+  // Load the additional file to handle form building
+  module_load_include('inc', 'meeting', 'meeting_form');
+  // and call the function specific to each form type
+  if ($form['#id'] == 'node-form') {
+    // process each node-form separately 
+    if ($form['#node']->type == 'meeting') {
+      meeting_meeting_form_submit($form, $form_state);
+    }
+    elseif ($form['#node']->type == 'agenda_item') {
+      meeting_agenda_item_form_submit($form, $form_state);
+    }
+    elseif ($form['#node']->type == 'mtg_item') {
+      meeting_mtg_item_form_submit($form, $form_state);
+    }
+  }
+  elseif ($form['#id'] == 'meeting-template-use-form') {
+    // Process the meeting template use form
+    meeting_template_use_form_submit($form, $form_state);
+  }
+  elseif ($form['#id'] == 'meeting-admin-form') {
+    // Load the additional file to handle form building
+    module_load_include('inc', 'meeting', 'meeting_admin');
+    meeting_admin_form_submit($form, $form_state);
+  }
+  else {
+    form_set_error('type', t('Form type not recognised'));
+  }
+}
+
+/**
+ * Implementation of hook_insert()
+ *
+ * This will test for the type of node being created and 
+ * insert the data into the appropriate table
+ */
+
+function meeting_insert($node) {
+  //orgright_debug_msg('meeting','Fn: meeting_insert',5);
+  // First, load the additional file to handle data access
+  module_load_include('inc', 'meeting', 'meeting_data');
+  if ($node->type == 'meeting') {
+    meeting_meeting_insert($node);
+  }
+  elseif ($node->type == 'agenda_item') {
+    meeting_agenda_item_insert($node);
+  }
+  elseif ($node->type == 'mtg_item') {
+    meeting_mtg_item_insert($node);
+  }
+}
+
+/**
+ * Implementation of hook_update()
+ *
+ * This will test for the type of node being updated and 
+ * update the data into the appropriate table
+ */
+function meeting_update($node) {
+  //orgright_debug_msg('meeting','Fn: meeting_update',5);
+  // First, load the additional file to handle data access
+  module_load_include('inc', 'meeting', 'meeting_data');
+  if ($node->revision) {
+    // This is a new revision, so treat as a new node
+    meeting_insert($node);
+  }
+  elseif ($node->type == 'meeting') {
+    meeting_meeting_update($node);
+  }
+  elseif ($node->type == 'agenda_item') {
+    meeting_agenda_item_update($node);
+  }
+  elseif ($node->type == 'mtg_item') {
+    meeting_mtg_item_update($node);
+  }
+}
+
+/**
+ * Implementation of hook_delete()
+ *
+ * This will test for the type of node being deleted and
+ * delete the corresponding row(s) of the meeting table
+ */
+function meeting_delete($node) {
+  //orgright_debug_msg('meeting','Fn: meeting_delete',5);
+  // First, load the additional file to handle data access
+  module_load_include('inc', 'meeting', 'meeting_data');
+  if ($node->type == 'meeting') {
+    meeting_meeting_delete($node);
+  }
+  elseif ($node->type == 'agenda_item') {
+    meeting_agenda_item_delete($node);
+  }
+  elseif ($node->type == 'mtg_item') {
+    meeting_mtg_item_delete($node);
+  }
+}
+
+
+/**
+ * Implementation of hook_node_api()
+ */
+function meeting_nodeapi(&$node, $op, $teaser, $page) {
+  //orgright_debug_msg('meeting','Fn: meeting_nodeapi, op='.$op.', type='.$node->type);
+  switch ($op) {
+  case 'load':
+  case 'insert':
+  case 'update':
+  case 'delete':
+  case 'delete revision':
+    // First, load the additional file to handle data access
+    module_load_include('inc', 'meeting', 'meeting_data');
+    if ($node->type == 'meeting') {
+      meeting_meeting_nodeapi($node, $op, $teaser, $page);
+    }
+    elseif ($node->type == 'agenda_item') {
+      meeting_agenda_item_nodeapi($node, $op, $teaser, $page);
+    }
+    elseif ($node->type == 'mtg_item') {
+      meeting_mtg_item_nodeapi($node, $op, $teaser, $page);
+    }
+  }
+}
+
+
+/**
+ * Implementation of hook_load()
+ */
+function meeting_load($node) {
+  //orgright_debug_msg('meeting','Fn: meeting_load, type='.$node->type,5);
+  // Load the additional data into the node object being built
+  // First, load the additional file to handle data access
+  module_load_include('inc', 'meeting', 'meeting_data');
+  if ($node->type == 'meeting') {
+    $obj = meeting_meeting_load($node);
+  }
+  elseif ($node->type == 'agenda_item') {
+    $obj = meeting_agenda_item_load($node);
+  }
+  elseif ($node->type == 'mtg_item') {
+    $obj = meeting_mtg_item_load($node);
+  }
+  else {
+    $obj = new stdClass;
+  }
+  return $obj;
+}
+
+/**
+ * Implementation of hook_view()
+ */
+function meeting_view(&$node, $teaser = FALSE, $page = FALSE) {
+  //orgright_debug_msg('meeting','Fn: meeting_view, type='.$node->type,5);
+  // Build the page elements to display the details
+  // Use Drupal's default behaviour to prepare the body/teaser
+  $node = node_prepare($node, $teaser);
+  // Load the additional file to handle data access
+  module_load_include('inc', 'meeting', 'meeting_page');
+  if ($node->type == 'meeting') {
+    meeting_meeting_view($node, $teaser, $page);
+  }
+  elseif ($node->type == 'agenda_item') {
+    meeting_agenda_item_view($node, $teaser, $page);
+  }
+  elseif ($node->type == 'mtg_item') {
+    meeting_mtg_item_view($node, $teaser, $page);
+  }
+  return $node;
+}
+
+/**
+ * Implementation of hook_views_api()
+ */
+function meeting_views_api() {
+  return array(
+    'api' => 2.0,
+  );
+}
+
+/**
+ * Some orgRight meeting specific functions to provide data
+ */
+function meeting_get_meeting_types() {
+  $meetingtypes = variable_get('meeting_meeting_types', array('Committee','General','Special'));
+  $meetingtype_list = array();
+  foreach ($meetingtypes as $mtype) {
+    $meetingtype_list[$mtype] = $mtype;
+  }
+  return $meetingtype_list;
+}
+
+function meeting_get_meeting_statuses() {
+  $meetingstatus = variable_get('meeting_meeting_statuses', array('Open','Closed'));
+  $meetingstatus_list = array();
+  foreach ($meetingstatus as $status) {
+    $meetingstatus_list[$status] = $status;
+  }
+  return $meetingstatus_list;
+}
+
+function meeting_get_meeting_list_statuses() {
+  // return list of status values of meetings to show on list page
+  $liststatus = variable_get('meeting_meeting_list_statuses', meeting_get_meeting_statuses());
+  $liststatus_list = array();
+  foreach ($liststatus as $status) {
+    $liststatus_list[$status] = $status;
+  }
+  return $liststatus_list;
+}
+
+function meeting_get_agenda_item_statuses() {
+  $agitstatus = variable_get('meeting_agenda_item_statuses', array('Open','Closed'));
+  $agitstatus_list = array();
+  foreach ($agitstatus as $status) {
+    $agitstatus_list[$status] = $status;
+  }
+  return $agitstatus_list;
+}
+
+function meeting_get_agenda_item_list_statuses() {
+  // return list of status values of meetings to show on list page
+  $liststatus = variable_get('meeting_agenda_item_list_statuses', meeting_get_agenda_item_statuses());
+  $liststatus_list = array();
+  foreach ($liststatus as $status) {
+    $liststatus_list[$status] = $status;
+  }
+  return $liststatus_list;
+}
+
+function meeting_get_mtg_item_types() {
+  $mtgitemtypes = variable_get('meeting_mtg_item_types', array('Action'));
+  $mtgitemtype_list = array();
+  foreach ($mtgitemtypes as $mtype) {
+    $mtgitemtype_list[$mtype] = $mtype;
+  }
+  return $mtgitemtype_list;
+}
+
+function meeting_get_mtg_item_statuses() {
+  $mtgitemstatus = variable_get('meeting_mtg_item_statuses', array('Active','Complete'));
+  $mtgitemstatus_list = array();
+  foreach ($mtgitemstatus as $status) {
+    $mtgitemstatus_list[$status] = $status;
+  }
+  return $mtgitemstatus_list;
+}
+
+function meeting_get_mtg_item_list_statuses() {
+  // return list of status values of meetings to show on list page
+  $liststatus = variable_get('meeting_mtg_item_list_statuses', meeting_get_mtg_item_statuses());
+  $liststatus_list = array();
+  foreach ($liststatus as $status) {
+    $liststatus_list[$status] = $status;
+  }
+  return $liststatus_list;
+}
+
+function meeting_get_meetings($key='nid') {
+  // Return an array of future meetings, keyed as requested
+  // First get an array of committees keyed by nid to enhance the description
+  $committees = committee_get_committees('nid');
+  // get a list of meeting status values to select
+  $statuses = meeting_get_meeting_list_statuses();
+  $sql = "SELECT g.nid, g.cnid, g.meeting, g.mtgdate FROM {node} n JOIN {org_meetings} g ON g.nid = n.nid WHERE g.vid = n.vid AND (g.mtgstatus = ''";
+  foreach ($statuses as $status) {
+    $sql .= " OR g.mtgstatus = '".$status."'";
+  }
+  $sql .= ") ORDER BY g.cnid, g.mtgdate";
+  $meetings = array();
+  $result = db_query($sql);
+  while ($obj = db_fetch_object($result)) {
+    $description = $obj->meeting;
+    if ($obj->cnid) { $description .= ' of ' . $committees[$obj->cnid] . ' committee'; }
+    else { $description .= ' [no committee]'; }
+    $description .= ' on ' . date_format_date(date_make_date($obj->mtgdate), 'custom', 'd M Y');
+    if ($key == 'name') { $meetings[$obj->meeting] = $description; }
+    elseif ($key == 'nid') { $meetings[$obj->nid] = $description; }
+  }
+  return $meetings;
+}
+
+function meeting_get_meeting_templates($key='nid') {
+  // Return an array of meeting templates, keyed as requested
+  // First get an array of committees keyed by nid to enhance the description
+  $committees = committee_get_committees('nid');
+  // get a list of meeting status values to select
+  $sql = "SELECT g.nid, g.cnid, g.meeting FROM {node} n JOIN {org_meetings} g ON g.nid = n.nid WHERE g.vid = n.vid AND g.mtgstatus = 'template' ORDER BY g.cnid";
+  $meetings = array();
+  $result = db_query($sql);
+  while ($obj = db_fetch_object($result)) {
+    $description = $obj->meeting;
+    if ($obj->cnid) { $description .= ' of ' . $committees[$obj->cnid] . ' committee'; }
+    else { $description .= ' [no committee]'; }
+    if ($key == 'name') { $meetings[$obj->meeting] = $description; }
+    elseif ($key == 'nid') { $meetings[$obj->nid] = $description; }
+  }
+  return $meetings;
+}
+
+function meeting_check_nodetype_and_access($node = 0, $type = '', $access = '') {
+  // Check node is of the correct type, and the user has the specified permissions
+  if (orgright_check_nodetype($node, $type)) {
+    // Node is of correct type, so check permission
+    return user_access($access);
+  }
+  return FALSE;
+}
+
+/**
+ * End of module
+ */
+ 

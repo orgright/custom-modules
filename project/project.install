@@ -1,0 +1,411 @@
+<?php
+// $Id$
+
+/**
+ * Implementation of hook_install()
+ */
+function project_install() {
+  drupal_install_schema('project');
+  // any other actions to when module is installed go here
+}
+
+/**
+ * Implementation of hook_uninstall()
+ */
+function project_uninstall() {
+  drupal_uninstall_schema('project');
+  // any other actions to take when module is un-installed go here
+  variable_del('project_categories');
+  variable_del('project_standings');
+}
+
+/**
+ * Implementation of hook_disable()
+ */
+function project_disable() {
+  // actions to take when the module is disabled should go here.
+}
+
+/**
+ * Implementation of hook_schema()
+ */
+// === "org_projects" table === 
+function project_schema() {
+  $schema['org_projects'] = array(
+    'description' => t('Stores details for projects that are not held in the node tables'),
+    'fields' => array(
+      'nid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The {node}.nid for this project'),
+      ),
+      'vid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The {node}.vid for this project'),
+      ),
+      'mnid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The {node}.nid for the person responsible for this project'),
+      ),
+      'project' => array(
+        'type' => 'varchar',
+        'length' => 64,
+        'not null' => TRUE,
+        'description' => t('The name for this project - also in {node} title'),
+      ),
+      'projcategory' => array(
+        'type' => 'varchar',
+        'length' => 16,
+        'not null' => TRUE,
+        'description' => t('The category for this project'),
+      ),
+      'projstatus' => array(
+        'type' => 'varchar',
+        'length' => 16,
+        'not null' => TRUE,
+        'description' => t('The current status of this project'),
+      ),
+      'projdatype' => array(
+        'type' => 'varchar',
+        'length' => 16,
+        'not null' => TRUE,
+        'description' => t('The start date for this project'),
+      ),
+      'projdate' => array(
+        'type' => 'char',
+        'length' => 10,
+        'not null' => TRUE,
+        'description' => t('The finish date for this project'),
+      ),
+      'recalc' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('Flag to indicate whether the schedule for this project needs to be re-calculated'),
+      ),
+      'projsched' => array(
+         'type' => 'text',
+         'size' => 'big',
+         'not null' => TRUE,
+         'description' => t('Text type graphic representation of the project schedule'),
+      ),
+      'notes' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => t('General notes about this project'),
+      ),
+      'user' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The UID of the user who last modified this project'),
+      ),
+    ),
+    'primary key' => array('vid'),
+    'indexes' => array(
+      'nid' => array('nid'),
+      'mnid' => array('mnid'),
+      'project' => array('project'),
+      'category' => array('projcategory'),
+      'status' => array('projstatus'),
+    ),
+  );
+  // === "org_projactivities" table ===
+  $schema['org_projactivities'] = array(
+    'description' => t('Stores details for project activities that are not held in the node tables'),
+    'fields' => array(
+      'nid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The {node}.nid of this project activity'),
+      ),
+      'vid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The  {node}.vid of this project activity'),
+      ),
+      'pnid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The {node}.nid of the project associated with this project activity'),
+      ),
+      'mnid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The {node}.nid of the person responsible for this project activity'),
+      ),
+      'activity' => array(
+        'type' => 'varchar',
+        'length' => 64,
+        'not null' => TRUE,
+        'description' => t('The code or name for this project activity'),
+      ),
+      'activicategory' => array(
+        'type' => 'varchar',
+        'length' => 16,
+        'not null' => TRUE,
+        'description' => t('The category of this project activity'),
+      ),
+      'activistatus' => array(
+        'type' => 'varchar',
+        'length' => 16,
+        'not null' => TRUE,
+        'description' => t('The current status for this project activity'),
+      ),
+      'duration' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The amount of time required for this project activity'),
+      ),
+      'duratype' => array(
+        'type' => 'varchar',
+        'length' => 16,
+        'not null' => TRUE,
+        'description' => t('The unit of time for this project activity duration'),
+      ),
+      'actividatype' => array(
+        'type' => 'varchar',
+        'length' => 16,
+        'not null' => TRUE,
+        'description' => t('Type specifying how activity date is to be used'),
+      ),
+      'actividate' => array(
+        'type' => 'char',
+        'length' => 10,
+        'not null' => TRUE,
+        'description' => t('Date constraint used for scheduling this project activity'),
+      ),
+      'actualstart' => array(
+        'type' => 'char',
+        'length' => 10,
+        'not null' => TRUE,
+        'description' => t('The actual start date for this project activity'),
+      ),
+      'actualfinish' => array(
+        'type' => 'char',
+        'length' => 10,
+        'not null' => TRUE,
+        'description' => t('The actual finish date for this project activity'),
+      ),
+      'schedstart' => array(
+        'type' => 'char',
+        'length' => 10,
+        'not null' => TRUE,
+        'description' => t('The calculated start date for this project activity'),
+      ),
+      'schedfinish' => array(
+        'type' => 'char',
+        'length' => 10,
+        'not null' => TRUE,
+        'description' => t('The calculated finish date for this project activity'),
+      ),
+      'notes' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => t('General notes about this projactivity'),
+      ),
+      'user' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The UID of the user who last modified this projactivity'),
+      ),
+	),
+    'primary key' => array('vid'),
+    'indexes' => array(
+      'nid' => array('nid'),
+      'pnid' => array('pnid'),
+      'mnid' => array('mnid'),
+      'activity' => array('activity'),
+      'category' => array('activicategory'),
+      'status' => array('activistatus'),
+    ),
+  );
+  // === "org_projactivitylinks" table ===
+  $schema['org_projactivitylinks'] = array(
+    'description' => t('Stores links between project activities'),
+    'fields' => array(
+      'anid1' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The {node}.nid of first project activity'),
+      ),
+      'anid2' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The {node}.nid of second project activity'),
+      ),
+      'link' => array(
+        'type' => 'char',
+        'length' => 4,
+        'not null' => TRUE,
+        'description' => t('The type of link between the project activities'),
+      ),
+      'pnid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The {node}.nid of associated project'),
+      ),
+      'notes' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => t('General notes about this project activity link'),
+      ),
+      'user' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The UID of the user who last modified this project activity link'),
+      ),
+	),
+    'primary key' => array('anid1','anid2'),
+    'indexes' => array(
+      'anid1' => array('anid1'),
+      'anid2' => array('anid2'),
+      'pnid' => array('pnid'),
+    ),
+  );
+  // === "org_projreports" table ===
+  $schema['org_projreports'] = array(
+    'description' => t('Stores project report details'),
+    'fields' => array(
+      'nid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => t('The {node}.nid of this project report'),
+      ),
+      'vid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => t('The {node}.vid of this project report'),
+      ),
+      'pnid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The {node}.nid of the project associated with this report'),
+      ),
+      'anid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The {node}.nid of the project activity associated with this report'),
+      ),
+      'mnid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The {node}.nid of the person making this project report'),
+      ),
+      'projreport' => array(
+        'type' => 'varchar',
+        'length' => 64,
+        'not null' => TRUE,
+        'description' => t('The name of this project report'),
+      ),
+      'projrepdate' => array(
+        'type' => 'char',
+        'length' => 10,
+        'not null' => TRUE,
+        'description' => t('The date of this project report'),
+      ),
+      'notes' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => t('General notes about this project report'),
+      ),
+      'user' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The UID of the user who last modified this project report'),
+      ),
+	),
+    'primary key' => array('vid'),
+    'indexes' => array(
+      'nid' => array('nid'),
+      'pnid' => array('pnid'),
+      'anid' => array('anid'),
+      'mnid' => array('mnid'),
+      'report' => array('projreport'),
+    ),
+  );
+  // === All tables defined ===
+  return $schema;
+}
+
+/**
+ * Module update functions go here
+ */
+function project_update_6001 () {
+  // Drop all default specifications for text columns
+  $sql = "ALTER TABLE org_projects ";
+  $cols = array('project', 'projcategory', 'projstatus', 'projdatype', 'projdate', 'projsched', 'notes');
+  foreach ($cols as $col) { $sql .= " ALTER COLUMN $col DROP DEFAULT,"; }
+  $sql = substr($sql, 0, -1);
+  if (!db_query($sql)) { return array('#abort'=>array('success'=>FALSE, 'query'=>'Alter table org_projects failed')); }
+
+  $sql = "ALTER TABLE org_projactivities ";
+  $cols = array('activity', 'activicategory', 'activistatus', 'duratype', 'actividatype', 'actividate', 'actualstart', 'actualfinish', 'schedstart', 'schedfinish', 'notes');
+  foreach ($cols as $col) { $sql .= " ALTER COLUMN $col DROP DEFAULT,"; }
+  $sql = substr($sql, 0, -1);
+  if (!db_query($sql)) { return array('#abort'=>array('success'=>FALSE, 'query'=>'Alter table org_projactivities failed')); }
+
+  $sql = "ALTER TABLE org_projreports ";
+  $cols = array('projreport', 'projrepdate', 'notes');
+  foreach ($cols as $col) { $sql .= " ALTER COLUMN $col DROP DEFAULT,"; }
+  $sql = substr($sql, 0, -1);
+  if (!db_query($sql)) { return array('#abort'=>array('success'=>FALSE, 'query'=>'Alter table org_projreports failed')); }
+
+  $sql = "ALTER TABLE org_projactivitylinks ";
+  $cols = array('link', 'notes');
+  foreach ($cols as $col) { $sql .= " ALTER COLUMN $col DROP DEFAULT,"; }
+  $sql = substr($sql, 0, -1);
+  if (!db_query($sql)) { return array('#abort'=>array('success'=>FALSE, 'query'=>'Alter table org_projactivitiylinks failed')); }
+  // and set the default for these numeric columns
+  $sql = "ALTER TABLE org_projactivitylinks ";
+  $cols = array('anid1', 'anid2', 'pnid');
+  foreach ($cols as $col) { $sql .= " ALTER COLUMN $col SET DEFAULT 0,"; }
+  $sql = substr($sql, 0, -1);
+  if (!db_query($sql)) { return array('#abort'=>array('success'=>FALSE, 'query'=>'Alter table org_projactivitiylinks failed')); }
+
+  return array();
+}

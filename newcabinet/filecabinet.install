@@ -1,0 +1,417 @@
+<?php
+// $Id$
+
+/**
+ * Implementation of hook_install()
+ */
+function filecabinet_install() {
+  drupal_install_schema('filecabinet');
+  // any other actions to when module is installed go here
+}
+
+/**
+ * Implementation of hook_uninstall()
+ */
+function filecabinet_uninstall() {
+  drupal_uninstall_schema('filecabinet');
+  // any other actions to take when module is un-installed go here
+  variable_del('filecabinet_default_owner_uid');
+  variable_del('filecabinet_default_mail_fnid');
+  variable_del('filecabinet_default_mail_mnid');
+  variable_del('filecabinet_default_mail_doctype');
+  variable_del('filecabinet_default_mail_docstatus');
+  variable_del('filecabinet_drawer_status_types');
+  variable_del('filecabinet_folder_status_types');
+  variable_del('filecabinet_document_status_types');
+  variable_del('filecabinet_document_link_types');
+  variable_del('filecabinet_upload_extensions');
+  variable_del('filecabinet_upload_filesize');
+  variable_del('filecabinet_upload_usersize');
+  variable_del('filecabinet_upload_resolution');
+  // ensure that the defaults for each node type are un-configured
+  $node_types = array('drawer', 'folder', 'document');
+  foreach ($node_types as $type) {
+    variable_del('comment_'.$type);
+    variable_del('comment_controls_'.$type);
+    variable_del('comment_default_mode_'.$type);
+    variable_del('comment_default_order'.$type);
+    variable_del('comment_default_per_page'.$type);
+    variable_del('comment_form_location_'.$type);
+    variable_del('comment_preview'.$type);
+    variable_del('comment_subject_field_'.$type);
+    variable_del('upload_'.$type);
+    variable_del('node_options_'.$type);
+  }
+}
+
+/**
+ * Implementation of hook_disable()
+ */
+function filecabinet_disable() {
+  // actions to take when the module is disabled should go here.
+}
+
+/**
+ * Implementation of hook_schema()
+ */
+// === "org_drawers" table === 
+function filecabinet_schema() {
+  $schema['org_drawers'] = array(
+    'description' => t('Stores details of filecabinet drawers'),
+    'fields' => array(
+      'nid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The {node}.nid for this drawer'),
+      ),
+      'vid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The {node}.vid for this drawer'),
+      ),
+      'wnid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The {node}.nid for the parent drawer (if any)'),
+      ),
+      'ouid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The {user}.uid for the owner of this drawer'),
+      ),
+      'drawer' => array(
+        'type' => 'varchar',
+        'length' => 64,
+        'not null' => TRUE,
+        'description' => t('The name of this drawer'),
+      ),
+      'drawerstatus' => array(
+        'type' => 'varchar',
+        'length' => 16,
+        'not null' => TRUE,
+        'description' => t('The status of this drawer'),
+      ),
+      'drawerperm' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => t('The access restrictions for this drawer'),
+      ),
+      'notes' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => t('General notes about this filecabinet drawer'),
+      ),
+      'user' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The UID of the user who last modified this drawer'),
+      ),
+    ),
+    'primary key' => array('vid'),
+    'indexes' => array(
+      'nid' => array('nid'),
+      'wnid' => array('wnid'),
+      'ouid' => array('ouid'),
+      'drawer' => array('drawer'),
+    ),
+  );
+  // === "org_folders" table ===
+  $schema['org_folders'] = array(
+    'description' => t('Stores details file folders that are not held in the node tables'),
+    'fields' => array(
+      'nid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The {node}.nid of this folder'),
+      ),
+      'vid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The {node}.vid of this folder'),
+      ),
+      'fnid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The {node}.nid for the parent folder (if any)'),
+      ),
+      'wnid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The {node}.nid of the filecabinet drawer containing this folder'),
+      ),
+      'folder' => array(
+        'type' => 'varchar',
+        'length' => 64,
+        'not null' => TRUE,
+        'description' => t('The name of this folder'),
+      ),
+      'folderstatus' => array(
+        'type' => 'varchar',
+        'length' => 16,
+        'not null' => TRUE,
+        'description' => t('The status of this folder'),
+      ),
+      'folderperm' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => t('The access restrictions for this folder'),
+      ),
+      'notes' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => t('General notes about this folder'),
+      ),
+      'user' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The UID of the user who last modified this folder'),
+      ),
+    ),
+    'primary key' => array('vid'),
+    'indexes' => array(
+      'nid' => array('nid'),
+      'fnid' => array('fnid'),
+      'wnid' => array('wnid'),
+      'folder' => array('folder'),
+    ),
+  );
+  // === "org_documents" table ===
+  $schema['org_documents'] = array(
+    'description' => t('Stores details about documents held in the filecabinet'),
+    'fields' => array(
+      'nid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The {node}.nid of this document'),
+      ),
+      'vid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The {node}.vid of this document'),
+      ),
+      'fnid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The {node}.nid of the folder containing this document'),
+      ),
+      'dnid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The {node}.nid of the document to which this one is attached'),
+      ),
+      'mnid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The {node}.nid of the person (member) filing this document'),
+      ),
+      'afid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The {files}.fid of the attached file'),
+      ),
+      'scanned' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('Flag showing whether the attached file has been scanned to extract its contents'),
+      ),
+      'docname' => array(
+        'type' => 'varchar',
+        'length' => 64,
+        'not null' => TRUE,
+        'description' => t('The name of this document'),
+      ),
+      'docversion' => array(
+        'type' => 'varchar',
+        'length' => 16,
+        'not null' => TRUE,
+        'description' => t('The version of this document'),
+      ),
+      'docdate' => array(
+        'type' => 'char',
+        'length' => 10,
+        'not null' => TRUE,
+        'description' => t('The date of this document'),
+      ),
+      'doctype' => array(
+        'type' => 'varchar',
+        'length' => 16,
+        'not null' => TRUE,
+        'description' => t('The type of this document'),
+      ),
+      'docstatus' => array(
+        'type' => 'varchar',
+        'length' => 16,
+        'not null' => TRUE,
+        'description' => t('The status of this document'),
+      ),
+      'docdesc' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => t('Description of the uploaded file'),
+      ),
+      'notes' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => t('General notes about this filecabinet item'),
+      ),
+      'user' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The UID of the user who last modified this payment'),
+      ),
+    ),
+    'primary key' => array('vid'),
+    'indexes' => array(
+      'nid' => array('nid'),
+      'fnid' => array('fnid'),
+      'dnid' => array('dnid'),
+      'mnid' => array('mnid'),
+      'afid' => array('afid'),
+      'docname' => array('docname'),
+    ),
+  );
+  // === "org_doclinks" table ===
+  $schema['org_doclinks'] = array(
+    'description' => t('Stores details linking a document to a node object'),
+    'fields' => array(
+      'dnid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The {node}.nid of the document being linked'),
+      ),
+      'xnid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The {node}.nid of the node object being linked to'),
+      ),
+      'nodetype' => array(
+        'type' => 'varchar',
+        'length' => 16,
+        'not null' => TRUE,
+        'description' => t('The type of node being linked to'),
+      ),
+      'linktype' => array(
+        'type' => 'varchar',
+        'length' => 16,
+        'not null' => TRUE,
+        'description' => t('The type of link'),
+      ),
+    ),
+    'primary key' => array('dnid','xnid'),
+    'indexes' => array(
+      'nodetype' => array('nodetype'),
+      'linktype' => array('linktype'),
+    ),
+  );
+  // === All tables defined ===
+  return $schema;
+}
+
+/**
+ * Module update functions go here
+ */
+function filecabinet_update_6004() {
+  // To update the {org_documents} table to add a new column "docscanned" which is
+  // a flag to indicate that the attached document needs has been scanned by TIKA to
+  // extract the document contents for the node body field (0=NO, 1=DONE).
+  $sql = "ALTER TABLE org_documents ADD scanned INT UNSIGNED NOT NULL DEFAULT 0 AFTER afid";
+  if (!db_query($sql)) {
+    return array('#abort'=>array('success'=>FALSE, 'query'=>'Add new column to table org_documents failed'));
+  }
+  return array();
+}
+
+function filecabinet_update_6003() {
+  // dummy function to force an update
+  return array();
+}
+
+function filecabinet_update_6002() {
+  // This change is to introduce a "parent node" filed to the org_documents table to
+  // provide for the change to the filing cabinet to permit documents to have attachments.
+  $sql = "ALTER TABLE org_documents ADD dnid INT UNSIGNED NOT NULL DEFAULT 0 AFTER fnid, ADD INDEX dnid (dnid)";
+  if (!db_query($sql)) {
+    return array('#abort'=>array('success'=>FALSE, 'query'=>'Add new column to table org_documents failed'));
+  }
+  return array();
+}
+
+function filecabinet_update_6001() {
+  // Drop all default specifications for text columns
+  $sql = "ALTER TABLE org_drawers ";
+  $cols = array('drawer', 'drawerstatus', 'drawerperm', 'notes');
+  foreach ($cols as $col) { $sql .= " ALTER COLUMN $col DROP DEFAULT,"; }
+  $sql = substr($sql, 0, -1);
+  if (!db_query($sql)) { return array('#abort'=>array('success'=>FALSE, 'query'=>'Alter table org_drawers failed')); }
+
+  $sql = "ALTER TABLE org_folders ";
+  $cols = array('folder', 'folderstatus', 'folderperm', 'notes');
+  foreach ($cols as $col) { $sql .= " ALTER COLUMN $col DROP DEFAULT,"; }
+  $sql = substr($sql, 0, -1);
+  if (!db_query($sql)) { return array('#abort'=>array('success'=>FALSE, 'query'=>'Alter table org_folders failed')); }
+
+  $sql = "ALTER TABLE org_documents ";
+  $cols = array('docname', 'docversion', 'docdate', 'doctype', 'docstatus', 'docdesc', 'notes');
+  foreach ($cols as $col) { $sql .= " ALTER COLUMN $col DROP DEFAULT,"; }
+  $sql = substr($sql, 0, -1);
+  if (!db_query($sql)) { return array('#abort'=>array('success'=>FALSE, 'query'=>'Alter table org_documents failed')); }
+
+  $sql = "ALTER TABLE org_doclinks ";
+  $cols = array('nodetype', 'linktype');
+  foreach ($cols as $col) { $sql .= " ALTER COLUMN $col DROP DEFAULT,"; }
+  $sql = substr($sql, 0, -1);
+  if (!db_query($sql)) { return array('#abort'=>array('success'=>FALSE, 'query'=>'Alter table org_doclinks failed')); }
+
+  return array();
+}
+
+function filecabinet_update_6000() {
+  // removed - 13 Sep 2010
+  return array();
+}

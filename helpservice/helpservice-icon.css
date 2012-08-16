@@ -1,0 +1,20 @@
+/* $Id$ */
+
+.helpservice-link {
+  width: 12px;
+  height: 12px;
+  background: transparent url('helpservice.png') no-repeat top left;
+  background-position: 0px 0px;
+  display: block;
+  float: left; /* this is cheesy, I know */
+  margin-top: 2px;
+  padding: 0px;
+}
+
+.helpservice-link span {
+  display: none;
+}
+
+.helpservice-link:hover {
+  background-position: 0px -12px;
+}

@@ -1,0 +1,6 @@
+; $Id$
+name = Admin Notices
+description = Implement administration notifications from the Helpdesk for the orgRight Service
+package = orgRight Service
+core = 6.x
+version = "6.x-2.0"

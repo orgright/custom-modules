@@ -1,0 +1,778 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ * Provides orgRight Membership management functionality
+ *
+ * Implements three new node types:
+ *   1) member
+ *   2) subscription
+ *   3) subpayment
+ */
+
+/**
+ * Implementation of hook_init()
+ */
+function membership_init() {
+  //orgright_debug_msg('membership','Fn: membership_init');
+  // Include the module javascript file for standard functions
+  //drupal_add_js(drupal_get_path('module', 'membership') . '/membership.js');
+}
+
+/**
+ * Implementation of hook_node_info
+ */
+function membership_node_info() {
+  //orgright_debug_msg('membership','Fn: membership_node_info');
+  // Return an array of node types defined by this module
+  return array(
+    'member' => array(
+      'name' => t('Member'),
+      'module' => 'membership',
+      'description' => t('Specify the details for a member of the organisation'),
+      'has_title' => TRUE,
+      'title_label' => t('Name of member'),
+      'has_body' => FALSE,
+      'locked' => TRUE,
+    ),
+    'subscription' => array(
+      'name' => t('Subscription'),
+      'module' => 'membership',
+      'description' => t('Specify the details for a member subscription'),
+      'has_title' => TRUE,
+      'title_label' => t('Name and period'),
+      'has_body' => FALSE,
+      'locked' => TRUE,
+    ),
+    'subpayment' => array(
+      'name' => t('Subscription payment'),
+      'module' => 'membership',
+      'description' => t('Record a subscription payment'),
+      'has_title' => TRUE,
+      'title_label' => t('Name and payment'),
+      'has_body' => FALSE,
+      'locked' => TRUE,
+    ),
+  );
+}
+
+/**
+ * Implementation of hook_perm()
+ */
+function membership_perm() {
+  //orgright_debug_msg('membership','Fn: membership_perm');
+  // Define the user permissions for membership management
+  return array(
+    'view member',
+    'create member',
+    'update member',
+    'delete member',
+    'view subscription',
+    'create subscription',
+    'update subscription',
+    'delete subscription',
+    'view subpayment',
+    'create subpayment',
+    'update subpayment',
+    'delete subpayment',
+  );
+}
+
+/**
+ * Implementation of hook_menu()
+ *
+ * Specify the menu items that this module provides
+ */
+function membership_menu() {
+  // Entries to provide navigation structure
+  $menu_entries['membership'] = array(
+    'title' => 'Membership',
+    'page callback' => 'membership_management',
+    'file' => 'membership_menu.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('view member'),
+    'type' => MENU_NORMAL_ITEM,
+    'menu_name' => 'orgright',
+    'weight' => 1,
+  );
+  $menu_entries['membership/members'] = array(
+    'title' => 'Members',
+    'page callback' => 'membership_members',
+    'file' => 'membership_menu.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('view member'),
+    'type' => MENU_NORMAL_ITEM,
+    'weight' => 1,
+  );
+  $menu_entries['membership/subscriptions'] = array(
+    'title' => 'Subscriptions',
+    'page callback' => 'membership_subscriptions',
+    'file' => 'membership_menu.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('view subscription'),
+    'type' => MENU_NORMAL_ITEM,
+    'weight' => 2,
+  );
+  $menu_entries['membership/subpayments'] = array(
+    'title' => 'Subscription Payments',
+    'page callback' => 'membership_subpayments',
+    'file' => 'membership_menu.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('view subpayment'),
+    'type' => MENU_NORMAL_ITEM,
+    'weight' => 3,
+  );
+  $menu_entries['membership/members/list'] = array(
+    'title' => 'List Members',
+    'page callback' => 'membership_members_list',
+    'file' => 'membership_menu.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('view member'),
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => 0,
+  );
+  $menu_entries['membership/members/add'] = array(
+    'title' => 'Add Member',
+    'page callback' => 'membership_members_add',
+    'file' => 'membership_menu.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('create member'),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 1,
+  );
+  $menu_entries['membership/members/import'] = array(
+    'title' => 'Import Members',
+    'page callback' => 'membership_members_import',
+    'file' => 'membership_menu.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('create member'),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 2,
+  );
+  $menu_entries['membership/members/export'] = array(
+    'title' => 'Export Members',
+    'page callback' => 'membership_members_export',
+    'file' => 'membership_menu.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('update member'),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 3,
+  );
+  $menu_entries['membership/subscriptions/list'] = array(
+    'title' => 'List Subscriptions',
+    'page callback' => 'membership_subscriptions_list',
+    'file' => 'membership_menu.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('view subscription'),
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => 0,
+  );
+  $menu_entries['membership/subscriptions/add'] = array(
+    'title' => 'Add Subscription',
+    'page callback' => 'membership_subscriptions_add',
+    'file' => 'membership_menu.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('create subscription'),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 1,
+  );
+  $menu_entries['membership/subscriptions/wizard'] = array(
+    'title' => 'Subscription Wizard',
+    'page callback' => 'membership_subscriptions_wizard',
+    'file' => 'membership_menu.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('create subscription'),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 2,
+  );
+  $menu_entries['membership/subpayments/list'] = array(
+    'title' => 'List Payments',
+    'page callback' => 'membership_subpayments_list',
+    'file' => 'membership_menu.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('view subpayment'),
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => 0,
+  );
+  $menu_entries['membership/subpayments/add'] = array(
+    'title' => 'Add Payment',
+    'page callback' => 'membership_subpayments_add',
+    'file' => 'membership_menu.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('create subpayment'),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 1,
+  );
+  // Entries to provide data for autocomplete fields
+  $menu_entries['membership/autocomplete/members'] = array(
+    'title' => 'Autocomplete Member Selection',
+    'page callback' => 'membership_autocomplete_members',
+    'file' => 'membership_menu.inc',
+    'access callback' => TRUE,
+    'access arguments' => array(),
+    'type' => MENU_CALLBACK,
+    'weight' => 0,
+  );
+  $menu_entries['membership/autocomplete/scodes'] = array(
+    'title' => 'Autocomplete Subscription Code Selection',
+    'page callback' => 'membership_autocomplete_scodes',
+    'file' => 'membership_menu.inc',
+    'access callback' => TRUE,
+    'access arguments' => array(),
+    'type' => MENU_CALLBACK,
+    'weight' => 0,
+  );
+  // Entry to provide for module administration
+  $menu_entries['admin/orgright/membership'] = array(
+    'title' => 'Membership',
+    'description' => t('Provide administrative functions for the orgRight membership module'),
+    'page callback' => 'membership_admin',
+    'file' => 'membership_admin.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('administer orgRight modules'),
+    'type' => MENU_NORMAL_ITEM,
+    'weight' => 1,
+  );
+  // All menu paths now defined
+  return $menu_entries;
+}
+
+/**
+ * Implementation of hook_menu_alter()
+ *
+ * Suppress the listing of these node types on the "create content" menus
+ */
+function membership_menu_alter(&$menu_entries) {
+  // Disable the menu item by setting its access callback to FALSE
+  $menu_entries['node/add/member']['access callback'] = FALSE;
+  $menu_entries['node/add/subscription']['access callback'] = FALSE;
+  $menu_entries['node/add/subpayment']['access callback'] = FALSE;
+  // Unset access arguments to prevent Drupal using user_access()
+  unset($menu_entries['node/add/member']['access arguments']);
+  unset($menu_entries['node/add/subscription']['access arguments']);
+  unset($menu_entries['node/add/subpayment']['access arguments']);
+  // Change the hook info entry so it does not show on the triggers page
+  //if (isset($menu_entries['admin/build/trigger/membership'])) {
+  //  $menu_entries['admin/build/trigger/membership']['type'] = MENU_CALLBACK;
+  //}
+}
+
+/**
+ * Implementation of hook_access()
+ */
+function membership_access($op, $node, $account) {
+  //orgright_debug_msg('membership','Fn: membership_access, op='.$op);
+  // Determine node type ($node will either be the string "type" or a node object)
+  $node_type = ($op == 'create') ? $node : $node->type;
+  // Limit access to the functions provided by this module
+  switch ($node_type) {
+  case 'member':
+    return membership_member_access($op, $account);
+  case 'subscription':
+    return membership_subscription_access($op, $account);
+  case 'subpayment':
+    return membership_subpayment_access($op, $account);
+  default:
+    return FALSE;
+  }
+}
+
+function membership_member_access($op, $account) {
+  // This is a member type node
+  switch ($op) {
+    case 'view':
+      return user_access('view member', $account);
+    case 'create':
+      if (orgright_limit_reached('members')) { return FALSE; }
+      else { return user_access('create member', $account); }
+    case 'update':
+      return user_access('update member', $account);
+    case 'delete':
+      return user_access('delete member', $account);
+    default:
+      return FALSE;
+  }
+}
+
+function membership_subscription_access($op, $account) {
+  // This node is a subscription
+  switch ($op) {
+    case 'view':
+      return user_access('view subscription', $account);
+    case 'create':
+      if (orgright_limit_reached('subscriptions')) { return FALSE; }
+      else { return user_access('create subscription', $account); }
+    case 'update':
+      return user_access('update subscription', $account);
+    case 'delete':
+      return user_access('delete subscription', $account);
+    default:
+      return FALSE;
+  }
+}
+
+function membership_subpayment_access($op, $account) {
+  // This node is a subpayment
+  switch ($op) {
+    case 'view':
+      return user_access('view subpayment', $account);
+    case 'create':
+      if (orgright_limit_reached('subpayments')) { return FALSE; }
+      else { return user_access('create subpayment', $account); }
+    case 'update':
+      return user_access('update subpayment', $account);
+    case 'delete':
+      return user_access('delete subpayment', $account);
+    default:
+      return FALSE;
+  }
+}
+
+/**
+ * Implementation of hook_forms()
+ *
+ * This functions specifies the forms that this module provides,
+ * loads the required include file, and defines the callback function
+ */
+function membership_forms($form_id, $args) {
+  //orgright_debug_msg('membership','Fn: membership_forms, id='.$form_id,5);
+  // Specify the form ids that are provided
+  switch ($form_id) {
+    case 'membership_member_form':
+    case 'membership_subscription_form':
+    case 'membership_subpayment_form':
+    case 'membership_import_members_form':
+    case 'membership_export_members_form':
+    case 'membership_subscription_wizard':
+      module_load_include('inc', 'membership', 'membership_form');
+      $forms[$form_id] = array(
+        'callback' => $form_id.'_build',
+      );
+      return $forms;
+    case 'membership_admin_form':
+      module_load_include('inc', 'membership', 'membership_admin');
+      $forms[$form_id] = array(
+        'callback' => $form_id.'_build',
+      );
+      return $forms;
+    default:
+      return;
+  }
+}
+
+/**
+ * Implementation of hook_form()
+ *
+ * This defines the three forms used to create and edit each of the three
+ * node types implemented by the membership module.  This hook is called by
+ * the standard Drupal node add and node edit functions.
+ */
+function membership_form($node, &$form_state) {
+  //orgright_debug_msg('membership','Fn: membership_form, node type='.$node->type,5);
+  //$args = func_get_args();
+  //orgright_debug_dump('Fn: membership_form args',$args);
+  // Load the additional file to handle form building
+  module_load_include('inc', 'membership', 'membership_form');
+  // Call the required form function depending on node type
+  if ($node->type == 'member') {
+    $form = membership_member_form_build($form_state, $node);
+  }
+  elseif ($node->type == 'subscription') {
+    $form = membership_subscription_form_build($form_state, $node);
+  }
+  elseif ($node->type == 'subpayment') {
+    $form = membership_subpayment_form_build($form_state, $node);
+  }
+  else {
+    $form = array();
+  };
+  return $form;
+}
+
+/**
+ * Implementation of hook_validate()
+ * Called after the specified form validation function below
+ */
+function membership_validate($node, $form) {
+  //orgright_debug_msg('membership','Fn: membership_validate, node type='.$node->type,5);
+  if ($node->type == 'member') {
+  }
+  elseif ($node->type == 'subscription') {
+  }
+  elseif ($node->type == 'subpayment') {
+  }
+  else {
+    form_set_error('type', t('Form type not recognised'));
+  }
+}
+
+/**
+ * Validate function specified in the form during build
+ * Called before the hook_validate() function above
+ */
+function membership_form_validate($form, &$form_state) {
+  //orgright_debug_msg('membership','Fn: membership_form_validate, id='.$form['#id']);
+  // Load the additional file to handle form building
+  module_load_include('inc', 'membership', 'membership_form');
+  // and call the function specific to each form type
+  if ($form['#id'] == 'node-form') {
+    // process each node-form separately
+    if ($form['#node']->type == 'member') {
+      membership_member_form_validate($form, $form_state);
+    }
+    elseif ($form['#node']->type == 'subscription') {
+      membership_subscription_form_validate($form, $form_state);
+    }
+    elseif ($form['#node']->type == 'subpayment') {
+      membership_subpayment_form_validate($form, $form_state);
+    }
+  }
+  elseif ($form['#id'] == 'membership-import-members-form') {
+    // additional file has already been loaded
+    membership_import_members_form_validate($form, $form_state);
+  }
+  elseif ($form['#id'] == 'membership-member-form') {
+    // Form submitted by members import - no validation required
+    //orgright_debug_msg('membership','no validation required for membership-member-form');
+  }
+  elseif ($form['#id'] == 'membership-export-members-form') {
+    // additional file has already been loaded
+    membership_export_members_form_validate($form, $form_state);
+  }
+  elseif ($form['#id'] == 'membership-subscription-form') {
+    // Form submitted by subscription wizard - no validation required
+    //orgright_debug_msg('membership','no validation required for membership-subscription-form');
+  }
+  elseif ($form['#id'] == 'membership-admin-form') {
+    // Load the additional file to handle form building
+    module_load_include('inc', 'membership', 'membership_admin');
+    membership_admin_form_validate($form, $form_state);
+  }
+  else {
+    form_set_error('type', t('Form type not recognised'));
+  }
+}
+
+/**
+ * Standard Drupal node form sumbit callback functions
+ */
+/*
+function member_node_form_submit($form, &$form_state) {
+  // Standard Drupal callback for member_node_form
+  //orgright_debug_msg('membership','Fn: member_node_form_submit');
+  //$form_state['#redirect'] = 'membership/members';
+}
+
+function subscription_node_form_submit($form, &$form_state) {
+  // Standard Drupal callback for member_node_form
+  //orgright_debug_msg('membership','Fn: subscription_node_form_submit');
+  //$form_state['#redirect'] = 'membership/subscriptions';
+}
+
+function subpayment_node_form_submit($form, &$form_state) {
+  // Standard Drupal callback for member_node_form
+  //orgright_debug_msg('membership','Fn: subpayment_node_form_submit');
+  //$form_state['#redirect'] = 'membership/subpayments';
+}
+*/
+
+/**
+ * Submit function specified in the form during build
+ * Called before the hook_submit() functions above
+ */
+function membership_form_submit($form, &$form_state) {
+  //orgright_debug_msg('membership','Fn: membership_form_submit, id='.$form['#id']);
+  // Load the additional file to handle form building
+  module_load_include('inc', 'membership', 'membership_form');
+  // and call the function specific to each form type
+  if ($form['#id'] == 'node-form') {
+    // process each node-form separately
+    if ($form['#node']->type == 'member') {
+      membership_member_form_submit($form, $form_state);
+    }
+    elseif ($form['#node']->type == 'subscription') {
+      membership_subscription_form_submit($form, $form_state);
+    }
+    elseif ($form['#node']->type == 'subpayment') {
+      membership_subpayment_form_submit($form, $form_state);
+    }
+  }
+  elseif ($form['#id'] == 'membership-import-members-form') {
+    // additional file has already been loaded
+    membership_import_members_form_submit($form, $form_state);
+  }
+  elseif ($form['#id'] == 'membership-member-form') {
+    // Form submitted by members import - use standard process
+    membership_member_form_submit($form, $form_state);
+  }
+  elseif ($form['#id'] == 'membership-export-members-form') {
+    // additional file has already been loaded
+    membership_export_members_form_submit($form, $form_state);
+  }
+  elseif ($form['#id'] == 'membership-subscription-form') {
+    // Form submitted by subscription wizard - use standard process
+    membership_subscription_form_submit($form, $form_state);
+  }
+  elseif ($form['#id'] == 'membership-admin-form') {
+    // Load the additional file to handle form building
+    module_load_include('inc', 'membership', 'membership_admin');
+    membership_admin_form_submit($form, $form_state);
+  }
+  else {
+    form_set_error('type', t('Form type not recognised'));
+  }
+}
+
+/**
+ * Implementation of hook_insert()
+ *
+ * This will test for the type of node being created and
+ * insert the data into the appropriate table
+ */
+
+function membership_insert($node) {
+  //orgright_debug_msg('membership','Fn: membership_insert');
+  // First, load the additional file to handle data access
+  module_load_include('inc', 'membership', 'membership_data');
+  if ($node->type == 'member') {
+    membership_member_insert($node);
+  }
+  elseif ($node->type == 'subscription') {
+    membership_subscription_insert($node);
+  }
+  elseif ($node->type == 'subpayment') {
+    membership_subpayment_insert($node);
+  }
+}
+
+/**
+ * Implementation of hook_update()
+ *
+ * This will test for the type of node being updated and
+ * update the data into the appropriate table
+ */
+function membership_update($node) {
+  //orgright_debug_msg('membership','Fn: membership_update');
+  // First, load the additional file to handle data access
+  module_load_include('inc', 'membership', 'membership_data');
+  if ($node->revision) {
+    // This is a new revision, so treat as a new node
+    membership_insert($node);
+  }
+  elseif ($node->type == 'member') {
+    membership_member_update($node);
+  }
+  elseif ($node->type == 'subscription') {
+    membership_subscription_update($node);
+  }
+  elseif ($node->type == 'subpayment') {
+    membership_subpayment_update($node);
+  }
+}
+
+/**
+ * Implementation of hook_delete()
+ *
+ * This will test for the type of node being deleted and
+ * delete the corresponding row(s) of the membership table
+ */
+function membership_delete($node) {
+  //orgright_debug_msg('membership','Fn: membership_delete');
+  // First, load the additional file to handle data access
+  module_load_include('inc', 'membership', 'membership_data');
+  if ($node->type == 'member') {
+    membership_member_delete($node);
+  }
+  elseif ($node->type == 'subscription') {
+    membership_subscription_delete($node);
+  }
+  elseif ($node->type == 'subpayment') {
+    membership_subpayment_delete($node);
+  }
+}
+
+
+/**
+ * Implementation of hook_node_api()
+ */
+function membership_nodeapi(&$node, $op, $teaser, $page) {
+  //orgright_debug_msg('membership','Fn: membership_nodeapi, op='.$op.', type='.$node->type);
+  switch ($op) {
+  case 'load':
+  case 'insert':
+  case 'update':
+  case 'delete':
+  case 'delete revision':
+    // First, load the additional file to handle data access
+    module_load_include('inc', 'membership', 'membership_data');
+    if ($node->type == 'member') {
+      membership_member_nodeapi($node, $op, $teaser, $page);
+    }
+    elseif ($node->type == 'subscription') {
+      membership_subscription_nodeapi($node, $op, $teaser, $page);
+    }
+    elseif ($node->type == 'subpayment') {
+      membership_subpayment_nodeapi($node, $op, $teaser, $page);
+    }
+  }
+}
+
+
+/**
+ * Implementation of hook_load()
+ */
+function membership_load($node) {
+  //orgright_debug_msg('membership','Fn: membership_load, type='.$node->type);
+  // Load the additional data into the node object being built
+  // First, load the additional file to handle data access
+  module_load_include('inc', 'membership', 'membership_data');
+  if ($node->type == 'member') {
+    $obj = membership_member_load($node);
+  }
+  elseif ($node->type == 'subscription') {
+    $obj = membership_subscription_load($node);
+  }
+  elseif ($node->type == 'subpayment') {
+    $obj = membership_subpayment_load($node);
+  }
+  else {
+    $obj = new stdClass;
+  }
+  return $obj;
+}
+
+/**
+ * Implementation of hook_view()
+ */
+function membership_view(&$node, $teaser = FALSE, $page = FALSE) {
+  //orgright_debug_msg('membership','Fn: membership_view, type='.$node->type);
+  //orgright_debug_msg('membership','details: member='.$node->member.', teaser='.$teaser.', page='.$page);
+  // Build the page elements to display the details
+  // Use Drupal's default behaviour to prepare the body/teaser
+  $node = node_prepare($node, $teaser);
+  // Load the additional file to handle data access
+  module_load_include('inc', 'membership', 'membership_page');
+  if ($node->type == 'member') {
+    membership_member_view($node, $teaser, $page);
+  }
+  elseif ($node->type == 'subscription') {
+    membership_subscription_view($node, $teaser, $page);
+  }
+  elseif ($node->type == 'subpayment') {
+    membership_subpayment_view($node, $teaser, $page);
+  }
+  return $node;
+}
+
+/**
+ * Implementation of hook_views_api()
+ */
+function membership_views_api() {
+  return array(
+    'api' => 2.0,
+  );
+}
+
+/**
+ * Some orgRight Membership specific functions to provide data
+ */
+function membership_get_members($key) {
+  // return an array of current members keyed by $key
+  // get a list of membership status values to select
+  $standings = membership_get_member_list_standings();
+  $sql = "SELECT m.nid, m.member FROM {node} n JOIN {org_members} m ON m.nid = n.nid WHERE m.vid = n.vid AND (m.standing = ''";
+  foreach ($standings as $standing) {
+    $sql .= " OR m.standing = '".$standing."'";
+  }
+  $sql .= ") ORDER BY m.member";
+  $members = array();
+  $result = db_query($sql);
+  while ($obj = db_fetch_object($result)) {
+    $description = $obj->member;
+    if ($key == 'name') { $members[$obj->member] = $description; }
+    elseif ($key == 'nid') { $members[$obj->nid] = $description; }
+  }
+  return $members;
+}
+
+function membership_get_categories() {
+  $categories = variable_get('membership_categories', array('Ordinary'));
+  $category_list = array();
+  foreach ($categories as $category) {
+    $category_list[$category] = $category;
+  }
+  return $category_list;
+}
+
+function membership_get_standings() {
+  $standings = variable_get('membership_standings', array('Current'));
+  $standing_list = array();
+  foreach ($standings as $standing) {
+    $standing_list[$standing] = $standing;
+  }
+  return $standing_list;
+}
+
+function membership_get_member_list_standings() {
+  return membership_get_standings();
+}
+
+function membership_get_preferred_email($field) {
+  // Extract the preferred email address from the multi-value field
+  // which is either the one labeled with an asterisk, or the first
+  // First check that there is a valid email address available
+  if (!strpos($field, '@')) { return ''; }
+  // select the preferred entry from the multi-values
+  $emails = explode(';', $field);
+  $preferred = '';
+  foreach ($emails as $email) {
+    if (strpos($email, '*')) { $preferred = $email; break; }
+  }
+  if (!$preferred) { $preferred = $emails[0]; }
+  // check that preferred entry is an email address
+  if (!strpos($preferred, '@')) { return ''; }
+  // extract address element from the value
+  $elements = explode(' ', $preferred);
+  foreach ($elements as $element) {
+    if (strpos($element, '@')) { $address = $element; break; }
+  }
+  // check that address element is a valid email address
+  if (!orgright_check_email_address($address)) { return ''; }
+  // and strip leading/training white space
+  return trim($address);
+}
+
+function membership_get_member_fields() {
+  // Return an array of the fields available in each membership record
+  // First the standard fields in the "org_members" table
+  $field_list = array(
+    'member' => t('Name'),
+    'address' => t('Address'),
+    'city' => t('City'),
+    'postcode' => t('Postcode'),
+    'phone' => t('Phone'),
+    'email' => t('Email'),
+    'category' => t('Category'),
+    'standing' => t('Status'),
+    'joindate' => t('Date joined'),
+    'leavedate' => t('Date left'),
+    'parent' => t('Primary member'),
+    'notes' => t('Notes'),
+  );
+  // check for any custom fields to be added to the list
+  if (variable_get('orgright_custom_fields_member',0)) {
+    // custom fields are are allowed, so check to see whether any are defined
+    $sql = "SELECT field_name, label, widget_type FROM {content_node_field_instance} WHERE type_name = '%s' ORDER BY weight";
+    $result = db_query($sql, 'member');
+    while ($field = db_fetch_object($result)) {
+      $field_list[$field->field_name] = $field->label;
+    }
+  }
+  return $field_list;
+}
+
+/**
+ * End of module
+ */
+

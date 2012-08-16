@@ -1,0 +1,342 @@
+<?php
+// $Id$
+
+/**
+ * Implementation of hook_install()
+ */
+function committee_install() {
+  drupal_install_schema('committee');
+  // any other actions to when module is installed go here
+}
+
+/**
+ * Implementation of hook_uninstall()
+ */
+function committee_uninstall() {
+  drupal_uninstall_schema('committee');
+  // any other actions to take when module is un-installed go here
+  variable_del('committee_appointtypes');
+  variable_del('committee_assigntypes');
+}
+
+/**
+ * Implementation of hook_disable()
+ */
+function committee_disable() {
+  // actions to take when the module is disabled should go here.
+}
+
+/**
+ * Implementation of hook_schema()
+ */
+// === "org_committees" table === 
+function committee_schema() {
+  $schema['org_committees'] = array(
+    'description' => t('Stores details for committees that are not held in the node tables'),
+    'fields' => array(
+      'nid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The {node}.nid for this committee'),
+      ),
+      'vid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The {node}.vid for this committee'),
+      ),
+      'pnid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The {node}.nid for the parent committee'),
+      ),
+      'committee' => array(
+        'type' => 'varchar',
+        'length' => 64,
+        'not null' => TRUE,
+        'description' => t('The name for this committee - also in {node} title'),
+      ),
+      'notes' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => t('General notes about this committee for this member'),
+      ),
+      'user' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The UID of the user who last modified this committee for this member'),
+      ),
+    ),
+    'primary key' => array('vid'),
+    'indexes' => array(
+      'nid' => array('nid'),
+      'pnid' => array('pnid'),
+      'committee' => array('committee'),
+    ),
+  );
+  // === "org_roles" table ===
+  $schema['org_roles'] = array(
+    'description' => t('Stores committee role details'),
+    'fields' => array(
+      'nid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => t('The {node}.nid of this role'),
+      ),
+      'vid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => t('The {node}.vid of this role'),
+      ),
+      'cnid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The {node}.nid of the committee associated with this role'),
+      ),
+      'role' => array(
+        'type' => 'varchar',
+        'length' => 64,
+        'not null' => TRUE,
+        'description' => t('The name of this role - also in {node} title'),
+      ),
+      'multiperson' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('Flag indicating whether this role is allowed multiple simultaneous assignments'),
+      ),
+      'allowvacant' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('Flag indicating whether this role is allowed to be vacant'),
+      ),
+      'notes' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => t('General notes about this payment'),
+      ),
+      'user' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The UID of the user who last modified this payment'),
+      ),
+    ),
+    'primary key' => array('vid'),
+    'indexes' => array(
+      'nid' => array('nid'),
+      'cnid' => array('cnid'),
+      'role' => array('role'),
+    ),
+  );
+  // === "org_appointments" table ===
+  $schema['org_appointments'] = array(
+    'description' => t('Stores details of member appointments to a committee'),
+    'fields' => array(
+      'nid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The {node}.nid of this appointment'),
+      ),
+      'vid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The  {node}.vid of this appointment'),
+      ),
+      'mnid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The {node}.nid of the member associated with this appointment'),
+      ),
+      'cnid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The {node}.nid of the committee associated with this appointment'),
+      ),
+      'appointtype' => array(
+        'type' => 'varchar',
+        'length' => 16,
+        'not null' => TRUE,
+        'description' => t('The type of committee appointment'),
+      ),
+      'appointdate' => array(
+        'type' => 'char',
+        'length' => 10,
+        'not null' => TRUE,
+        'description' => t('The date the member was appointed to the committee'),
+      ),
+      'retiredate' => array(
+        'type' => 'char',
+        'length' => 10,
+        'not null' => TRUE,
+        'description' => t('The date the member retired from the committee'),
+      ),
+      'notes' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => t('General notes about this subscription'),
+      ),
+      'user' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The UID of the user who last modified this subscription'),
+      ),
+    ),
+    'primary key' => array('vid'),
+    'indexes' => array(
+      'nid' => array('nid'),
+      'mnid' => array('mnid'),
+      'cnid' => array('cnid'),
+      'type' => array('appointtype'),
+    ),
+  );
+  // === "org_assignments" table ===
+  $schema['org_assignments'] = array(
+    'description' => t('Store details of member assignments to a committee role'),
+    'fields' => array(
+      'nid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The {node}.nid of this assignment'),
+      ),
+      'vid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The  {node}.vid of this assignment'),
+      ),
+      'mnid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The {node}.nid of the member associated with this assignment'),
+      ), 
+      'rnid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The {node}.nid of the role associated with this assignment'),
+      ),
+      'assigntype' => array(
+        'type' => 'varchar',
+        'length' => 16,
+        'not null' => TRUE,
+        'description' => t('The type of role assignment'),
+      ),
+      'assigndate' => array(
+        'type' => 'char',
+        'length' => 10,
+        'not null' => TRUE,
+        'description' => t('The date the member was assigned to the role'),
+      ),
+      'ceasedate' => array(
+        'type' => 'char',
+        'length' => 10,
+        'not null' => TRUE,
+        'description' => t('The date the member removed from the role'),
+      ),
+      'notes' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => t('General notes about this subscription'),
+      ),
+      'user' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The UID of the user who last modified this subscription'),
+      ),
+    ),
+    'primary key' => array('vid'),
+    'indexes' => array(
+      'nid' => array('nid'),
+      'mnid' => array('mnid'),
+      'rnid' => array('rnid'),
+      'type' => array('assigntype'),
+    ),
+  );
+  // === All tables defined ===
+  return $schema;
+}
+
+/**
+ * Module update functions go here
+ */
+function committee_update_6002() {
+  // Modify the appointtype column of the appointments table
+  $sql = "ALTER TABLE org_appointments MODIFY appointtype VARCHAR(16) NOT NULL";
+  if (!db_query($sql)) {
+    return array('#abort'=>array('success'=>FALSE, 'query'=>'Modify column in table org_appointments failed'));
+  }
+  // Modify the assigntype column of the assignments table
+  $sql = "ALTER TABLE org_assignments MODIFY assigntype VARCHAR(16) NOT NULL";
+  if (!db_query($sql)) {
+    return array('#abort'=>array('success'=>FALSE, 'query'=>'Modify column in table org_assignments failed'));
+  }
+  return array();
+}
+
+
+function committee_update_6001() {
+  // Drop all default specifications for text columns
+  $sql = "ALTER TABLE org_committees ";
+  $cols = array('committee', 'notes');
+  foreach ($cols as $col) { $sql .= " ALTER COLUMN $col DROP DEFAULT,"; }
+  $sql = substr($sql, 0, -1);
+  if (!db_query($sql)) { return array('#abort'=>array('success'=>FALSE, 'query'=>'Alter table org_committees failed')); }
+
+  $sql = "ALTER TABLE org_roles ";
+  $cols = array('role', 'notes');
+  foreach ($cols as $col) { $sql .= " ALTER COLUMN $col DROP DEFAULT,"; }
+  $sql = substr($sql, 0, -1);
+  if (!db_query($sql)) { return array('#abort'=>array('success'=>FALSE, 'query'=>'Alter table org_roles failed')); }
+
+  $sql = "ALTER TABLE org_appointments ";
+  $cols = array('appointtype', 'appointdate', 'retiredate', 'notes');
+  foreach ($cols as $col) { $sql .= " ALTER COLUMN $col DROP DEFAULT,"; }
+  $sql = substr($sql, 0, -1);
+  if (!db_query($sql)) { return array('#abort'=>array('success'=>FALSE, 'query'=>'Alter table org_appointments failed')); }
+
+  $sql = "ALTER TABLE org_assignments ";
+  $cols = array('assigntype', 'assigndate', 'ceasedate', 'notes');
+  foreach ($cols as $col) { $sql .= " ALTER COLUMN $col DROP DEFAULT,"; }
+  $sql = substr($sql, 0, -1);
+  if (!db_query($sql)) { return array('#abort'=>array('success'=>FALSE, 'query'=>'Alter table org_appointments failed')); }
+
+  return array();
+}

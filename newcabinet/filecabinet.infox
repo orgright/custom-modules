@@ -1,0 +1,8 @@
+; $Id$
+name = File Cabinet
+description = Implement a filing cabinet for the orgRight Service
+package = orgRight Service
+core = 6.x
+version = "6.x-2.0"
+dependencies[] = orgright
+dependencies[] = membership

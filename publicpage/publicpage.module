@@ -1,0 +1,252 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ * Provides Public Page functionality
+ * to allow only pages of type "public" to be viewed by anonymous visitors
+ * while preventing all other content from being shown
+ *
+ */
+
+/**
+ * Implementation of hook_init()
+ */
+function publicpage_init() {
+  //publicpage_debug_msg('publicpage','Fn: publicpage_init',5);
+  // Temp - until the taxonomy issues are sorted out
+}
+ 
+/**
+ * Implementation of hook_node_info
+ */
+function publicpage_node_info() {
+  //publicpage_debug_msg('publicpage','Fn: publicpage_node_info');
+  // Return an array of node types defined by this module
+  return array(
+    'public' => array(
+      'name' => t('Public page'),
+      'module' => 'publicpage',
+      'description' => t('A "public page" is the same as a page, but will be able to be viewed by anonymous users (ie people who have not logged in to your site).'),
+      'has_title' => TRUE,
+      'title_label' => t('Title'),
+      'has_body' => TRUE,
+      'body_label' => t('Contents'),
+      'locked' => TRUE,
+    ),
+  );
+}
+  
+/**
+ * Implementation of hook_perm()
+ */
+function publicpage_perm() {
+  //publicpage_debug_msg('publicpage','Fn: publicpage_perm',5);
+  return array(
+    'view public page',
+    'create public page',
+    'update public page',
+    'delete public page',
+  );
+}   
+
+/**
+ * Implementation of hook_access()
+ */ 
+function publicpage_access($op, $node, $account) {
+  //publicpage_debug_msg('publicpage','Fn: publicpage_access',5);
+  // Determine node type ($node will either be the string "type" or a node object)
+  $node_type = ($op == 'create') ? $node : $node->type;
+  // Limit access to the functions provided by this module
+  switch ($node_type) {
+  case 'public':
+    return publicpage_public_access($op, $account);
+  default:
+    return FALSE;
+  }
+}
+
+function publicpage_public_access($op, $account) {
+  // This is a public page type node
+  switch ($op) {
+    case 'view':
+      return user_access('view public page', $account);
+    case 'create':
+      return user_access('create public page', $account);
+    case 'update':
+      return user_access('update public page', $account);
+    case 'delete':
+      return user_access('delete public page', $account);
+    default:
+      return FALSE;
+  }
+}
+
+/**
+ * Implementation of hook_db_rewrite_sql()
+ */
+function publicpage_db_rewrite_sql($query, $table = 'n', $field = 'nid', $args = array()) {
+  //publicpage_debug_msg('publicpage','Fn: publicpage_db_rewrite_sql, table='.$primary_table.', field='.$primary_field);
+  // Allow only "public" type nodes to be retrieved for anonymous users
+  if ($field == 'nid') {
+    global $user;
+    $qalter = array();
+    if ($user->uid) {
+      // authenticated user, allow access determined by permissions
+      if ($table == 'n' || $table == 'node') {
+        // node table is the primary table for query
+        //if (!user_access('view public page', $user)) {
+          $qalter['where'] = "$table.type != 'public'";
+        //}
+      }
+      elseif (preg_match('|{node} ([A-Za-z_]+)|', $query, $match)) {
+        // node table present but is not primary table
+        $talias = $match[1];
+        if (!user_access('view public page', $user)) {
+          $qalter['where'] = "$talias.type != 'public'";
+        }
+      }
+    }
+    else {
+      // anonymous user
+      if ($table == 'n' || $table == 'node') {
+        // Allow anonymous users access only to public pages
+        $qalter['where'] = "$table.type = 'public'";
+      }
+      elseif (preg_match('|{node} ([A-Za-z_]+)|', $query, $match)) {
+        // node table present but is not primary table
+        $talias = $match[1];
+        $qalter['where'] = "$talias.type = 'public'";
+      }
+    }
+    return $qalter;
+  }
+}
+
+/**
+ * Implementation of hook_node_grants
+ */
+function publicpage_node_grants ($account, $op) {
+  //publicpage_debug_msg('Fn: publicpage_node_grants, op='.$op);
+  // Declare that this user belongs to either group #1 or #2 for realm "publicpage"
+  // depending on whether user is anonymous or authenticated respectively
+  $groups = array();
+  if ($account->uid) {
+    // authenticated user
+    $groups['publicpage'] = array(2);
+  }
+  else {
+    // anonymous user
+    $groups['publicpage'] = array(1);
+  }
+  return $groups;
+}
+
+/**
+ * Implementation of hook_node_access_records
+ */
+function publicpage_node_access_records ($node) {
+  //publicpage_debug_msg('Fn: publicpage_node_grants, op='.$node->type);
+  // Specify grant access records for groups #1, and #2 in realm "publicpage"
+  $grants = array();
+  switch ($node->type) {
+  case 'public': 
+    $grants[] = array(
+      'realm' => 'publicpage',
+      'gid' => 1,
+      'grant_view' => TRUE,
+      'grant_update' => FALSE,
+      'grant_delete' => FALSE,
+      'priority' => 0,
+     );
+    break;
+  case 'page':
+  case 'story':
+  case 'forum':
+    $grants[] = array(
+      'realm' => 'publicpage',
+      'gid' => 2,
+      'grant_view' => TRUE,
+      'grant_update' => FALSE,
+      'grant_delete' => FALSE,
+      'priority' => 0,
+    );
+    break;
+  default:
+  }
+  return $grants;
+}
+
+/**
+ * Implementation of hook_form()
+ *
+ * This defines the three forms used to create and edit each of the node
+ * types implemented by the publicpage module.  This hook is called by
+ * the standard Drupal node add and node edit functions.
+ */
+function publicpage_form($node, &$form_state) {
+  //publicpage_debug_msg('publicpage','Fn: publicpage_form, node type='.$node->type,5);
+  // Get metadata for this node type (we use it for labeling title and body fields).
+  $type = node_get_types('type', $node);
+  $form['title'] = array(
+    '#type' => 'textfield',
+    '#title' => check_plain($type->title_label),
+    '#required' => TRUE,
+    '#default_value' => $node->title,
+    '#weight' => -5,
+    '#maxlength' => 255,
+  );
+  $form['body_filter']['body'] = array(
+    '#type' => 'textarea',
+    '#title' => check_plain($type->body_label),
+    '#default_value' => $node->body,
+    '#rows' => 7,
+    '#required' => TRUE
+  );
+  $form['body_filter']['filter'] = filter_form($node->format);
+  return $form;
+}
+
+/**
+ * Implementation of hook_menu()
+ *
+ * Specify the menu items that this module provides
+ */
+function publicpage_menu() {
+  $menu_entries = array();
+  $menu_entries['publicpage'] = array(
+    'title' => 'Public pages',
+    'description' => t('Provide access to public pages for editing'),
+    'page callback' => 'publicpage_publicpages',
+    'access callback' => 'user_access',
+    'access arguments' => array('view public page'),
+    'type' => MENU_NORMAL_ITEM,
+    'weight' => 12,
+
+  );
+  // All menu paths now defined
+  return $menu_entries;
+}
+
+/**
+ * Menu callback functions
+ */
+function publicpage_publicpages() {
+  // Generate a list of public pages
+  $sql = "SELECT nid, title, promote, sticky FROM {node} n WHERE n.type = 'public' AND n.status = 1 ORDER BY n.nid";
+  // do NOT pass the query through db_rewrite_sql or we will retrieve nothing
+  $result = db_query($sql);
+  $output = '<div><p class="publicpage-list">' . t('The following are public pages, which can be viewed by anonymous users.') . '</p><ul>';
+  while ($public = db_fetch_object($result)) {
+    // Generate a line of listing for this public page
+    $output .= '<li>';
+    $output .= l($public->title, 'node/'.$public->nid) . ' ';
+    $output .= l('[edit]', 'node/'.$public->nid.'/edit');
+    if ($public->promote) { $output .= ', promoted to front page'; }
+    if ($public->sticky) { $output .= ', sticky at top of list'; }
+    $output .= '</li>';
+  }
+  $output .= '</ul></div>';
+  // Set page breadcrumb ???
+  return $output;
+}

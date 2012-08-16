@@ -1,0 +1,6 @@
+; $Id$
+name = orgRight Base
+description = Implement foundation functions for the orgRight Service
+package = orgRight Service
+core = 6.x
+version = "6.x-2.1"

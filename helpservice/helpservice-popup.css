@@ -1,0 +1,120 @@
+/* $Id$ */
+
+body {
+  margin: 0;
+  padding: 0;
+  background: #f5ffe9;
+  font: 10px/150% Verdana, sans-serif;
+  color: #555555;
+}
+
+input {
+  font: 10px/120% Verdana, sans-serif;
+  color: #555555;
+}
+
+textarea, select {
+  font: 10px/120% Verdana, sans-serif;
+  color: #555555;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  padding: 0;
+  font-weight: normal;
+  font-family: Helvetica, Arial, sans-serif;
+}
+
+h1 {
+  font-size: 170%;
+}
+
+h2 {
+  font-size: 160%;
+  line-height: 130%;
+}
+
+h3 {
+  font-size: 140%;
+}
+
+h4 {
+  font-size: 130%;
+}
+
+h5 {
+  font-size: 120%;
+}
+
+h6 {
+  font-size: 110%;
+}
+
+ul, quote, code, fieldset {
+  margin: .5em 0;
+}
+
+p {
+  margin: 0.6em 0 1.2em;
+  padding: 0;
+}
+
+a:link, a:visited {
+  color: #408135;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #408135;
+  text-decoration: underline;
+}
+
+a:active, a.active {
+  color: #555555;
+}
+
+hr {
+  margin: 0;
+  padding: 0;
+  border: none;
+  height: 1px;
+  background: #dae3cf;
+}
+
+ol li, ul li {
+  margin: 0.4em 0 0.4em .5em; /* LTR */
+}
+
+
+#content {
+  margin: .5em 1em 1em 1em;
+}
+
+#content #page-title {
+  padding-bottom: .5em;
+}
+
+div#breadcrumb {
+  padding: 0.5em 1em;
+  /*padding-left: 1em;*/
+  background-color: #dae3cf;
+  border-bottom: 1px solid #555555;
+  height: auto;
+}
+
+div#breadcrumb .breadcrumb {
+  padding: 0;
+  margin: 0;
+}
+
+code, pre {
+  border: 1px solid #444;
+  background: #f1f1f1;
+  margin: 1em;
+  padding: .2em;
+  display: block;
+}
+
+#block-feedback-form {
+  visibility: hidden;
+}

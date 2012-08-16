@@ -1,0 +1,77 @@
+<?php
+// $Id$
+
+/**
+ * Implementation of hook_install()
+ */
+function adminnotice_install() {
+  drupal_install_schema('adminnotice');
+  // any other actions to when module is installed go here
+}
+
+/**
+ * Implementation of hook_uninstall()
+ */
+function adminnotice_uninstall() {
+  drupal_uninstall_schema('adminnotice');
+  // any other actions to take when module is un-installed go here
+}
+
+/**
+ * Implementation of hook_disable()
+ */
+function adminnotice_disable() {
+  // actions to take when the module is disabled should go here.
+}
+
+/**
+ * Implementation of hook_schema()
+ */
+// === "org_notices" table === 
+function adminnotice_schema() {
+  $schema['org_notices'] = array(
+    'description' => t('Stores details for notices that are not held in the node tables'),
+    'fields' => array(
+      'nid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The {node}.nid for this notice'),
+      ),
+      'vid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The {node}.vid for this notice'),
+      ),
+      'nref' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The unique reference number for this notice'),
+      ),
+    ),
+    'primary key' => array('vid'),
+    'indexes' => array(
+      'nid' => array('nid'),
+      'nref' => array('nref'),
+    ),
+  );
+  // === All tables defined ===
+  return $schema;
+}
+
+/**
+ * Module update functions go here
+ */
+//function adminnotice_update_6001() {
+//  // Modify the ...
+//  $sql = "ALTER TABLE org_notices MODIFY reference VARCHAR(16) NOT NULL";
+//  if (!db_query($sql)) {
+//    return array('#abort'=>array('success'=>FALSE, 'query'=>'Modify column in table org_notices failed'));
+//  }
+//  return array();
+//}

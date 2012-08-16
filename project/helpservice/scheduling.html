@@ -1,0 +1,17 @@
+<!-- $Id$ -->
+
+<h2>Project Schedules</h2>
+
+A project schedule is a list of the activities of the project showing the start and finish dates for each activity.
+
+These start and finish dates are derived from one of:<ul>
+<li>an actual start or finish date if the activity has commenced/finished</li>
+<li>a date constraint that may have been set specifying a start/finish date for the activity</li>
+<li>a calculated date that maintains the relationship of the activity with other activities that may have started/finished or that have date constraints set</li>
+</ul>
+
+It will be necessary to re-caluclate the project schedule as actual start finish dates are entered, especially if these vary from those originally calculated because of project management decisions around scheduling or project activity slippage.
+
+Note that if the relationships betwen the project activities is overly complex, or there has been significant slippage in completion of one or more activities, then it may not be possible to calculate a schedule that satisfies all relationships as well as the date constraints that may have been set.
+
+If a satisfactory project schedule cannot be calculated, then the project manager will need to review ant date constraints set and the relationships between activities before re-calculating a schedule.

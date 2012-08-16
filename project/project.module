@@ -1,0 +1,823 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ * Provides orgRight project management functionality
+ *
+ * Implements three new node types:
+ *   1) project
+ *   2) projactivity
+ *   3) projreport
+ */
+
+/**
+ * Implementation of hook_init()
+ */
+function project_init() {
+  //orgright_debug_msg('project','Fn: project_init');
+  // Include the module javascript file for standard functions
+  //drupal_add_js(drupal_get_path('module', 'project') . '/project.js');
+  /*$node_types = array('project', 'projactivity', 'projreport');
+  foreach ($node_types as $type) {
+    // set the default comment module values
+    variable_set('comment_'.$type, '2'); // 0=disabled, 1=read only, 2=read/write
+    variable_set('comment_controls_'.$type, '3'); // 0=above, 1=below, 2=both, 3=disabled
+    variable_set('comment_default_mode_'.$type, '2'); // 1&2=flat, 3&4=threaded, 1&3=collapsed, 2&4=expanded
+    variable_set('comment_default_order'.$type, '2'); // 1=newest first, 2=oldest first
+    variable_set('comment_default_per_page'.$type, '12'); // number of comments to display per page
+    variable_set('comment_form_location_'.$type, '0'); // 0=separate page, 1=below comments
+    variable_set('comment_preview'.$type, '0'); // 0=optional, 1=required
+    variable_set('comment_subject_field_'.$type, '1'); // 0=disabled, 1=enabled
+    // disable file uploads to these node types
+    variable_set('upload_'.$type, '0'); // 0=disabled, 1=enabled
+    // set the node options to published, but not promoted, sticky, or revision
+    variable_set('node_options_'.$type, array('status')); // status(=published), promote, sticky, revision 
+  }*/
+}
+ 
+/**
+ * Implementation of hook_node_info
+ */
+function project_node_info() {
+  //orgright_debug_msg('project','Fn: project_node_info');
+  // Return an array of node types defined by this module
+  return array(
+    'project' => array(
+      'name' => t('Project'),
+      'module' => 'project',
+      'description' => t('Specify the details for a project'),
+      'has_title' => TRUE,
+      'title_label' => t('Name of project'),
+      'has_body' => TRUE,
+      'body_label' => t('Description of project'),
+      'locked' => TRUE,
+    ),
+    'projactivity' => array(
+      'name' => t('Project activity'),
+      'module' => 'project',
+      'description' => t('Specify the details for a project activity'),
+      'has_title' => TRUE,
+      'title_label' => t('Name of project activity'),
+      'has_body' => TRUE,
+      'body_label' => t('Description of project activity'),
+      'locked' => TRUE,
+    ),
+    'projreport' => array(
+      'name' => t('Project report'),
+      'module' => 'project',
+      'description' => t('Record a project report'),
+      'has_title' => TRUE,
+      'title_label' => t('Name of project report'),
+      'has_body' => TRUE,
+      'body_label' => t('Project report details'),
+      'locked' => TRUE,
+    ),
+  );
+}
+  
+/**
+ * Implementation of hook_perm()
+ */
+function project_perm() {
+  //orgright_debug_msg('project','Fn: project_perm');
+  // Define the user permissions for project management
+  return array(
+    'view project',
+    'create project',
+    'update project',
+    'delete project',
+    'view project activity',
+    'create project activity',
+    'update project activity',
+    'delete project activity',
+    'create project activity link',
+    'update project activity link',
+    'delete project activity link',
+    'view project report',
+    'create project report',
+    'update project report',
+    'delete project report',
+  );    
+}   
+
+/**
+ * Implementation of hook_menu()
+ *
+ * Specify the menu items that this module provides
+ */
+function project_menu() {
+  // Entries to provide navigation structure
+  $menu_entries['project'] = array(
+    'title' => 'Project',
+    'page callback' => 'project_management',
+    'file' => 'project_menu.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('view project'),
+    'type' => MENU_NORMAL_ITEM,
+    'menu_name' => 'orgright',
+    'weight' => 4,
+  );
+  $menu_entries['project/projects'] = array(
+    'title' => 'Projects',
+    'page callback' => 'project_projects',
+    'file' => 'project_menu.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('view project'),
+    'type' => MENU_NORMAL_ITEM,
+    'weight' => 1,
+  );
+  $menu_entries['project/projactivities'] = array(
+    'title' => 'Project Activities',
+    'page callback' => 'project_projactivities',
+    'file' => 'project_menu.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('view project activity'),
+    'type' => MENU_NORMAL_ITEM,
+    'weight' => 2,
+  );
+  $menu_entries['project/projreports'] = array(
+    'title' => 'Project Reports',
+    'page callback' => 'project_projreports',
+    'file' => 'project_menu.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('view project report'),
+    'type' => MENU_NORMAL_ITEM,
+    'weight' => 3,
+  );
+  $menu_entries['project/projects/list'] = array(
+    'title' => 'List Projects',
+    'page callback' => 'project_projects_list',
+    'file' => 'project_menu.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('view project'),
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => 0,
+  );
+  $menu_entries['project/projects/add'] = array(
+    'title' => 'Add Project',
+    'page callback' => 'project_projects_add',
+    'file' => 'project_menu.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('create project'),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 1,
+  );
+  $menu_entries['project/projects/schedule'] = array(
+    'title' => 'Project Schedule',
+    'page callback' => 'project_projects_schedule',
+    'file' => 'project_menu.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('create project'),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 2,
+  );
+  $menu_entries['project/projactivities/list'] = array(
+    'title' => 'List Project Activities',
+    'page callback' => 'project_projactivities_list',
+    'file' => 'project_menu.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('view project activity'),
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => 0,
+  );
+  $menu_entries['project/projactivities/add'] = array(
+    'title' => 'Add Project Activity',
+    'page callback' => 'project_projactivities_add',
+    'file' => 'project_menu.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('create project activity'),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 1,
+  );
+  $menu_entries['project/projactivities/links'] = array(
+    'title' => 'Link Project Activities',
+    'page callback' => 'project_projactivities_link',
+    'file' => 'project_menu.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('create project activity link'),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 2,
+  );
+  $menu_entries['project/projreports/list'] = array(
+    'title' => 'List Project Reports',
+    'page callback' => 'project_projreports_list',
+    'file' => 'project_menu.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('view project report'),
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => 0,
+  );
+  $menu_entries['project/projreports/add'] = array(
+    'title' => 'Add Project Report',
+    'page callback' => 'project_projreports_add',
+    'file' => 'project_menu.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('create project report'),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 1,
+  );
+  // Entries to provide data for autocomplete fields
+  $menu_entries['project/autocomplete/projects'] = array(
+    'title' => 'Autocomplete Project Selection',
+    'page callback' => 'project_autocomplete_projects',
+    'file' => 'project_menu.inc',
+    'access callback' => TRUE,
+    'access arguments' => array(),
+    'type' => MENU_CALLBACK,
+    'weight' => 0,
+  );
+  $menu_entries['project/autocomplete/activities'] = array(
+    'title' => 'Autocomplete Project Activity Selection',
+    'page callback' => 'project_autocomplete_activities',
+    'file' => 'project_menu.inc',
+    'access callback' => TRUE,
+    'access arguments' => array(),
+    'type' => MENU_CALLBACK,
+    'weight' => 0,
+  );
+  // Entry to provide for module administration
+  $menu_entries['admin/orgright/project'] = array(
+    'title' => 'Project',
+    'description' => t('Provide administrative functions for the orgRight project module'),
+    'page callback' => 'project_admin',
+    'file' => 'project_admin.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('administer orgRight modules'),
+    'type' => MENU_NORMAL_ITEM,
+    'weight' => 4,
+  );
+  // All menu paths now defined
+  return $menu_entries;
+}
+
+/**
+ * Implementation of hook_menu_alter()
+ *
+ * Suppress the listing of these node types on the "create content" menus
+ */
+function project_menu_alter(&$menu_entries) {
+  // Disable the menu item by setting its access callback to FALSE
+  $menu_entries['node/add/project']['access callback'] = FALSE;
+  $menu_entries['node/add/projactivity']['access callback'] = FALSE;
+  $menu_entries['node/add/projreport']['access callback'] = FALSE;
+  // Unset access arguments to prevent Drupal using user_access()
+  unset($menu_entries['node/add/project']['access arguments']);
+  unset($menu_entries['node/add/projactivity']['access arguments']);
+  unset($menu_entries['node/add/projreport']['access arguments']);
+}
+
+/**
+ * Implementation of hook_access()
+ */ 
+function project_access($op, $node, $account) {
+  //orgright_debug_msg('project','Fn: project_access, op='.$op);
+  // Determine node type ($node will either be the string "type" or a node object)
+  $node_type = ($op == 'create') ? $node : $node->type;
+  // Limit access to the functions provided by this module
+  switch ($node_type) {
+  case 'project':
+    return project_project_access($op, $account);
+  case 'projactivity':
+    return project_projactivity_access($op, $account);
+  case 'projreport':
+    return project_projreport_access($op, $account);
+  default:
+    return FALSE;
+  }
+}
+
+function project_project_access($op, $account) {
+  // This is a project type node
+  switch ($op) {
+    case 'view':
+      return user_access('view project', $account);
+    case 'create':
+      if (orgright_limit_reached('projects')) { return FALSE; }
+      else { return user_access('create project', $account); }
+    case 'update':
+      return user_access('update project', $account);
+    case 'delete':
+      return user_access('delete project', $account);
+    default:
+      return FALSE;
+  }
+}
+
+function project_projactivity_access($op, $account) {
+  // This node is a projactivity
+  switch ($op) {
+    case 'view':
+      return user_access('view project activity', $account);
+    case 'create':
+      if (orgright_limit_reached('projactivities')) { return FALSE; }
+      else { return user_access('create project activity', $account); }
+    case 'update':
+      return user_access('update project activity', $account);
+    case 'delete':
+      return user_access('delete project activity', $account);
+    default:
+      return FALSE;
+  }
+}
+
+function project_projreport_access($op, $account) {
+  // This node is a projreport
+  switch ($op) {
+    case 'view':
+      return user_access('view project report', $account);
+    case 'create':
+      if (orgright_limit_reached('projreports')) { return FALSE; }
+      else { return user_access('create project report', $account); }
+    case 'update':
+      return user_access('update project report', $account);
+    case 'delete':
+      return user_access('delete project report', $account);
+    default:
+      return FALSE;
+  }
+}
+
+/**
+ * Implementation of hook_forms()
+ *
+ * This functions specifies the forms that this module provides
+ */
+function project_forms($form_id, $args) {
+  //orgright_debug_msg('project','Fn: project_forms, id='.$form_id);
+  // Specify the form ids that are provided
+  switch ($form_id) {
+    case 'project_project_form':
+    case 'project_projactivity_form':
+    case 'project_projreport_form':
+    case 'project_calculate_schedule_form':
+    case 'project_activity_links_form':
+      module_load_include('inc', 'project', 'project_form'); 
+      $forms[$form_id] = array(
+        'callback' => $form_id.'_build',
+      );
+      return $forms;
+    case 'project_admin_form':
+      module_load_include('inc', 'project', 'project_admin'); 
+      $forms[$form_id] = array(
+        'callback' => $form_id.'_build',
+      );
+      return $forms;
+    default:
+      return;
+  }
+}
+
+/**
+ * Implementation of hook_form()
+ *
+ * This defines the three forms used to create and edit each of the three
+ * node types implemented by the project module.  This hook is called by
+ * the standard Drupal node add and node edit functions.
+ */
+function project_form($node, &$form_state) {
+  //orgright_debug_msg('project','Fn: project_form, node type='.$node->type,5);
+  // Load the additional file to handle form building
+  module_load_include('inc', 'project', 'project_form'); 
+  // Call the required form function depending on node type
+  if ($node->type == 'project') {
+    $form = project_project_form_build($form_state, $node);
+  }
+  elseif ($node->type == 'projactivity') {
+    $form = project_projactivity_form_build($form_state, $node);
+  }
+  elseif ($node->type == 'projreport') {
+    $form = project_projreport_form_build($form_state, $node);
+  }
+  else {
+    $form = array();
+  };
+  return $form;
+}
+
+/**
+ * Implementation of hook_validate()
+ * Called after the specified form validation function below
+ */
+function project_validate($node, $form) {
+  //orgright_debug_msg('project','Fn: project_validate, node type='.$node->type,5);
+  if ($node->type == 'project') {
+  }
+  elseif ($node->type == 'projactivity') {
+  }
+  elseif ($node->type == 'projreport') {
+  }
+  else {
+    form_set_error('type', t('Form type not recognised'));
+  }
+}
+
+/**
+ * Validate function specified in the form during build
+ * Called before the hook_validate() function above
+ */
+function project_form_validate($form, &$form_state) {
+  //orgright_debug_msg('project','Fn: project_form_validate, id='.$form['#id']);
+  // Call the function specific to each form type
+  if ($form['#id'] == 'node-form') {
+    // Load the additional file to handle form building
+    module_load_include('inc', 'project', 'project_form');
+    // and process each node-form separately 
+    if ($form['#node']->type == 'project') {
+      project_project_form_validate($form, $form_state);
+    }
+    elseif ($form['#node']->type == 'projactivity') {
+      project_projactivity_form_validate($form, $form_state);
+    }
+    elseif ($form['#node']->type == 'projreport') {
+      project_projreport_form_validate($form, $form_state);
+    }
+  }
+  elseif ($form['#id'] == 'project-calculate-schedule-form') {
+    // Load the additional file to handle form building
+    module_load_include('inc', 'project', 'project_form');
+    project_calculate_schedule_form_validate($form, $form_state);
+  }
+  elseif ($form['#id'] == 'project-activity-links-form') {
+    // Load the additional file to handle form building
+    module_load_include('inc', 'project', 'project_form');
+    project_activity_links_form_validate($form, $form_state);
+  }
+  elseif ($form['#id'] == 'project-admin-form') {
+    // Load the additional file to handle form building
+    module_load_include('inc', 'project', 'project_admin');
+    project_admin_form_validate($form, $form_state);
+  }
+  else {
+    form_set_error('type', t('Form type not recognised'));
+  }
+}
+
+/**
+ * Standard Drupal node form sumbit callback functions
+ */
+/*
+function project_node_form_submit($form, &$form_state) {
+  // Standard Drupal callback for project_node_form
+  //orgright_debug_msg('project','Fn: project_node_form_submit');
+  //orgright_debug_dump($form);
+  //$form_state['#redirect'] = 'project/projects'; 
+}
+
+function projactivity_node_form_submit($form, &$form_state) {
+  // Standard Drupal callback for project_node_form
+  //orgright_debug_msg('project','Fn: projactivity_node_form_submit');
+  //orgright_debug_dump($form);
+  //$form_state['#redirect'] = 'project/projactivities'; 
+}
+
+function projreport_node_form_submit($form, &$form_state) {
+  // Standard Drupal callback for project_node_form
+  //orgright_debug_msg('project','Fn: projreport_node_form_submit');
+  //orgright_debug_dump($form);
+  //$form_state['#redirect'] = 'project/projreports'; 
+}
+*/
+
+/**
+ * Submit function specified in the form during build
+ * Called before the hook_submit() functions above
+ */
+function project_form_submit($form, &$form_state) {
+  //orgright_debug_msg('project','Fn: project_form_submit, id='.$form['#id']);
+  // Call the function specific to each form type
+  if ($form['#id'] == 'node-form') {
+    // Load the additional file to handle form building
+    module_load_include('inc', 'project', 'project_form');
+    // and process each node-form separately 
+    if ($form['#node']->type == 'project') {
+      project_project_form_submit($form, $form_state);
+    }
+    elseif ($form['#node']->type == 'projactivity') {
+      project_projactivity_form_submit($form, $form_state);
+    }
+    elseif ($form['#node']->type == 'projreport') {
+      project_projreport_form_submit($form, $form_state);
+    }
+  }
+  elseif ($form['#id'] == 'project-calculate-schedule-form') {
+    // Load the additional file to handle form building
+    module_load_include('inc', 'project', 'project_form');
+    project_calculate_schedule_form_submit($form, $form_state);
+  }
+  elseif ($form['#id'] == 'project-activity-links-form') {
+    // Load the additional file to handle form building
+    module_load_include('inc', 'project', 'project_form');
+    project_activity_links_form_submit($form, $form_state);
+  }
+  elseif ($form['#id'] == 'project-admin-form') {
+    // Load the additional file to handle form building
+    module_load_include('inc', 'project', 'project_admin');
+    project_admin_form_submit($form, $form_state);
+  }
+  else {
+    form_set_error('type', t('Form type not recognised'));
+  }
+}
+
+/**
+ * Implementation of hook_insert()
+ *
+ * This will test for the type of node being created and 
+ * insert the data into the appropriate table
+ */
+
+function project_insert($node) {
+  //orgright_debug_msg('project','Fn: project_insert');
+  // First, load the additional file to handle data access
+  module_load_include('inc', 'project', 'project_data');
+  if ($node->type == 'project') {
+    project_project_insert($node);
+  }
+  elseif ($node->type == 'projactivity') {
+    project_projactivity_insert($node);
+  }
+  elseif ($node->type == 'projreport') {
+    project_projreport_insert($node);
+  }
+}
+
+/**
+ * Implementation of hook_update()
+ *
+ * This will test for the type of node being updated and 
+ * update the data into the appropriate table
+ */
+function project_update($node) {
+  //orgright_debug_msg('project','Fn: project_update');
+  // First, load the additional file to handle data access
+  module_load_include('inc', 'project', 'project_data');
+  if ($node->revision) {
+    // This is a new revision, so treat as a new node
+    project_insert($node);
+  }
+  elseif ($node->type == 'project') {
+    project_project_update($node);
+  }
+  elseif ($node->type == 'projactivity') {
+    project_projactivity_update($node);
+  }
+  elseif ($node->type == 'projreport') {
+    project_projreport_update($node);
+  }
+}
+
+/**
+ * Implementation of hook_delete()
+ *
+ * This will test for the type of node being deleted and
+ * delete the corresponding row(s) of the project table
+ */
+function project_delete($node) {
+  //orgright_debug_msg('project','Fn: project_delete');
+  // First, load the additional file to handle data access
+  module_load_include('inc', 'project', 'project_data');
+  if ($node->type == 'project') {
+    project_project_delete($node);
+  }
+  elseif ($node->type == 'projactivity') {
+    project_projactivity_delete($node);
+  }
+  elseif ($node->type == 'projreport') {
+    project_projreport_delete($node);
+  }
+}
+
+
+/**
+ * Implementation of hook_node_api()
+ */
+function project_nodeapi(&$node, $op, $teaser, $page) {
+  //orgright_debug_msg('project','Fn: project_nodeapi, op='.$op.', type='.$node->type);
+  switch ($op) {
+  case 'load':
+  case 'insert':
+  case 'update':
+  case 'delete':
+  case 'delete revision':
+    // First, load the additional file to handle data access
+    module_load_include('inc', 'project', 'project_data');
+    if ($node->type == 'project') {
+      project_project_nodeapi($node, $op, $teaser, $page);
+    }
+    elseif ($node->type == 'projactivity') {
+      project_projactivity_nodeapi($node, $op, $teaser, $page);
+    }
+    elseif ($node->type == 'projreport') {
+      project_projreport_nodeapi($node, $op, $teaser, $page);
+    }
+  }
+}
+
+
+/**
+ * Implementation of hook_load()
+ */
+function project_load($node) {
+  //orgright_debug_msg('project','Fn: project_load, type='.$node->type);
+  // Load the additional data into the node object being built
+  // First, load the additional file to handle data access
+  module_load_include('inc', 'project', 'project_data');
+  if ($node->type == 'project') {
+    $obj = project_project_load($node);
+  }
+  elseif ($node->type == 'projactivity') {
+    $obj = project_projactivity_load($node);
+  }
+  elseif ($node->type == 'projreport') {
+    $obj = project_projreport_load($node);
+  }
+  else {
+    $obj = new stdClass;
+  }
+  return $obj;
+}
+
+/**
+ * Implementation of hook_view()
+ */
+function project_view(&$node, $teaser = FALSE, $page = FALSE) {
+  //orgright_debug_msg('project','Fn: project_view, type='.$node->type);
+  // Build the page elements to display the details
+  // Use Drupal's default behaviour to prepare the body/teaser
+  $node = node_prepare($node, $teaser);
+  // Load the additional file to handle data access
+  module_load_include('inc', 'project', 'project_page');
+  if ($node->type == 'project') {
+    project_project_view($node, $teaser, $page);
+  }
+  elseif ($node->type == 'projactivity') {
+    project_projactivity_view($node, $teaser, $page);
+  }
+  elseif ($node->type == 'projreport') {
+    project_projreport_view($node, $teaser, $page);
+  }
+  return $node;
+}
+
+/**
+ * Implementation of hook_views_api()
+ */
+function project_views_api() {
+  return array(
+    'api' => 2.0,
+  );
+}
+
+/**
+ * Some orgRight project specific functions to provide data
+ */
+function project_get_categories() {
+  $categories = variable_get('project_categories', array('Normal'));
+  $category_list = array();
+  foreach ($categories as $category) {
+    $category_list[$category] = $category;
+  }
+  return $category_list;
+}
+
+function project_get_statuses() {
+  $statuses = variable_get('project_statuses', array('Normal'));
+  $status_list = array();
+  foreach ($statuses as $status) {
+    $category_list[$status] = $status;
+  }
+  return $category_list;
+}
+
+function project_get_duratypes($req) {
+  // Return the array requested, "types"
+  // Specify the activity duration types.  Details provided for each type are:
+  // 1 = name, 2=number of days, 3=elapsed time flag, 4=
+  $duratypes = array(
+     array(t('day'), 1, TRUE, ),
+     array(t('week'), 7, TRUE, ),
+     array(t('month'), 30, TRUE, ),
+     array(t('work day'), 1, FALSE, ),
+    );
+  $duratype_list = array();
+  switch ($req) {
+    case 'types':
+      foreach ($duratypes as $type) {
+        $duratype_list[$type[0]] = $type[0];
+      }  
+      return $duratype_list;
+    case 'days':
+      foreach ($duratypes as $type) {
+        $duratype_list[$type[0]] = $type[1];
+      }  
+      return $duratype_list;
+    case 'elapsed':
+      foreach ($duratypes as $type=>$details) {
+        $duratype_list[$type[0]] = $type[2];
+      }  
+      return $duratype_list;
+    default:
+      return $duratypes;
+  }
+}
+
+function project_get_projdatypes($req) {
+  $projdatypes = array(
+    'S' => t('Start'),
+    'F' => t('Finish'),
+  );
+  $projdatype_list = array();
+  switch ($req) {
+    case 'types':
+      foreach ($projdatypes as $key=>$type) {
+        $projdatype_list[$type] = $type;
+      }
+      return $projdatype_list;
+    case 'keys':
+      foreach ($projdatypes as $key=>$type) {
+        $projdatype_list[$type] = $key;
+      }  
+      return $projdatype_list;
+    default:
+      return $projdatypes;
+  }
+}
+
+function project_get_actividatypes($req) {
+  $actividatypes = array(
+    'NA' => t('-- none --'),
+    'SB' => t('Start before'),
+    'SO' => t('Start on'),
+    'SA' => t('Start after'),
+    'FB' => t('Finish before'),
+    'FO' => t('Finish on'),
+    'FA' => t('Finish after'),
+  );
+  $actividatype_list = array();
+  switch ($req) {
+    case 'types':
+      foreach ($actividatypes as $key => $type) {
+        $actividatype_list[$type] = $type;
+      }  
+      return $actividatype_list;
+    case 'keys':
+      foreach ($actividatypes as $key => $type) {
+        $actividatype_list[$type] = $key;
+      }  
+      return $actividatype_list;
+    default:
+      return $actividatypes;
+  }
+}
+
+function project_get_activity_linktypes($activity='first activity') {
+  return array(
+    'N/A' => t('-- no link with "@activity" --',array('@activity'=>$activity)),
+    'SAF' => t('Starts after "@activity" finishes',array('@activity'=>$activity)),
+    'FBS' => t('Finishes before "@activity" starts',array('@activity'=>$activity)),
+    'SAS' => t('Starts after "@activity" starts',array('@activity'=>$activity)),
+    'SBS' => t('Starts before "@activity" starts',array('@activity'=>$activity)),
+    'FAF' => t('Finishes after "@activity" finishes',array('@activity'=>$activity)),
+    'FBF' => t('Finishes before "@activity" finishes',array('@activity'=>$activity)),
+    'FAS' => t('Finishes after "@activity" starts',array('@activity'=>$activity)),
+    'SBF' => t('Starts before "@activity" finishes',array('@activity'=>$activity)),
+  );
+}
+
+function project_invert_link($anid1, $anid2, $link) {
+  switch ($link) {
+    case 'SAF':
+      return array('1st'=>$anid2, '2nd'=>$anid1, 'link'=>'FBS');
+    case 'FBS':
+      return array('1st'=>$anid2, '2nd'=>$anid1, 'link'=>'SAF');
+    case 'SAS':
+      return array('1st'=>$anid2, '2nd'=>$anid1, 'link'=>'SBS');
+    case 'SBS':
+      return array('1st'=>$anid2, '2nd'=>$anid1, 'link'=>'SAS');
+    case 'FAF':
+      return array('1st'=>$anid2, '2nd'=>$anid1, 'link'=>'FBF');
+    case 'FBF':
+      return array('1st'=>$anid2, '2nd'=>$anid1, 'link'=>'FAF');
+    case 'FAS':
+      return array('1st'=>$anid2, '2nd'=>$anid1, 'link'=>'SBF');
+    case 'SBF':
+      return array('1st'=>$anid2, '2nd'=>$anid1, 'link'=>'FAS');
+    default:
+      return array('1st'=>$anid1, '2nd'=>$anid2, 'link'=>$link);
+  }
+}
+
+function project_get_schedule_errors() {
+  return array(
+    'ERR01' => t('Activity specified to begin before project start'),
+    'ERR02' => t('Activity specified to end after project finish'),
+    'ERR03' => t('Activity started too late to finish by specified date'),
+    'ERR04' => t('Activity started too late to finish by project end date'),
+    'ERR05' => t('Activity duration is too long to fit constraints'),
+    'ERR06' => t('Activity duration is too short to fit constraints'),
+  );
+}
+/**
+ * End of module
+ */

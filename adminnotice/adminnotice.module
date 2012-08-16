@@ -1,0 +1,344 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ * Provides orgRight Admin Notice functionality
+ *
+ */
+
+/**
+ * Implementation of hook_init()
+ */
+function adminnotice_init() {
+  //orgright_debug_msg('adminnotice','Fn: adminnotice_init');
+  // Temp - until the taxonomy issues are sorted out
+}
+
+/**
+ * Implementation of hook_node_info
+ */
+function adminnotice_node_info() {
+  //orgright_debug_msg('adminnotice','Fn: adminnotice_node_info');
+  // Return an array of node types defined by this module
+  return array(
+    'notice' => array(
+      'name' => t('Admin notice'),
+      'module' => 'adminnotice',
+      'description' => t('An administration notice is an item that is replicated from the helpdesk to each client site.'),
+      'has_title' => TRUE,
+      'title_label' => t('Title'),
+      'has_body' => TRUE,
+      'body_label' => t('Notice'),
+      'locked' => TRUE,
+    ),
+  );
+}
+  
+/**
+ * Implementation of hook_perm()
+ */
+function adminnotice_perm() {
+  //orgright_debug_msg('adminnotice','Fn: adminnotice_perm',5);
+  return array(
+    'view admin notice',
+    'create admin notice',
+    'update admin notice',
+    'delete admin notice',
+  );
+}   
+
+/**
+ * Implementation of hook_access()
+ */ 
+function adminnotice_access($op, $node, $account) {
+  //orgright_debug_msg('adminnotice','Fn: adminnotice_access',5);
+  // Determine node type ($node will either be the string "type" or a node object)
+  $node_type = ($op == 'create') ? $node : $node->type;
+  // Limit access to the functions provided by this module
+  switch ($node_type) {
+  case 'notice':
+    return adminnotice_public_access($op, $account);
+  default:
+    return FALSE;
+  }
+}
+
+function adminnotice_public_access($op, $account) {
+  // This is an admin notice type node
+  switch ($op) {
+    case 'view':
+      return user_access('view admin notice', $account);
+    case 'create':
+      return user_access('create admin notice', $account);
+    case 'update':
+      return user_access('update admin notice', $account);
+    case 'delete':
+      return user_access('delete admin notice', $account);
+    default:
+      return FALSE;
+  }
+}
+
+/**
+ * Implementation of hook_form()
+ *
+ * This defines the forms used to create and edit each of the node
+ * types implemented by the orgright module.  This hook is called by
+ * the standard Drupal node add and node edit functions.
+ */
+function adminnotice_form($node, &$form_state) {
+  //orgright_debug_msg('adminnotice','Fn: adminnotice_form, node type='.$node->type,5);
+  // Get metadata for this node type (we use it for labeling title and body fields).
+  $type = node_get_types('type', $node);
+  $form['title'] = array(
+    '#type' => 'textfield',
+    '#title' => check_plain($type->title_label),
+    '#required' => TRUE,
+    '#default_value' => $node->title,
+    '#weight' => -5,
+    '#maxlength' => 255,
+  );
+  $form['body_filter']['body'] = array(
+    '#type' => 'textarea',
+    '#title' => check_plain($type->body_label),
+    '#default_value' => $node->body,
+    '#rows' => 7,
+    '#required' => TRUE
+  );
+  $form['body_filter']['filter'] = filter_form($node->format);
+  return $form;
+}
+
+/**
+ * Implementation of hook_load()
+ */
+function adminnotice_load($node) {
+  //orgright_debug_msg('adminnotice','Fn: adminnotice_load, type='.$node->type);
+  // Load the additional data into the node object being built
+  if ($node->type == 'notice') {
+    $query = "SELECT o.nref FROM {node} n JOIN {org_notices} o ON o.nid = n.nid WHERE o.vid = n.vid AND o.nid = %d";
+    $obj = db_fetch_object(db_query($query, $node->nid));
+  }
+  else {
+    $obj = new stdClass;
+  }
+  return $obj;
+}
+
+/**
+ * Implementation of hook_view()
+ */
+function adminnotice_view(&$node, $teaser = FALSE, $page = FALSE) {
+  //orgright_debug_msg('adminnotice','Fn: adminnotice_view, type='.$node->type);
+  // Build the page elements to display the details
+  // Use Drupal's default behaviour to prepare the body/teaser
+  $node = node_prepare($node, $teaser);
+  // Load the additional file to handle data access
+  if ($node->type == 'notice') {
+    // nothing extra to do
+  }
+  return $node;
+}
+
+/**
+ * Implementation of hook_insert()
+ */
+
+function adminnotice_insert($node) {
+  //orgright_debug_msg('adminnotice','Fn: adminnotice_insert');
+  if ($node->type == 'notice') {
+    db_query("INSERT INTO {org_notices} (nid, vid, nref) VALUES (%d, %d, %d)",
+      $node->nid,
+      $node->vid,
+      $node->nref);
+  }
+}
+
+/**
+ * Implementation of hook_update()
+ */
+/*function adminnotice_update($node) {
+  //orgright_debug_msg('adminnotice','Fn: adminnotice_update');
+  if ($node->revision) {
+    // This is a new revision, so treat as a new node
+    adminnotice_insert($node);
+  }
+  elseif ($node->type == 'notice') {
+    db_query("UPDATE {org_notices} SET nref = %d WHERE vid = %d",
+      $node->nref,
+      $node->vid);
+  }
+}*/
+function adminnotice_update($node) {
+  //orgright_debug_msg('adminnotice','Fn: adminnotice_update');
+  if ($node->type == 'notice') {
+    $sql = "SELECT COUNT(nid) FROM {org_notices} WHERE nid = %d AND vid = %d";
+    $count = db_result(db_query($sql, $node->nid, $node->vid));
+    if ($count) {
+      db_query("UPDATE {org_notices} SET nref = %d WHERE vid = %d",
+        $node->nref,
+        $node->vid);
+    }
+    else {
+      adminnotice_insert($node);
+    }
+  }
+}
+
+/**
+ * Implementation of hook_delete()
+ */
+function adminnotice_delete($node) {
+  //orgright_debug_msg('adminnotice','Fn: adminnotice_delete');
+  // First, load the additional file to handle data access
+  if ($node->type == 'notice') {
+    db_query("DELETE FROM {org_notices} WHERE nid = %d", $node->nid);
+  }
+}
+/**
+ * Implementation of hook_node_api()
+ */
+function adminnotice_nodeapi(&$node, $op, $teaser, $page) {
+  //orgright_debug_msg('adminnotice','Fn: adminnotice_nodeapi, op='.$op.', type='.$node->type);
+  if ($node->type == 'notice') {
+    switch ($op) {
+      case 'load':
+        // Node is being loaded, so add any additional data to $node
+        return;
+      case 'insert':
+        // Trigger the specified rules events
+        return;
+      case 'update':
+        // Ignore updates caused by rules actions
+        if ($node->rules_update) { return; }
+        // Trigger the specified rules events
+        return;
+      case 'delete':
+        // Trigger the specified rules events
+        return;
+      case 'delete revision':
+        // Node revision is being deleted, so delete associated row from notices table
+        db_query("DELETE FROM {org_notices} WHERE vid = %d", $node->vid);
+        return;
+    }
+  }
+}
+
+
+/**
+ * Implementation of hook_cron()
+ */
+function adminnotice_cron () {
+  // This function will be called each time cron is run
+  //orgright_debug_msg('adminnotice','Fn: adminnotice_cron');
+  // define a user and check to see whether there are any new notices to retrieve
+  $account = new stdClass();
+  $account->name = adminnotice_get_user_name();
+  // now check whether there are any new notices
+  $new_notices = adminnotice_check_notices($account);
+  if (!$numb = count($new_notices)) {
+    //orgright_debug_msg('adminnotice', 'No new notices to retrieve');
+    return;
+  }
+  //orgright_debug_msg('adminnotice', t('@numb new notices to retrieve', array('@numb'=>$numb)));
+  // Limit the number of notices to retrieve in a cron run
+  $max_notices = adminnotice_get_max_notices();
+  $numb = ($numb > $max_notices) ? $max_notices : $numb;
+  for ($ix = 0; $ix < $numb; $ix++) {
+    //orgright_debug_msg('adminnotice',t('Retrieve notice: @ix, nid=@nid',array('@ix'=>$ix,'@nid'=>$new_notices[$ix])));
+    $node = adminnotice_retrieve_notice($account, $new_notices[$ix]);
+    // convert returned array to an object
+    $node = (object)$node;
+    $nref = $node->nid;
+    // check to see whether this notice is already on our system
+    $notice = db_fetch_object(db_query("SELECT * from {org_notices} where nref = %d", $nref));
+    if ($notice && $notice->nid) {
+      // Yes, so update existing notice as a new revision
+      $node->nid = $notice->nid;
+      $node->revision = TRUE;
+    }
+    else {
+      $node->nid = 0;
+    }
+    $node->vid = 0;
+    $node->nref = $nref;
+    node_save($node);
+    unset($node);
+    watchdog('orgright', t('Retrieved admin notice #@num', array('@num'=>$nref)));
+  }
+}
+
+
+function adminnotice_check_notices ($user) {
+  // This function will connect to the Helpdesk site and retrieve a list of new notices
+  // get the site name (including a sub-directory if being used)
+  $thissite = orgright_get_domain();
+  if ($sitesubdir = orgright_get_sitesubdir()) { $thissite .= '+'.$sitesubdir; }
+  // get the name of the user to connect as
+  $username = $user->name;
+  // get the most recent notice NID retrieved.
+  $lastnid = variable_get('adminnotice_last_nid', 0);
+  // get the most recent notice retrieved
+  $lastnid = db_result(db_query("SELECT MAX(nref) FROM {org_notices}"));
+  //orgright_debug_msg('adminnotice', t('Last notice retrieved=@last', array('@last'=>$lastnid)));
+  // get the URL to connect to
+  $helpdeskurl = orgright_get_helpdeskurl();
+  // and ask for the list of new notices
+  $result = xmlrpc($helpdeskurl.'/xmlrpc.php', 'fromportal.checkNewNotices', $thissite, $username, $lastnid);
+  // if everything is valid, returned value is an array of nids (may be empty)
+  // else returned value is error message.  But first test for XMLRPC errors 
+  if ($error = xmlrpc_error()) {
+    if ($error->code <= 0) { $error->message = t('Outgoing HTTP request failed - socket could not be opened'); }
+    watchdog ('orgright', t('Adminnotice: Cannot authenticate connection - request returned an error: %msg (@code).',
+      array('%msg' => $error->message, '@code' => $error->code)));
+    $result = NULL;
+  }
+  if (!is_array($result)) {
+    watchdog ('orgright', t('Adminnotice: Error: message = @msg', array('@msg'=>$result)));
+    $result = NULL;
+  }
+  // All looks OK, so return list of new notice NIDs
+  return $result;
+}
+
+function adminnotice_retrieve_notice($user, $nnid) {
+  // This function will retrieve a notice specified by $nnid from the helpdesk site
+  // using the credentials of $user.
+
+  // get the site name (including a sub-directory if being used)
+  $thissite = orgright_get_domain();
+  if ($sitesubdir = orgright_get_sitesubdir()) { $thissite .= '+'.$sitesubdir; }
+  // get the name of the user to connect as
+  $username = $user->name;
+  // get the URL to connect to
+  $helpdeskurl = orgright_get_helpdeskurl();
+  $result = xmlrpc($helpdeskurl.'/xmlrpc.php', 'fromportal.retrieveNotice', $thissite, $username, $nnid);
+  // if everything is valid, returned value is an array of node fields
+  // else returned value is NULL.  But first test for XMLRPC errors 
+  if ($error = xmlrpc_error()) {
+    if ($error->code <= 0) { $error->message = t('Outgoing HTTP request failed - socket could not be opened'); }
+    watchdog ('orgright', t('Adminnotice: Cannot authenticate connection - request returned an error: %msg (@code).',
+      array('%msg' => $error->message, '@code' => $error->code)));
+    $result = NULL;
+  }
+  if (!$result) {
+    watchdog ('orgright',t('Adminnotice: Insufficient privilege to retrieve notice @nid', array('@nid'=>$nnid)));
+  }
+  return $result;
+}
+
+
+/*
+ * Support functions for the adminnotice module
+ */
+function adminnotice_get_user_name() {
+  // get the user name of the user who will connect to the notification site
+  $default_user = db_result(db_query("SELECT name FROM {users} WHERE uid = 3"));
+  return variable_get('adminnotice_user_name', $default_user);
+}
+
+function adminnotice_get_max_notices() {
+  // get the maximum numbwer of notices to be retrieved in a cron run
+  return variable_get('adminnotice_max_notices', 6);
+}

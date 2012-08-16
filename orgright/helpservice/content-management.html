@@ -1,0 +1,96 @@
+<!-- $Id$ -->
+Site content includes all of the <em>orgRight</em> information plus the pages, stories, comments, forum discussions and other details that have been entered into the database.
+
+<h2>Comments</h2>
+<h3>Published Comments</h3>
+This provides access to the comments that have been posted to content by users and are currently published (visible to other users).  The administrator can select one or more of these published comments by clicking the associated check-box, then choosing an update action of either "unpublish" or "delete".  Unpublishing a comment will hide it to all users except administrators and the author.  It can be re-published at a later time, perhaps after the content has been edited.  Deleting a comment will remove it from the database (this action can not be undone).
+
+Any comment can be edited by selecting the "edit" operation at the right of the comment details.  Editing a comment will allow any of the details or content to be changed.
+
+<h3>Approval Queue</h3>
+This is a list of comments that have not yet been published, or have been unpublished by an administrator or the author.  The administrator can select one or more of these unpublished comments by clicking the associated check-box, then choosing an update action of either "publish" or "delete".  Publishing a comment will make it visible it to all users.  It can be unpublished at a later time if required.  Deleting a comment will remove it from the database (this action can not be undone).
+
+Any comment can be edited by selecting the "edit" operation at the right of the comment details.  Editing a comment will allow any of the details or content to be changed.
+
+<h2>Content</h2>
+This screen allows an administrator to view and edit the site content (other than comments).
+The panel at the top allows the content to be filtered to reduce the amount being shown by selecting:<ul>
+<li>Status can be one of:<ul>
+	<li>published</li>
+	<li>not published</li>
+	<li>promoted</li>
+	<li>not promoted</li>
+	<li>sticky</li>
+	<li>not sticky</li>
+	</ul></li>
+
+<li>Type can be one of:<ul>
+	<li>agenda item</li>
+	<li>appointment</li>
+	<li>article</li>
+	<li>assignment</li>
+	<li>committee</li>
+	<li>committee role</li>
+	<li>document</li>
+	<li>drawer</li>
+	<li>folder</li>
+	<li>meeting</li>
+	<li>meeting item</li>
+	<li>memo</li>
+	<li>page</li>
+	<li>project</li>
+	<li>project activity</li>
+	<li>project report</li>
+	<li>story</li>
+	<li>subscription</li>
+	<li>subscription payment</li>
+	</ul></li>
+
+Available category values will depend on the defined taxonomy vocabularies and terms.
+
+The administrator can selected from the displayed list of information items by clicking the associated check boxes, and then perform an update action:<ul>
+<li>publish</li>
+<li>unpublish</li>
+<li>promote to front page</li>
+<li>demote from front page</li>
+<li>make sticky</li>
+<li>remove stickiness</li>
+<li>delete</li>
+</ul>
+
+Note that a "sticky" information item will appear at the top of lists, while "non-sticky" items will appear in the list in their natural sort order (usually by creation date).
+
+<h2>Post Settings</h2>
+<h3>Node Access Status</h3>
+This will allow the administrator to rebuild the access permissions for all information items (=nodes) in the database.  This function should not normally be required, but if problems are being experienced when information is showing unexpectedly, or is not showing when expected, then rebuilding the access permissions may solve the problem.
+
+<h3>Number of posts on the main page</h3>
+The administrator can set the number of information item summaries to be shown on pages that list multiple items (eg the site front page).
+
+<h3>Length of trimmed posts</h3>
+The administrator can set the length to which long posts (articles, memos, pages and stories) will be trimmed when being displayed in a page with multiple items (eg the site front page).  The trimmed length is called a "teaser".  The post author has the option of specifying the break between the teaser and the rest of the item when creating the post.
+
+The default value for this length is 400 characters.
+
+<h3>Preview Post</h3>
+This controls whether an author is obliged to preview a post before saving/publishing it.  The preview process can be useful to encourage authors to confirm that their post is complete and displays correctly before finishing it.
+
+The default value for this is that preview is optional.
+
+<h2>Taxonomy</h2>
+
+<h3>List</h3>  
+This tab will display a list of "vocabularies" currently defined for the site.  Each listed vocabulary can be edited, or have the terms within the vocabulary listed or extended by clicking on the appropriate link.
+
+<h3>Add Vocabulary</h3>
+A new vocabulary can be added by completing the form presented in this tab.
+
+<strong>Vocabulary name (required):</strong> specify a meaningful name for this vocabulary (eg "Member skills").
+<strong>Description:</strong> give a description of the intended purpose of this vocabulary, and the types of terms expected to be included.
+<strong>Help text:</strong> Instructions to present to the user when selecting terms, e.g., "Enter a comma separated list of words".
+<strong>Content Types:</strong> select one or more content types that this vocabulary can be applied to.
+<strong>Settings:</strong><ul>
+<li>Tags: checking this will create a vocabulary that allows an author to specify a list of terms to be associated with an information item.  New terms specified by an author will be added to the vocabulary automatically.  If this is not checked, then the vocabulary will be restricted to pre-defined terms specified by the administrator.</li>
+<li>Multiple select: checking this will allow more than one term from the vocabulary to be associated with an information item.  Note that this is always true for vocabularies where "Tags" is checked.</li>
+<li>Required: checking this will force an author to select a term from the vocabulary before an information item of a selected content type can be saved.</li>
+</ul>

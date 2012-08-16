@@ -1,0 +1,333 @@
+<?php
+// $Id$
+
+/**
+ * Implementation of hook_install()
+ */
+function meeting_install() {
+  drupal_install_schema('meeting');
+  // any other actions to when module is installed go here
+}
+
+/**
+ * Implementation of hook_uninstall()
+ */
+function meeting_uninstall() {
+  drupal_uninstall_schema('meeting');
+  // any other actions to take when module is un-installed go here
+  variable_del('meeting_meetingtypes');
+  variable_del('meeting_mtgitemtypes');
+}
+
+/**
+ * Implementation of hook_disable()
+ */
+function meeting_disable() {
+  // actions to take when the module is disabled should go here.
+}
+
+/**
+ * Implementation of hook_schema()
+ */
+// === "org_meetings" table === 
+function meeting_schema() {
+  $schema['org_meetings'] = array(
+    'description' => t('Stores details of meetings'),
+    'fields' => array(
+      'nid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The {node}.nid for this meeting'),
+      ),
+      'vid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The {node}.vid for this meeting'),
+      ),
+      'cnid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The {node}.nid for the committee associated with this meeting'),
+      ),
+      'meeting' => array(
+        'type' => 'varchar',
+        'length' => 64,
+        'not null' => TRUE,
+        'description' => t('The name of meeting - generated from type, committe, and date'),
+      ),
+      'mtgtype' => array(
+        'type' => 'varchar',
+        'length' => 16,
+        'not null' => TRUE,
+        'description' => t('The type of meeting'),
+      ),
+      'mtgstatus' => array(
+        'type' => 'varchar',
+        'length' => 16,
+        'not null' => TRUE,
+        'description' => t('The status of the meeting'),
+      ),
+      'mtgdate' => array(
+        'type' => 'char',
+        'length' => 10,
+        'not null' => TRUE,
+        'description' => t('The date of this meeting'),
+      ),
+      'start' => array(
+        'type' => 'char',
+        'length' => 8,
+        'not null' => TRUE,
+        'description' => t('The start time for this meeting'),
+      ),
+      'finish' => array(
+        'type' => 'char',
+        'length' => 8,
+        'not null' => TRUE,
+        'description' => t('The finsh time for this meeting'),
+      ),
+      'location' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => t('The location for this meeting'),
+      ),
+      'notes' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => t('General notes about this meeting for this member'),
+      ),
+      'user' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The UID of the user who last modified this meeting for this member'),
+      ),
+    ),
+    'primary key' => array('vid'),
+    'indexes' => array(
+      'nid' => array('nid'),
+      'cnid' => array('cnid'),
+      'mtgtype' => array('mtgtype'),
+      'mtgstatus' => array('mtgstatus'),
+      'mtgdate' => array('mtgdate'),
+    ),
+  );
+  // === "org_agenda_items" table ===
+  $schema['org_agenda_items'] = array(
+    'description' => t('Stores details for agenda items that are not held in the node tables'),
+    'fields' => array(
+      'nid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The {node}.nid of this agenda item'),
+      ),
+      'vid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The  {node}.vid of this agenda item'),
+      ),
+      'gnid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The {node}.nid of the meeting associated with this agenda item'),
+      ),
+      'sequence' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The relative priority of this agenda item'),
+      ),
+      'agendaitem' => array(
+        'type' => 'varchar',
+        'length' => 64,
+        'not null' => TRUE,
+        'description' => t('The name of this agenda item'),
+      ),
+      'agitstatus' => array(
+        'type' => 'varchar',
+        'length' => 16,
+        'not null' => TRUE,
+        'description' => t('The status of the agenda item'),
+      ),
+      'notes' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => t('General notes about this agenda item'),
+      ),
+      'user' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The UID of the user who last modified this subscription'),
+      ),
+	),
+    'primary key' => array('vid'),
+    'indexes' => array(
+      'nid' => array('nid'),
+      'gnid' => array('gnid'),
+    ),
+  );
+  // === "org_mtg_items" table ===
+  $schema['org_mtg_items'] = array(
+    'description' => t('Stores details about items arisign from a meeting'),
+    'fields' => array(
+      'nid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The {node}.nid of this meeting item'),
+      ),
+      'vid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The {node}.vid of this meeting item'),
+      ),
+      'gnid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The {node}.nid of the meeting associated with this itme'),
+      ),
+      'mnid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The {node}.nid of the member associated with this item'),
+      ),
+      'itemname' => array(
+        'type' => 'varchar',
+        'length' => 64,
+        'not null' => TRUE,
+        'description' => t('The name of this meeting item'),
+      ),
+      'itemtype' => array(
+        'type' => 'varchar',
+        'length' => 16,
+        'not null' => TRUE,
+        'description' => t('The type of meeting item'),
+      ),
+      'itemstatus' => array(
+        'type' => 'varchar',
+        'length' => 16,
+        'not null' => TRUE,
+        'description' => t('The status of the meeting item'),
+      ),
+      'itemdate' => array(
+        'type' => 'char',
+        'length' => 10,
+        'not null' => TRUE,
+        'description' => t('The date for bring-up or action completion'),
+      ),
+      'notes' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => t('General notes about this meeting item'),
+      ),
+      'user' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The UID of the user who last modified this payment'),
+      ),
+	),
+    'primary key' => array('vid'),
+    'indexes' => array(
+      'nid' => array('nid'),
+      'gnid' => array('gnid'),
+      'mnid' => array('mnid'),
+      'itemtype' => array('itemtype'),
+      'itemstatus' => array('itemstatus'),
+      'itemdate' => array('itemdate'),
+    ),
+  );
+  // === All tables defined ===
+  return $schema;
+}
+
+/**
+ * Module update functions go here
+ */
+function meeting_update_6002 () {
+  // Add a mtgstatus column to the meetings table
+  $sql = "ALTER TABLE org_meetings ADD mtgstatus VARCHAR(16) NOT NULL AFTER mtgtype, ADD INDEX mtgstatus (mtgstatus)";
+  if (!db_query($sql)) {
+    return array('#abort'=>array('success'=>FALSE, 'query'=>'Add new column to table org_meetings failed'));
+  }
+  // Add an agitstatus column to the agenda_items table
+  $sql = "ALTER TABLE org_agenda_items ADD agitstatus VARCHAR(16) NOT NULL AFTER agendaitem, ADD INDEX agitstatus (agitstatus)";
+  if (!db_query($sql)) {
+    return array('#abort'=>array('success'=>FALSE, 'query'=>'Add new column to table org_agenda_items failed'));
+  }
+  // Add an itemstatus column to the mtg_items table
+  $sql = "ALTER TABLE org_mtg_items ADD itemstatus VARCHAR(16) NOT NULL AFTER itemtype, ADD INDEX itemstatus (itemstatus)";
+  if (!db_query($sql)) {
+    return array('#abort'=>array('success'=>FALSE, 'query'=>'Add new column to table org_mtg_items failed'));
+  }
+  // Modify the meeting and mtgtype columns of the meetings table
+  $sql = "ALTER TABLE org_meetings MODIFY meeting VARCHAR(64) NOT NULL, MODIFY mtgtype VARCHAR(16) NOT NULL";
+  if (!db_query($sql)) {
+    return array('#abort'=>array('success'=>FALSE, 'query'=>'Modify columns in table org_meetings failed'));
+  }
+  // Modify the agendaitem column of the agenda_items table
+  $sql = "ALTER TABLE org_agenda_items MODIFY agendaitem VARCHAR(64) NOT NULL";
+  if (!db_query($sql)) {
+    return array('#abort'=>array('success'=>FALSE, 'query'=>'Modify columns in table org_agenda_items failed'));
+  }
+  // Modify the itemname column of the mtg_items table
+  $sql = "ALTER TABLE org_mtg_items MODIFY itemname VARCHAR(64) NOT NULL";
+  if (!db_query($sql)) {
+    return array('#abort'=>array('success'=>FALSE, 'query'=>'Modify columns in table org_mtg_items failed'));
+  }
+  return array();
+}
+
+function meeting_update_6001 () {
+  // Drop all default specifications for text columns
+  $sql = "ALTER TABLE org_meetings ";
+  $cols = array('meeting', 'mtgtype', 'mtgdate', 'start', 'finish', 'location', 'notes');
+  foreach ($cols as $col) { $sql .= " ALTER COLUMN $col DROP DEFAULT,"; }
+  $sql = substr($sql, 0, -1);
+  if (!db_query($sql)) { return array('#abort'=>array('success'=>FALSE, 'query'=>'Alter table org_meetings failed')); }
+
+  $sql = "ALTER TABLE org_agenda_items ";
+  $cols = array('agendaitem', 'notes');
+  foreach ($cols as $col) { $sql .= " ALTER COLUMN $col DROP DEFAULT,"; }
+  $sql = substr($sql, 0, -1);
+  if (!db_query($sql)) { return array('#abort'=>array('success'=>FALSE, 'query'=>'Alter table org_agenda_items failed')); }
+
+  $sql = "ALTER TABLE org_mtg_items ";
+  $cols = array('itemname', 'itemtype', 'itemdate', 'notes');
+  foreach ($cols as $col) { $sql .= " ALTER COLUMN $col DROP DEFAULT,"; }
+  $sql = substr($sql, 0, -1);
+  if (!db_query($sql)) { return array('#abort'=>array('success'=>FALSE, 'query'=>'Alter table org_mtg_items failed')); }
+
+  return array();
+}
+
+function meeting_update_6000 () {
+  return array();
+}

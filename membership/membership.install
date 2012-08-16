@@ -1,0 +1,329 @@
+<?php
+// $Id$
+
+/**
+ * Implementation of hook_install()
+ */
+function membership_install() {
+  drupal_install_schema('membership');
+  // any other actions to when module is installed go here
+}
+
+/**
+ * Implementation of hook_uninstall()
+ */
+function membership_uninstall() {
+  drupal_uninstall_schema('membership');
+  // any other actions to take when module is un-installed go here
+  variable_del('membership_categories');
+  variable_del('membership_standings');
+}
+
+/**
+ * Implementation of hook_disable()
+ */
+function membership_disable() {
+  // actions to take when the module is disabled should go here.
+}
+
+/**
+ * Implementation of hook_schema()
+ */
+// === "org_members" table === 
+function membership_schema() {
+  $schema['org_members'] = array(
+    'description' => t('Stores details for members that are not held in the node tables'),
+    'fields' => array(
+      'nid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The {node}.nid for this member'),
+      ),
+      'vid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The {node}.vid for this member'),
+      ),
+      'pnid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The {node}.nid for the parent of this member'),
+      ),
+      'category' => array(
+        'type' => 'varchar',
+        'length' => 16,
+        'not null' => TRUE,
+        'description' => t('The membership category for this member'),
+      ),
+      'standing' => array(
+        'type' => 'varchar',
+        'length' => 16,
+        'not null' => TRUE,
+        'description' => t('The membership status for this member'),
+      ),
+      'member' => array(
+        'type' => 'varchar',
+        'length' => 64,
+        'not null' => TRUE,
+        'description' => t('The name for this member - also in {node} title'),
+      ),
+      'address' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => t('The street address for this member'),
+      ),
+      'city' => array(
+        'type' => 'varchar',
+        'length' => 64,
+        'not null' => TRUE,
+        'description' => t('The address town or city for this member'),
+      ),
+      'postcode' => array(
+        'type' => 'varchar',
+        'length' => 16,
+        'not null' => TRUE,
+        'description' => t('The address postcode for this member'),
+      ),
+      'email' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => t('The email addresses for this member'),
+      ),
+      'phone' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => t('The phone numbers for this member'),
+      ),
+      'joindate' => array(
+        'type' => 'char',
+        'length' => 10,
+        'not null' => TRUE,
+        'description' => t('The date of joining for this member'),
+      ),
+      'leavedate' => array(
+        'type' => 'char',
+        'length' => 10,
+        'not null' => TRUE,
+        'description' => t('The date of leaving for this member'),
+      ),
+      'notes' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => t('General notes about this membership for this member'),
+      ),
+      'user' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The UID of the user who last modified this membership for this member'),
+      ),
+    ),
+    'primary key' => array('vid'),
+    'indexes' => array(
+      'nid' => array('nid'),
+      'pnid' => array('pnid'),
+      'category' => array('category'),
+      'standing' => array('standing'),
+      'member' => array('member'),
+    ),
+  );
+  // === "org_subscriptions" table ===
+  $schema['org_subscriptions'] = array(
+    'description' => t('Stores details for members that are not held in the node tables'),
+    'fields' => array(
+      'nid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The {node}.nid of this subscription'),
+      ),
+      'vid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The  {node}.vid of this subscription'),
+      ),
+      'mnid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The {node}.nid of the member associated with this subscription'),
+      ),
+      'scode' => array(
+        'type' => 'varchar',
+        'length' => 64,
+        'not null' => TRUE,
+        'description' => t('The code or name for this subscription'),
+      ),
+      'datefrom' => array(
+        'type' => 'char',
+        'length' => 10,
+        'not null' => TRUE,
+        'description' => t('The start date of the subscription period'),
+      ),
+      'dateto' => array(
+        'type' => 'char',
+        'length' => 10,
+        'not null' => TRUE,
+        'description' => t('The end date of the subscription period'),
+      ),
+      'amount' => array(
+        'type' => 'numeric',
+        'precision' => 9,
+        'scale' => 2,
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The amount of this subscription'),
+	  ),
+      'notes' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => t('General notes about this subscription'),
+      ),
+      'user' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The UID of the user who last modified this subscription'),
+      ),
+	),
+    'primary key' => array('vid'),
+    'indexes' => array(
+      'nid' => array('nid'),
+      'mnid' => array('mnid'),
+      'scode' => array('scode'),
+    ),
+  );
+  // === "org_subpayments" table ===
+  $schema['org_subpayments'] = array(
+    'description' => t('Stores subscription payments details'),
+    'fields' => array(
+      'nid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => t('The {node}.nid of this payment'),
+      ),
+      'vid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => t('The {node}.vid of this payment'),
+      ),
+      'mnid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The {node}.nid of the member associated with this payment'),
+      ),
+      'snid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The {node}.nid of the subscription associated with this payment'),
+      ),
+      'datepaid' => array(
+        'type' => 'char',
+        'length' => 10,
+        'not null' => TRUE,
+        'description' => t('The date of the subscription payment'),
+      ),
+      'payment' => array(
+        'type' => 'numeric',
+        'precision' => 9,
+        'scale' => 2,
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The amount of this subscription payment'),
+	  ),
+      'notes' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => t('General notes about this payment'),
+      ),
+      'user' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => t('The UID of the user who last modified this payment'),
+      ),
+	),
+    'primary key' => array('vid'),
+    'indexes' => array(
+      'nid' => array('nid'),
+      'mnid' => array('mnid'),
+      'snid' => array('snid'),
+      'datepaid' => array('datepaid'),
+    ),
+  );
+  // === All tables defined ===
+  return $schema;
+}
+
+/**
+ * Module update functions go here
+ */
+/* this function has never been executed
+function membership_update_6003() {
+  // Convert all multi-line fields back to true multi-line
+  $sql = "SELECT vid, address, email, phone FROM org_members";
+  while ($member = db_fetch_object(db_query($sql))) {
+    $address = str_replace(' ; ', "\r\n", $member->address);
+    $email = str_replace(' ; ', "\r\n", $member->email);
+    $phone = str_replace(' ; ', "\r\n", $member->phone);
+    db_query("UPDATE org_members SET address = '%s', phone = '%s', email = '%s' WHERE vid = %d", $address, $email, $phone, $member->vid);
+  }
+}
+*/
+function membership_update_6002() {
+  // Add new column "leavedate" to org_members table
+  $sql = "ALTER TABLE org_members ADD leavedate CHAR(10) NOT NULL AFTER joindate";
+  if (!db_query($sql)) {
+    return array('#abort'=>array('success'=>FALSE, 'query'=>'Add new column to table org_members failed'));
+  }
+  return array();
+}
+function membership_update_6001() {
+  // Drop all default specifications for text columns
+  $sql = "ALTER TABLE org_members ";
+  $cols = array('member', 'category', 'standing', 'address', 'city', 'postcode', 'email', 'phone', 'joindate', 'notes');
+  foreach ($cols as $col) { $sql .= " ALTER COLUMN $col DROP DEFAULT,"; }
+  $sql = substr($sql, 0, -1);
+  if (!db_query($sql)) { return array('#abort'=>array('success'=>FALSE, 'query'=>'Alter table org_members failed')); }
+
+  $sql = "ALTER TABLE org_subscriptions ";
+  $cols = array('scode', 'datefrom', 'dateto', 'notes');
+  foreach ($cols as $col) { $sql .= " ALTER COLUMN $col DROP DEFAULT,"; }
+  $sql = substr($sql, 0, -1);
+  if (!db_query($sql)) { return array('#abort'=>array('success'=>FALSE, 'query'=>'Alter table org_subscriptions failed')); }
+
+  $sql = "ALTER TABLE org_subpayments ";
+  $cols = array('datepaid', 'notes');
+  foreach ($cols as $col) { $sql .= " ALTER COLUMN $col DROP DEFAULT,"; }
+  $sql = substr($sql, 0, -1);
+  if (!db_query($sql)) { return array('#abort'=>array('success'=>FALSE, 'query'=>'Alter table org_subpayments failed')); }
+
+  return array();
+}

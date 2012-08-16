@@ -1,0 +1,5 @@
+; $Id$
+name = Public Page
+description = Implement a public page type, which is the only content viewable by anonymous users 
+core = 6.x
+version = "6.x-1.0"

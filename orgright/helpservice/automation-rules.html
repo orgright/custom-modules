@@ -1,0 +1,60 @@
+<!-- $Id$ -->
+
+<h2>Triggered Rules</h2>
+<h3>Overview</h3>
+The Overview tab will list the rules currently defined, showing them in either the active list, or the inactive list.  Any rule listed can be edited by clicking the rule name.  It can also be either cloned or deleted by clicking the appropriate link under "Operations"
+
+A panel for specifying a filter to locate a subset of the current rules is also provided.  To filter the current rules, specify an event that is of interest, or a category of rule.  Rule categories are manually assigned tags specified when the rule is created or edited.
+
+<h3>Add a new rule</h3>
+Adding a new rule involves specifying:<ul>
+<li>a label or name for this rule</li>
+<li>an action which will trigger evaluation of the rule</li>
+</ul>
+Rules can also optionally be assigned to one or more categories (to assist with subsequent sorting and filtering), and a weight.  The relative weight values will have an effect on the order of evaluation of rules when more than one rule is triggered by an action.
+
+After saving the details of the rule label and the action which will trigger evaluation, the administrator can specify any conditions that must be met, and any actions to be taken if the specified conditions are satisfied.
+
+<h3>Specifying a condition</h3>
+Click on the link "Add a condition" and select from the drop-down list.  Only conditions that can be checked using information available at the time of the event will appear in the list.  Click "next" to configure the condition.
+
+The condition label can be edited to be meaningful.  In particular any text in braces "{}" should be replaced to indicate the selected parameter.  Chose an argument if relevant (generally this will be either the original item or the updated item when an update action is being performed), and an argument value.  The argument value field may be free entry, or it may be a drop-down list depending on the argument being configured.
+
+If the condition needs to be negated to be considered satisfied, then select the "Negate" check box.  If necessary, specify a weight to influence the order of evaluation when multiple conditions have been specified.
+
+Further conditions can be added as required, and multiple conditions can be linked with either "and" or "or" joins to create complex evaluation criteria.
+
+<h3>Specifying an action</h3>
+Click on the link "Add an action" and select from the drop-down list.  Only actions that can be performed using information available at the time of the event will appear in the list.  Click "next" to configure the action.
+
+The action label can be edited to be meaningful.  In particular any text in braces "{}" should be replaced to indicate the selected parameter.  Chose an argument if relevant (generally this will be either the original item or the updated item when an update action is being performed), and an argument value.  The argument value field may be free entry, or it may be a drop-down list depending on the argument being configured.
+
+If necessary, specify a weight to influence the order of execution when multiple actions have been specified.
+
+Further actions can be specified as required.
+
+<h2>Rule Sets</h2>
+A rule set is a container for one or more rules that can be executed at specific times or under certain conditions.  It is useful to think of these as "tasks".
+
+A rule set (task) can be scheduled to be executed at a future time, either manually or via a rule that has been triggered by a specific event.  In addition, rule sets (tasks) can be executed when a specific trigger event occurs in a similar manner to basic rule actions.
+
+<h3>Overview</h3>
+This tab will list the currently defined rule sets.  A rule set can be edited by clicking its name, or it can be deleted by selecting the link under "Operations".
+
+<h3>Scheduling</h3>
+This tab will show a list of currently scheduled tasks (rule sets).  Any scheduled task can be deleted it its execution at the scheduled time is no longer required.
+
+If any tasks (rule sets) that do not require arguments have been specified, these can be manually scheduled as these tasks do not need a triggering event.  In the appropriate panel, select the rule set, give it a name (identifier) and specify a date/time for it to be executed.
+
+Scheduled instances of tasks (rule sets) can be deleted using the lower panel and selecting from the drop down list.  Note that this action will delete all currently scheduled execution instances of the specified task (rule set).
+
+<h3>Add a new rule set</h3>
+This tab will enable a new rule set to be specified.  The rule set will need a label (human readable name) and a machine readable name.  Optionally specify one or more categories for this rule set to assist with subsequent sorting and filtering.
+
+It is possible to specify arguments to be passed to the rule set when it is executed.  Select appropriate arguments form the drop-down list and give each suitable names.
+
+Once the rule set has been created, it is necessary to add rules to it.  Select the rule set and click the tab "Add a new rule".
+
+Give the new rule a label (human readable name), confirm that it is being added to the correct rule set and click "save changes".  One or more categories and a weight can be optionally be specified.
+The process for adding a rule to a rule set is essentially the same as for adding a triggered rule, except that there is no event specified to trigger evaluation of the rule.  The rule will be evaluated when the task (rule set) is executed.
+

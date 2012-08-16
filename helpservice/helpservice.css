@@ -1,0 +1,69 @@
+/* $Id$ */
+
+.helpservice-topic code, .helpservice-topic pre {
+  border: 1px solid #444;
+  background: #f1f1f1;
+  margin: 1em;
+  padding: .2em;
+  display: block;
+}
+
+.helpservice-topic h3,
+.helpservice-topic h4,
+.helpservice-topic h5,
+.helpservice-topic h6,
+.helpservice-topic dt {
+  font-weight: bold;
+}
+
+.helpservice-topic li h3,
+.helpservice-topic li h4,
+.helpservice-topic li h5,
+.helpservice-topic li h6 {
+  font-weight: normal;
+}
+
+.helpservice-left {
+  text-align: left;
+  width: 42%;
+  display: block;
+  float: left; /* LTR */
+}
+
+.helpservice-up {
+  margin: 0 5%;
+  width: 4%;
+  display: block;
+  float: left; /* LTR */
+}
+
+.helpservice-up-noleft {
+  margin: 0 5%;
+  width: 42%;
+  text-align: right;
+  display: block;
+  float: left; /* LTR */
+}
+
+.helpservice-right {
+  text-align: right;
+  width: 42%;
+  display: block;
+  float: right;
+}
+
+.helpservice-box {
+  margin: .5em;
+}
+
+.helpservice-navigation {
+  border-top: 1px dotted #ccc;
+}
+
+.helpservice-previous {
+  float: left;
+}
+
+.helpservice-next {
+  float: right;
+}

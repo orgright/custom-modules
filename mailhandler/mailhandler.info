@@ -1,0 +1,7 @@
+; $Id $
+name = Mailhandler
+description = Adapted for orgRight - Accepts submissions via e-mail.
+core = 6.x
+package = orgRight Service
+version = "6.x-2.1"
+

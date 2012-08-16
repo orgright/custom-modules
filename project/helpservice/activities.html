@@ -1,0 +1,32 @@
+<!-- $Id$ -->
+<h2>Project Activities</h2>
+
+A project activity is a separate unit of work that is required to be undertaken as part of the process of completing the project.  An activity will have a specific duration, though this may often be an estimate and so subject to change as new information is available.
+
+A project activity may involve more than one person, or it may not have any people involved, but simply repesent the passage of time (eg waiting for some external process to complete).
+
+Project activities will usually have constraints on them, such as needing to start before or after a specific date, needing to wait until another activity has started or has finished, and so on.
+
+The <em>orgRight</em> system allows any number of activities to be specified for a project, with constraints on the start or end dates for each, and relationships between them specified.
+
+An activity can have either a contrained start date or a constrained end date, but not both.  An activity can have only one relationship to another activity in the project (eg must start after the other finishes).
+
+The available date constraints for an activity are:<ul>
+<li>must start before {date}</li>
+<li>must start on {date}</li>
+<li>must start after {date}</li>
+<li>must finish before {date}</li>
+<li>must finish on {date}</li>
+<li>must finish after {date}</li>
+</ul>
+The relationship to another activity may be one of:<ul>
+<li>starts after other activity finishes</li>
+<li>finishes before other activity starts</li>
+<li>starts after other activity starts</li>
+<li>starts before other activity starts</li>
+<li>finishes after other activity finishes</li>
+<li>finishes before other activity finishes</li>
+<li>finishes after other activity starts</li>
+<li>starts before other activity finishes</li>
+</ul>
+It should be noted that these eight relationships fall into four pairs, with each pair being the opposite relationship. For example, considering the first pair, if <em>"Activity A starts after Activity B finishes"</em>, then <em>"Activity B finishes before Activity A starts"</em>.

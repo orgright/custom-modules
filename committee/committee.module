@@ -1,0 +1,790 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ * Provides orgRight Committee management functionality
+ *
+ * Implements four new node types:
+ *   1) committee
+ *   2) role
+ *   3) appointment
+ *   4) assignment
+ */
+
+/**
+ * Implementation of hook_init()
+ */
+function committee_init() {
+  //orgright_debug_msg('committee','Fn: committee_init');
+  // Include the module javascript file for standard functions
+  //drupal_add_js(drupal_get_path('module', 'committee') . '/committee.js');
+  /*$node_types = array('committee', 'role', 'appointment', 'assignment');
+  foreach ($node_types as $type) {
+    // set the default comment module values
+    variable_set('comment_'.$type, '2'); // 0=disabled, 1=read only, 2=read/write
+    variable_set('comment_controls_'.$type, '3'); // 0=above, 1=below, 2=both, 3=disabled
+    variable_set('comment_default_mode_'.$type, '2'); // 1&2=flat, 3&4=threaded, 1&3=collapsed, 2&4=expanded
+    variable_set('comment_default_order'.$type, '2'); // 1=newest first, 2=oldest first
+    variable_set('comment_default_per_page'.$type, '12'); // number of comments to display per page
+    variable_set('comment_form_location_'.$type, '0'); // 0=separate page, 1=below comments
+    variable_set('comment_preview'.$type, '0'); // 0=optional, 1=required
+    variable_set('comment_subject_field_'.$type, '1'); // 0=disabled, 1=enabled
+    // disable file uploads to these node types
+    variable_set('upload_'.$type, '0'); // 0=disabled, 1=enabled
+    // set the node options to published, but not promoted, sticky, or revision
+    variable_set('node_options_'.$type, array('status')); // status(=published), promote, sticky, revision 
+  }*/
+}
+ 
+/**
+ * Implementation of hook_node_info
+ */
+function committee_node_info() {
+  //orgright_debug_msg('committee','Fn: committee_node_info');
+  // Return an array of node types defined by this module
+  return array(
+    'committee' => array(
+      'name' => t('Committee'),
+      'module' => 'committee',
+      'description' => t('Specify the details for a committee of the organisation'),
+      'has_title' => TRUE,
+      'title_label' => t('Name of committee'),
+      'has_body' => TRUE,
+      'body_label' => t('Description and function of committee'),
+      'locked' => TRUE,
+    ),
+    'role' => array(
+      'name' => t('Committee role'),
+      'module' => 'committee',
+      'description' => t('Specify the details of a committee role'),
+      'has_title' => TRUE,
+      'title_label' => t('Name of role'),
+      'has_body' => TRUE,
+      'body_label' => t('Description and responsibilities of role'),
+      'locked' => TRUE,
+    ),
+    'appointment' => array(
+      'name' => t('Appointment'),
+      'module' => 'committee',
+      'description' => t('Specify the details of a committee appointed to a committee'),
+      'has_title' => TRUE,
+      'title_label' => t('committee and committee'),
+      'has_body' => FALSE,
+      'locked' => TRUE,
+    ),
+    'assignment' => array(
+      'name' => t('Assignment'),
+      'module' => 'committee',
+      'description' => t('Specify the details of a committee assigned to a role'),
+      'has_title' => TRUE,
+      'title_label' => t('committee and role'),
+      'has_body' => FALSE,
+      'locked' => TRUE,
+    ),
+  );
+}
+  
+/**
+ * Implementation of hook_perm()
+ */
+function committee_perm() {
+  //orgright_debug_msg('committee','Fn: committee_perm');
+  // Define the user permissions for committee management
+  return array(
+    'view committee',
+    'create committee',
+    'update committee',
+    'delete committee',
+    'view role',
+    'create role',
+    'update role',
+    'delete role',
+    'view appointment',
+    'create appointment',
+    'update appointment',
+    'delete appointment',
+    'view assignment',
+    'create assignment',
+    'update assignment',
+    'delete assignment',
+  );    
+}   
+
+/**
+ * Implementation of hook_menu()
+ *
+ * Specify the menu items that this module provides
+ */
+function committee_menu() {
+  //orgright_debug_msg('committee','Fn: committee_menu');
+  // Entries to provide navigation structure
+  $menu_entries['committee'] = array(
+    'title' => 'Committee',
+    'page callback' => 'committee_management',
+    'file' => 'committee_menu.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('view committee'),
+    'type' => MENU_NORMAL_ITEM,
+    'menu_name' => 'orgright',
+    'weight' => 2,
+  );
+  $menu_entries['committee/committees'] = array(
+    'title' => 'Committees',
+    'page callback' => 'committee_committees',
+    'file' => 'committee_menu.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('view committee'),
+    'type' => MENU_NORMAL_ITEM,
+    'weight' => 1,
+  );
+  $menu_entries['committee/roles'] = array(
+    'title' => 'Roles',
+    'page callback' => 'committee_roles',
+    'file' => 'committee_menu.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('view role'),
+    'type' => MENU_NORMAL_ITEM,
+    'weight' => 2,
+  );
+  $menu_entries['committee/appointments'] = array(
+    'title' => 'Appointments',
+    'page callback' => 'committee_appointments',
+    'file' => 'committee_menu.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('view appointment'),
+    'type' => MENU_NORMAL_ITEM,
+    'weight' => 3,
+  );
+  $menu_entries['committee/assignments'] = array(
+    'title' => 'Assignments',
+    'page callback' => 'committee_assignments',
+    'file' => 'committee_menu.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('view assignment'),
+    'type' => MENU_NORMAL_ITEM,
+    'weight' => 4,
+  );
+  $menu_entries['committee/committees/list'] = array(
+    'title' => 'List Committees',
+    'page callback' => 'committee_committees_list',
+    'file' => 'committee_menu.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('view committee'),
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => 0,
+  );
+  $menu_entries['committee/committees/add'] = array(
+    'title' => 'Add Committee',
+    'page callback' => 'committee_committees_add',
+    'file' => 'committee_menu.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('create committee'),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 1,
+  );
+  $menu_entries['committee/roles/list'] = array(
+    'title' => 'List Roles',
+    'page callback' => 'committee_roles_list',
+    'file' => 'committee_menu.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('view role'),
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => 0,
+  );
+  $menu_entries['committee/roles/add'] = array(
+    'title' => 'Add Role',
+    'page callback' => 'committee_roles_add',
+    'file' => 'committee_menu.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('create role'),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 1,
+  );
+  $menu_entries['committee/appointments/list'] = array(
+    'title' => 'List Appointments',
+    'page callback' => 'committee_appointments_list',
+    'file' => 'committee_menu.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('view appointment'),
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => 0,
+  );
+  $menu_entries['committee/appointments/add'] = array(
+    'title' => 'Add Appointment',
+    'page callback' => 'committee_appointments_add',
+    'file' => 'committee_menu.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('create appointment'),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 1,
+  );
+  $menu_entries['committee/assignments/list'] = array(
+    'title' => 'List Assignments',
+    'page callback' => 'committee_assignments_list',
+    'file' => 'committee_menu.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('view assignment'),
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => 0,
+  );
+  $menu_entries['committee/assignments/add'] = array(
+    'title' => 'Add Assignment',
+    'page callback' => 'committee_assignments_add',
+    'file' => 'committee_menu.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('create assignment'),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 1,
+  );
+  // Entries to provide data for autocomplete fields
+  $menu_entries['committee/autocomplete/committees'] = array(
+    'title' => 'Autocomplete Committee Selection',
+    'page callback' => 'committee_autocomplete_committees',
+    'file' => 'committee_menu.inc',
+    'access callback' => TRUE,
+    'access arguments' => array(),
+    'type' => MENU_CALLBACK,
+    'weight' => 0,
+  );
+  $menu_entries['committee/autocomplete/roles'] = array(
+    'title' => 'Autocomplete Role Selection',
+    'page callback' => 'committee_autocomplete_roles',
+    'file' => 'committee_menu.inc',
+    'access callback' => TRUE,
+    'access arguments' => array(),
+    'type' => MENU_CALLBACK,
+    'weight' => 0,
+  );
+  // Entry to provide for module administration
+  $menu_entries['admin/orgright/committee'] = array(
+    'title' => 'Committees',
+    'description' => t('Provide administrative functions for the orgRight committee module'),
+    'page callback' => 'committee_admin',
+    'file' => 'committee_admin.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('administer orgRight modules'),
+    'type' => MENU_NORMAL_ITEM,
+    'weight' => 2,
+  );
+  // All menu paths now defined
+  return $menu_entries;
+}
+
+/**
+ * Implementation of hook_menu_alter()
+ *
+ * Suppress the listing of these node types on the "create content" menus
+ */
+function committee_menu_alter(&$menu_entries) {
+  //orgright_debug_msg('committee','Fn: committee_menu_alter');
+  // Disable the menu item by setting its access callback to FALSE
+  $menu_entries['node/add/committee']['access callback'] = FALSE;
+  $menu_entries['node/add/role']['access callback'] = FALSE;
+  $menu_entries['node/add/appointment']['access callback'] = FALSE;
+  $menu_entries['node/add/assignment']['access callback'] = FALSE;
+  // Unset access arguments to prevent Drupal using user_access()
+  unset($menu_entries['node/add/committee']['access arguments']);
+  unset($menu_entries['node/add/role']['access arguments']);
+  unset($menu_entries['node/add/appointment']['access arguments']);
+  unset($menu_entries['node/add/assignment']['access arguments']);
+  // Change the hook info entry so it does not show on the triggers page
+  //if (isset($menu_entries['admin/build/trigger/committee'])) {
+  //  $menu_entries['admin/build/trigger/committee']['type'] = MENU_CALLBACK;
+  //}
+}
+
+/**
+ * Implementation of hook_access()
+ */ 
+function committee_access($op, $node, $account) {
+  //orgright_debug_msg('committee','Fn: committee_access');
+  // Determine node type ($node will either be the string "type" or a node object)
+  $node_type = ($op == 'create') ? $node : $node->type;
+  // Limit access to the functions provided by this module
+  switch ($node_type) {
+  case 'committee':
+    return committee_committee_access($op, $account);
+  case 'role':
+    return committee_role_access($op, $account);
+  case 'appointment':
+    return committee_appointment_access($op, $account);
+  case 'assignment':
+    return committee_assignment_access($op, $account);
+  default:
+    return FALSE;
+  }
+}
+
+function committee_committee_access($op, $account) {
+  // This is a committee type node
+  switch ($op) {
+    case 'view':
+      return user_access('view committee', $account);
+    case 'create':
+      if (orgright_limit_reached('committees')) { return FALSE; }
+      else { return user_access('create committee', $account); }
+    case 'update':
+      return user_access('update committee', $account);
+    case 'delete':
+      return user_access('delete committee', $account);
+    default:
+      return FALSE;
+  }
+}
+
+function committee_role_access($op, $account) {
+  // This is a committee type node
+  switch ($op) {
+    case 'view':
+      return user_access('view role', $account);
+    case 'create':
+      if (orgright_limit_reached('roles')) { return FALSE; }
+      else { return user_access('create role', $account); }
+    case 'update':
+      return user_access('update role', $account);
+    case 'delete':
+      return user_access('delete role', $account);
+    default:
+      return FALSE;
+  }
+}
+
+function committee_appointment_access($op, $account) {
+  // This node is an appointment
+  switch ($op) {
+    case 'view':
+      return user_access('view appointment', $account);
+    case 'create':
+      if (orgright_limit_reached('appointments')) { return FALSE; }
+      else { return user_access('create appointment', $account); }
+    case 'update':
+      return user_access('update appointment', $account);
+    case 'delete':
+      return user_access('delete appointment', $account);
+    default:
+      return FALSE;
+  }
+}
+
+function committee_assignment_access($op, $account) {
+  // This node is an assignment
+  switch ($op) {
+    case 'view':
+      return user_access('view assignment', $account);
+    case 'create':
+      if (orgright_limit_reached('assignments')) { return FALSE; }
+      else { return user_access('create assignment', $account); }
+    case 'update':
+      return user_access('update assignment', $account);
+    case 'delete':
+      return user_access('delete assignment', $account);
+    default:
+      return FALSE;
+  }
+}
+
+/**
+ * Implementation of hook_forms()
+ *
+ * This functions specifies the forms that this module provides,
+ * loads the required include file, and defines the callback function
+ */
+function committee_forms($form_id, $args) {
+  //orgright_debug_msg('committee','Fn: committee_forms, id='.$form_id,5);
+  // Specify the form ids that are provided
+  switch ($form_id) {
+    case 'committee_committee_form':
+    case 'committee_role_form':
+    case 'committee_appointment_form':
+    case 'committee_assignment_form':
+      module_load_include('inc', 'committee', 'committee_form'); 
+      $forms[$form_id] = array(
+        'callback' => $form_id.'_build',
+      );
+      return $forms;
+    case 'committee_admin_form':
+      module_load_include('inc', 'committee', 'committee_admin'); 
+      $forms[$form_id] = array(
+        'callback' => $form_id.'_build',
+      );
+      return $forms;
+    default:
+      return;
+  }
+}
+
+/**
+ * Implementation of hook_form()
+ *
+ * This defines the three forms used to create and edit each of the four
+ * node types implemented by the committee module.  This hook is called by
+ * the standard Drupal node add and node edit functions.
+ */
+function committee_form($node, &$form_state) {
+  //orgright_debug_msg('committee','Fn: committee_form, node type='$node->type);
+  // Load the additional file to handle form building
+  module_load_include('inc', 'committee', 'committee_form'); 
+  // Call the required form function depending on node type
+  if ($node->type == 'committee') {
+    $form = committee_committee_form_build($form_state, $node);
+  }
+  elseif ($node->type == 'role') {
+    $form = committee_role_form_build($form_state, $node);
+  }
+  elseif ($node->type == 'appointment') {
+    $form = committee_appointment_form_build($form_state, $node);
+  }
+  elseif ($node->type == 'assignment') {
+    $form = committee_assignment_form_build($form_state, $node);
+  }
+  else {
+    $form = array();
+  };
+  return $form;
+}
+
+/**
+ * Implementation of hook_validate()
+ * Called after the specified form validation functions
+ */
+function committee_validate($node, $form) {
+  //orgright_debug_msg('committee','Fn: committee_validate, node type='.check_plain($node->type));
+  if ($node->type == 'committee') {
+  }
+  elseif ($node->type == 'role') {
+  }
+  elseif ($node->type == 'appointment') {
+  }
+  elseif ($node->type == 'assignment') {
+  }
+  else {
+    form_set_error('type', t('Form type not recognised'));
+  }
+}
+
+/**
+ * Validate function specified in the form during build
+ * Called before the hook_validate() function above
+ */
+
+function committee_form_validate($form, &$form_state) {
+  //orgright_debug_msg('committee','Fn: committee_form_validate, id='.$form['#id']);
+  // Load the additional file to handle form building
+  module_load_include('inc', 'committee', 'committee_form');
+  // and call the function specific to each form type
+  if ($form['#id'] == 'node-form') {
+    // proecess each node-form separately 
+    if ($form['#node']->type == 'committee') {
+      committee_committee_form_validate($form, $form_state);
+    }
+    elseif ($form['#node']->type == 'role') {
+      committee_role_form_validate($form, $form_state);
+    }
+    elseif ($form['#node']->type == 'appointment') {
+      committee_appointment_form_validate($form, $form_state);
+    }
+    elseif ($form['#node']->type == 'assignment') {
+      committee_assignment_form_validate($form, $form_state);
+    }
+  }
+  elseif ($form['#id'] == 'committee-admin-form') {
+    // Load the additional file to handle form building
+    module_load_include('inc', 'committee', 'committee_admin');
+    committee_admin_form_validate($form, $form_state);
+  }
+  else {
+    form_set_error('type', t('Form type not recognised'));
+  }
+}
+
+/**
+ * Standard Drupal node form sumbit callback functions
+ */
+/*
+function committee_node_form_submit($form, &$form_state) {
+  // Standard Drupal callback for committee_node_form
+  //orgright_debug_msg('committee','Fn: committee_node_form_submit');
+  committee_debug_dump($form);
+  $form_state['redirect'] = 'committee/committees'; 
+}
+
+function role_node_form_submit($form, &$form_state) {
+  // Standard Drupal callback for committee_node_form
+  //orgright_debug_msg('committee','Fn: role_node_form_submit');
+  committee_debug_dump($form);
+  $form_state['redirect'] = 'committee/roles'; 
+}
+
+function appointment_node_form_submit($form, &$form_state) {
+  // Standard Drupal callback for committee_node_form
+  //orgright_debug_msg('committee','Fn: appointment_node_form_submit');
+  committee_debug_dump($form);
+  $form_state['redirect'] = 'committee/appointments'; 
+}
+
+function assignment_node_form_submit($form, &$form_state) {
+  // Standard Drupal callback for committee_node_form
+  //orgright_debug_msg('committee','Fn: assignment_node_form_submit');
+  committee_debug_dump($form);
+  $form_state['redirect'] = 'committee/assignments'; 
+}
+*/
+
+/**
+ * Submit function specified in the form during build
+ * Called before the hook_submit() functions above
+ */
+
+function committee_form_submit($form, &$form_state) {
+  //orgright_debug_msg('committee','Fn: committee_form_submit, id='.$form['#id']);
+  // Load the additional file to handle form building
+  module_load_include('inc', 'committee', 'committee_form');
+  // and call the function specific to each form type
+  if ($form['#id'] == 'node-form') {
+    // proecess each node-form separately 
+    if ($form['#node']->type == 'committee') {
+      committee_committee_form_submit($form, $form_state);
+    }
+    elseif ($form['#node']->type == 'role') {
+      committee_role_form_submit($form, $form_state);
+    }
+    elseif ($form['#node']->type == 'appointment') {
+      committee_appointment_form_submit($form, $form_state);
+    }
+    elseif ($form['#node']->type == 'assignment') {
+      committee_assignment_form_submit($form, $form_state);
+    }
+  }
+  elseif ($form['#id'] == 'committee-admin-form') {
+    // Load the additional file to handle form building
+    module_load_include('inc', 'committee', 'committee_admin');
+    committee_admin_form_submit($form, $form_state);
+  }
+  else {
+    form_set_error('type', t('Form type not recognised'));
+  }
+}
+
+/**
+ * Implementation of hook_insert()
+ *
+ * This will test for the type of node being created and 
+ * insert the data into the appropriate table
+ */
+
+function committee_insert($node) {
+  //orgright_debug_msg('committee','Fn: committee_insert');
+  // First, load the additional file to handle data access
+  module_load_include('inc', 'committee', 'committee_data');
+  if ($node->type == 'committee') {
+    committee_committee_insert($node);
+  }
+  elseif ($node->type == 'role') {
+    committee_role_insert($node);
+  }
+  elseif ($node->type == 'appointment') {
+    committee_appointment_insert($node);
+  }
+  elseif ($node->type == 'assignment') {
+    committee_assignment_insert($node);
+  }
+}
+
+/**
+ * Implementation of hook_update()
+ *
+ * This will test for the type of node being updated and 
+ * update the data into the appropriate table
+ */
+function committee_update($node) {
+  //orgright_debug_msg('committee','Fn: committee_update');
+  // First, load the additional file to handle data access
+  module_load_include('inc', 'committee', 'committee_data');
+  if ($node->revision) {
+    // This is a new revision, so treat as a new node
+    committee_insert($node);
+  }
+  elseif ($node->type == 'committee') {
+    committee_committee_update($node);
+  }
+  elseif ($node->type == 'role') {
+    committee_role_update($node);
+  }
+  elseif ($node->type == 'appointment') {
+    committee_appointment_update($node);
+  }
+  elseif ($node->type == 'assignment') {
+    committee_assignment_update($node);
+  }
+}
+
+/**
+ * Implementation of hook_delete()
+ *
+ * This will test for the type of node being deleted and
+ * delete the corresponding row(s) of the committee table
+ */
+function committee_delete($node) {
+  //orgright_debug_msg('committee','Fn: committee_delete');
+  // First, load the additional file to handle data access
+  module_load_include('inc', 'committee', 'committee_data');
+  if ($node->type == 'committee') {
+    committee_committee_delete($node);
+  }
+  elseif ($node->type == 'role') {
+    committee_role_delete($node);
+  }
+  elseif ($node->type == 'appointment') {
+    committee_appointment_delete($node);
+  }
+  elseif ($node->type == 'assignment') {
+    committee_assignment_delete($node);
+  }
+}
+
+/**
+ * Implementation of hook_nodeapi()
+ */
+function committee_nodeapi(&$node, $op, $teaser, $page) {
+  //orgright_debug_msg('committee','Fn: committee_nodeapi, op='.$op.', type='.$node->type);
+  switch ($op) {
+  case 'load':
+  case 'insert':
+  case 'update':
+  case 'delete':
+  case 'delete revision':
+    // First, load the additional file to handle data access
+    module_load_include('inc', 'committee', 'committee_data');
+    if ($node->type == 'committee') {
+      committee_committee_nodeapi($node, $op, $teaser, $page);
+    }
+    elseif ($node->type == 'role') {
+      committee_role_nodeapi($node, $op, $teaser, $page);
+    }
+    elseif ($node->type == 'appointment') {
+      committee_appointment_nodeapi($node, $op, $teaser, $page);
+    }
+    elseif ($node->type == 'assignment') {
+      committee_assignment_nodeapi($node, $op, $teaser, $page);
+    }
+  }
+}
+
+
+/**
+ * Implementation of hook_load()
+ */
+function committee_load($node) {
+  //orgright_debug_msg('committee','Fn: committee_load, type='.$node->type);
+  // Load the additional data into the node object being built
+  // First, load the additional file to handle data access
+  module_load_include('inc', 'committee', 'committee_data');
+  if ($node->type == 'committee') {
+    $obj = committee_committee_load($node);
+  }
+  elseif ($node->type == 'role') {
+    $obj = committee_role_load($node);
+  }
+  elseif ($node->type == 'appointment') {
+    $obj = committee_appointment_load($node);
+  }
+  elseif ($node->type == 'assignment') {
+    $obj = committee_assignment_load($node);
+  }
+  else {
+    $obj = new stdClass;
+  }
+  return $obj;
+}
+
+/**
+ * Implementation of hook_view()
+ */
+function committee_view(&$node, $teaser = FALSE, $page = FALSE) {
+  //orgright_debug_msg('committee','Fn: committee_view, type='.$node->type);
+  // Build the page elements to display the details
+  // Use Drupal's default behaviour to prepare the body/teaser
+  $node = node_prepare($node, $teaser);
+  // Load the additional file to handle page display
+  module_load_include('inc', 'committee', 'committee_page');
+  if ($node->type == 'committee') {
+    committee_committee_view($node, $teaser, $page);
+  }
+  elseif ($node->type == 'role') {
+    committee_role_view($node, $teaser, $page);
+  }
+  elseif ($node->type == 'appointment') {
+    committee_appointment_view($node, $teaser, $page);
+  }
+  elseif ($node->type == 'assignment') {
+    committee_assignment_view($node, $teaser, $page);
+  }
+  return $node;
+}
+
+/**
+ * Implementation of hook_views_api()
+ */
+function committee_views_api() {
+  return array(
+    'api' => 2.0,
+  );
+}
+
+/**
+ * Some orgRight committee specific functions to provide data
+ */
+function committee_get_appointtypes() {
+  $appointtypes = variable_get('committee_appointtypes', array('Elected'));
+  $appointtype_list = array();
+  foreach ($appointtypes as $atype) {
+    $appointtype_list[$atype] = $atype;
+  }
+  return $appointtype_list;
+}
+
+function committee_get_assigntypes() {
+  $assigntypes = variable_get('committee_assigntypes', array('Elected'));
+  $assigntype_list = array();
+  foreach ($assigntypes as $atype) {
+    $assigntype_list[$atype] = $atype;
+  }
+  return $assigntype_list;
+}
+
+function committee_get_committees($key) {
+  // Return an array of current committee names, keyed as requested
+  $sql = "SELECT c.nid, c.committee FROM {node} n JOIN {org_committees} c ON c.nid = n.nid WHERE c.vid = n.vid";
+  $committees = array();
+  $result = db_query($sql);
+  while ($obj = db_fetch_object($result)) {
+    if ($key == 'name') { $committees[$obj->committee] = $obj->committee; }
+    elseif ($key == 'nid') { $committees[$obj->nid] = $obj->committee; }
+  }
+  asort($committees);
+  return $committees;
+}
+
+function committee_get_roles($key) {
+  // Return an array of current committee roles, keyed as requested
+  // First get an array of committees keyed by nid to enhance the description
+  $committees = committee_get_committees('nid');
+  $sql = "SELECT r.nid, r.cnid, r.role FROM {node} n JOIN {org_roles} r ON r.nid = n.nid WHERE r.vid = n.vid";
+  $roles = array();
+  $result = db_query($sql);
+  while ($obj = db_fetch_object($result)) {
+    $description = $obj->role;
+    if ($obj->cnid) { $description .= ' of ' . $committees[$obj->cnid] . ' committee'; }
+    else { $description .= ' [no committee]'; }
+    if ($key == 'name') { $roles[$obj->committee] = $description; }
+    elseif ($key == 'nid') { $roles[$obj->nid] = $description; }
+  }
+  asort($roles);
+  return $roles;
+}
+
+/**
+ * End of module
+ */
+ 

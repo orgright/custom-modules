@@ -1,0 +1,24 @@
+<!-- $Id$ -->
+<h2>Exporting Member Details</h2>
+
+Member details can be exported from the membership database to CSV file (see <a href="&topic:orgright/orgright-csv-file&">What is a CSV file</a>).  
+
+The first record in this file will contain field names corresponding to the <em>orgRight</em> member details fields.  Subsequent records will contain the details for the selected members.
+
+Once a category and status value have been selected (if required), and the "<strong>next</strong>" button clicked, a list of all members with those category/status values will be presented, from which the individual members can be chosen for export.
+
+The selected members will be exported to a CSV file named <strong>"member-export-yyyy-mm-dd.csv"</strong> that can be downloaded to local storage.
+
+The following fields will be present in the export file:<ul><li>"name"</li><li>"address"</li><li>"city"</li><li>"postcode"</li><li>"phone"</li><li>"email"</li><li>"category"</li><li>"status"</li><li>"date joined"</li><li>"date left"</li><li>"primary member"</li><li>"notes"</li></ul>
+
+All text fields will be enclosed in quotation marks (eg "some text") to prevent embeded commas from interferring with field separation.  Empty text fields will contain the empty string "".
+
+The "address", "phone", "phone" and "notes" fields are multi-line capable, so line-breaks will be encoded with semi-colon + question mark pairs (<strong>";?"</strong>). The "date joined" and "date left" fields will be formatted as "<strong>dd-mm-yyyy</strong>". 
+
+<!--&category--><strong><em>Category</em></strong>:  Specify the category (if any) of members who will be exported to the CSV file.  If no value is selected, then all categories will be exported.
+
+<!--&standing--><strong><em>Status</em></strong>: Specify the status value (if any) of members who will be exported to the CSV file. If no value is selected, then all status values will be exported.
+
+<!--&fields--><strong><em>Fields</em></strong>: Select the fields to be included in the export CSV file.  At least one field must be selected, and if the record is to be inported again, then the "Name" field must be selected.
+
+<!--&newlines--><strong><em>New-lines</em></strong>: Specify how new-lines ("CR/LF") in the data is to be treated in the export file.  New-lines can either be left alone so thay are present in the CSV filed value, or they can be replaced with a spcific "token" string to remove them from the field data, leaving a plain string.

@@ -1,0 +1,105 @@
+<!-- $Id$ -->
+
+<h2>orgRight</h2>
+<h3>Specify Site Information</h3>
+<strong>Site name:</strong> Enter the site name for your site.  This name will be displayed on every page in the lower part of the top bar, aligned with the left margin.  It is intended to identify your organisation.
+
+<strong>Site slogan:</strong> Enter a site slogan or by-line for your organisation.  It will be displayed on every page in the lower part of the top bar, beneath the <em>orgRight</em> logo.
+
+<h3>Configure Content Types</h3>
+<strong>Content types with comments enabled:</strong> Select the content types that are permitted to have comments associated with them.  The default is to permit comments on all information item types except Memos, Pages, and Stories.
+
+An information type that is permitted to have comments will display to an authenticated user with an "Add new comment" link at the bottom of the page (unless comments have been disabled for that page by the author).
+
+<strong>Content types with file uploads enabled:</strong> Select the content types that are permitted to have uploaded files associated with them.  The default is to permit file uploads only for Memos.  Note that the <em>orgRight</em> document type will always have file uploads permitted.  It is recommend that file uploads are restricted to the <em>orgRight</em> document type, and that the <em>orgRight</em> document is then linked to another information type, as this keeps the file uploads in the <em>orgRight</em> document repository, and allows the contents of uploaded documents to be indexed.
+
+<h2>Mail Lists</h2>
+<h3>Mail List Details</h3>
+The current mail lists will be shown.  One of these can be selected to be renamed or deleted by clicking the appropriate button.
+
+A new mail list can be created by specifying a name (eg "members").  A new list will take a few minutes ot be created, as this is done via a scheduled job.  The mail address of the new list will be "<name>.<org>@nz.orgright.com".
+
+<h3>Mail List Subscribers</h3>
+Select an existing mail list to use for subscriber management.  Click on the appropriate button to either list existing subscribers, or to add new subscribers.
+
+If a list of subscribers is requested, then any addresses belonging to organisation members will have the member name and address shown.  The administrator has the option of selecting any of the shown addresses and removing them from the list.
+
+If new subscribers are to be added to the list, then the administrator has an option of a quick add for a single email address by specifying a member (will use preferred email address), or by specifying an email address.  If more than one address is to be added to the email list, then these will need to be chosen from the membership database.  The list of members can be filtered by specifying a category of membership for consideration.
+
+The resulting list will show those members who are already subscribed to the list.  The administrator can select additional members to be subscribed.
+
+<h2>Membership</h2>
+<h3>Membership Categories</h3> 
+This will display a list of currently defined categories.  Any one of these can be selected to have the name changed or to be deleted.  Note that changing the name or deleting a category will not change the membership details for any existing members with that category.  If all current categories are deleted, a default category of "Ordinary" will be created.
+
+A new category can be defined by specifying the name and clicking the "Add new category" button.
+
+<h3>Membership Status Values</h3> 
+This will display a list of currently defined status values.  Any one of these can be selected to have the name changed or to be deleted.  Note that changing the name or deleting a status value will not change the membership details for any existing members with that status.  If all current status values are deleted, a default status of "Current" will be created.
+
+A new status value can be defined by specifying the name and clicking the "Add new status" button.
+
+<h2>Committees</h2>
+<h3>Committee Appointment Types</h3> 
+This will display a list of currently defined appointment types.  Any one of these can be selected to have the name changed or to be deleted.  Note that changing the name or deleting an appointment type will not change the details for any existing appointments with that type.  If all current appointment types are deleted, a default type of "Elected" will be created.
+
+A new appointment type can be defined by specifying the name and clicking the "Add appointment type" button.
+
+<h3>Role Assignment Types</h3> 
+This will display a list of currently defined assignment types.  Any one of these can be selected to have the name changed or to be deleted.  Note that changing the name or deleting an assignment type will not change the details for any existing assignments with that type.  If all current assignment types are deleted, a default type of "Elected" will be created.
+
+A new assignment type can be defined by specifying the name and clicking the "Add assignment type" button.
+
+<h2>Meetings</h2>
+<h3>Meeting Types</h3> 
+This will display a list of currently defined meeting types.  Any one of these can be selected to have the name changed or to be deleted.  Note that changing the name or deleting a meeting type will not change the details for any existing meetings with that type.  If all current meeting types are deleted, a default type of "Committee" will be created.
+
+A new meeting type can be defined by specifying the name and clicking the "Add meeting type" button.
+
+<h3>Meeting Item Types</h3>
+This will display a list of currently defined meeting item types.  Any one of these can be selected to have the name changed or to be deleted.  Note that changing the name or deleting a meeting item type will not change the details for any existing meeting items with that type.  If all current meeting item types are deleted, a default type of "Action" will be created.
+
+A new meeting item type can be defined by specifying the name and clicking the "Add meeting item type" button.
+
+<h2>Projects</h2>
+<h3>Project Categories</h3>
+This will display a list of currently defined project categories.  Any one of these can be selected to have the name changed or to be deleted.  Note that changing the name or deleting a project category will not change the details for any existing projects with that category.  If all current project categories are deleted, a default type of "Normal" will be created.
+
+A new project category can be defined by specifying the name and clicking the "Add new category" button.
+
+<h3>Project Status Values</h3>
+This will display a list of currently defined project status values.  Any one of these can be selected to have the name changed or to be deleted.  Note that changing the name or deleting a project status value will not change the details for any existing projects with that status.  If all current project status values are deleted, a default type of "Normal" will be created.
+
+A new project status value can be defined by specifying the name and clicking the "Add new status" button.
+
+<h2>Filing Cabinet</h2>
+<h3>Default Drawer Owner</h3>
+Specify the name of a user to become the owner of any filing cabinet drawer whose original owner is deleted.  This will default to the administrator.
+
+<h3>Drawer Status Values</h3>
+This will display a list of currently defined drawer status values.  Any one of these can be selected to have the name changed or to be deleted.  Note that changing the name or deleting a drawer status value will not change the details for any existing drawers with that status.  If all current drawer status values are deleted, a default type of "Normal" will be created.
+
+A new drawer status value can be defined by specifying the name and clicking the "Add drawer status" button.
+
+<h3>Folder Status Values</h3>
+This will display a list of currently defined folder status values.  Any one of these can be selected to have the name changed or to be deleted.  Note that changing the name or deleting a folder status value will not change the details for any existing folder with that status.  If all current folder status values are deleted, a default type of "Normal" will be created.
+
+A new folder status value can be defined by specifying the name and clicking the "Add folder status" button.
+
+<h3>Document Status Values</h3>
+This will display a list of currently defined document status values.  Any one of these can be selected to have the name changed or to be deleted.  Note that changing the name or deleting a document status value will not change the details for any existing documents with that status.  If all current document status values are deleted, a default type of "Normal" will be created.
+
+A new document status value can be defined by specifying the name and clicking the "Add document status" button.
+
+<h3>Document Types</h3>
+This will display a list of currently defined document types.  Any one of these can be selected to have the name changed or to be deleted.  Note that changing the name or deleting a document type will not change the details for any existing documents with that type.  If all current document types are deleted, a default type of "Standard" will be created.
+
+A new document type can be defined by specifying the name and clicking the "Add document type" button.
+
+<h3>Document Link Targets</h3>
+This will display a list of information item types.  Any of these can be selected to become a target of a document link (ie an <em>orgRight</em> filing cabinet document can be linked to an information item of that type).  Any information item type selected as a link target will have a link with the text "Link a document to this item" displayed near the bottom of the page, or is eligible to be selected if the "Link this document" at the bottom of a document display is clicked.
+
+<h3>Document Link Types</h3>
+This will display a list of currently defined document link types.  Any one of these can be selected to have the name changed or to be deleted.  Note that changing the name or deleting a document link type will not change the details for any existing document links with that type.  If all current document link types are deleted, a default type of "Normal" will be created.
+
+A new document link type can be defined by specifying the name and clicking the "Add document link type" button.

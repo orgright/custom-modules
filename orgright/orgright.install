@@ -1,0 +1,377 @@
+<?php
+// $Id$
+
+/**
+ * Implementation of hook_install()
+ */
+function orgright_install() {
+  // Create our menu. See menu.install for an example.
+  $t = get_t();
+  db_query("INSERT INTO {menu_custom} (menu_name, title, description) VALUES ('%s', '%s', '%s')", 'orgright', $t('orgRight'), $t('orgRight System functions'));
+/*  // Create a menu item for managing settings
+  $item = array(
+    'link_title' => 'orgRight settings',
+    'link_path' => 'admin/orgright',
+    'menu_name' => 'orgright',
+    'module' => 'orgright',
+  );
+  menu_link_save($item);*/
+  // any other actions to when module is installed go here
+  variable_set('taxonomy_override_selector', TRUE);
+  // create the standard orgRight users
+  //orgright_create_users();
+  // create the standard orgRight roles
+  //orgright_create_roles();
+  // create the standard orgRight permsissions
+  //orgright_create_permissions();
+  // create a default public page
+  //orgright_create_public_page();
+  // create an initial welcome page
+  //orgright_create_welcome_page();
+}
+
+function orgright_create_users() {
+  // Create the standard users for an organisation site
+  $users = array(
+    3 => array('name'=>'orgright', 'passwd'=>'soFar-soG00d'),
+    4 => array('name'=>'user4', 'passwd'=>'O_user4+Z'),
+    5 => array('name'=>'user5', 'passwd'=>'O_user5+Z'),
+    6 => array('name'=>'user6', 'passwd'=>'O_user6+Z'),
+    7 => array('name'=>'user7', 'passwd'=>'O_user7+Z'),
+    8 => array('name'=>'user8', 'passwd'=>'O_user8+Z'),
+    9 => array('name'=>'user9', 'passwd'=>'O_user9+Z'),
+    10 => array('name'=>'adminstrator', 'passwd'=>'bayug-6S'),
+    11 => array('name'=>'president', 'passwd'=>'gexik+4Z'),
+    12 => array('name'=>'secretary', 'passwd'=>'derop-5B'),
+    13 => array('name'=>'treasurer', 'passwd'=>'wubih-9X'),
+    14 => array('name'=>'membership', 'passwd'=>'koqem+4P'),
+    15 => array('name'=>'committee', 'passwd'=>'giden-0X'),
+  );
+  $form_state = array();
+  $form_state['values']['op'] = t('Create new account');
+  foreach ($users as $user) {
+    $form_state['values']['name'] = $user['name'];
+    $form_state['values']['mail'] = $user['name'].'@nz.orgright.com';
+    $form_state['values']['pass']['pass1'] = $user['passwd'];
+    $form_state['values']['pass']['pass2'] = $user['passwd'];
+    drupal_execute('user_register', $form_state);
+  }
+}
+
+function orgright_create_roles() {
+  // Create the standard roles for an organisation site
+  $roles = array(
+    3 => array('name'=>'administrator', ),
+    4 => array('name'=>'president', ),
+    5 => array('name'=>'secretary', ),
+    6 => array('name'=>'treasurer', ),
+    7 => array('name'=>'membership', ),
+  );
+  $form_state = array();
+  $form_state['values']['op'] = t('Create new role');
+  foreach ($roles as $role) {
+    $form_state['values']['name'] = $role['name'];
+    drupal_execute('user_admin_new_role', $form_state);
+  }
+}
+
+function orgright_create_permissions() {
+  // Create the standard permissions for each role
+  $form_state = array();
+  $form_state['values']['op'] = t('Save permissions');
+  // for role 1: anonymous user
+  $form_state['values'][1] = array(
+    'access content' => 'access content',
+    'view public page' => 'view public page',
+  );
+  // for role 2: authenticated user
+  $form_state['values'][2] = array(
+    'access all views' => 'access all views',
+    'access comments' => 'access comments',
+    'access content' => 'access content',
+    'access feedback form' => 'access feedback form',
+    'create agenda item' => 'create agenda item',
+    'create appointment' => 'create appointment',
+    'create assignment' => 'create assignment',
+    'create committee' => 'create committee',
+    'create document' => 'create document',
+    'create drawer' => 'create drawer',
+    'create folder' => 'create folder',
+    'create forum topics' => 'create forum topics',
+    'create meeting' => 'create meeting',
+    'create meeting item' => 'create meeting item',
+    'create member' => 'create member',
+    'create page content' => 'create page content',
+    'create project activity' => 'create project activity',
+    'create project activity link' => 'create project activity link',
+    'create project' => 'create project',
+    'create project report' => 'create project report',
+    'create role' => 'create role',
+    'create story content' => 'create story content',
+    'create subpayment' => 'create subpayment',
+    'create subscription' => 'create subscription',
+    'delete agenda item' => 'delete agenda item',
+    'delete appointment' => 'delete appointment',
+    'delete assignment' => 'delete assignment',
+    'delete committee' => 'delete committee',
+    'delete document' => 'delete document',
+    'delete drawer' => 'delete drawer',
+    'delete folder' => 'delete folder',
+    'delete meeting' => 'delete meeting',
+    'delete meeting item' => 'delete meeting item',
+    'delete member' => 'delete member',
+    'delete own forum topics' => 'delete own forum topics',
+    'delete own page content' => 'delete own page content',
+    'delete own story content' => 'delete own story content',
+    'delete project activity' => 'delete project activity',
+    'delete project activity link' => 'delete project activity link',
+    'delete project' => 'delete project',
+    'delete project report' => 'delete project report',
+    'delete role' => 'delete role',
+    'delete subpayment' => 'delete subpayment',
+    'delete subscription' => 'delete subscription',
+    'edit own forum topics' => 'edit own forum topics',
+    'edit own page content' => 'edit own page content',
+    'edit own story content' => 'edit own story content',
+    'post comments' => 'post comments',
+    'post comments without approval' => 'post comments without approval',
+    'search content' => 'search content',
+    'update agenda item' => 'update agenda item',
+    'update appointment' => 'update appointment',
+    'update assignment' => 'update assignment',
+    'update committee' => 'update committee',
+    'update document' => 'update document',
+    'update drawer' => 'update drawer',
+    'update folder' => 'update folder',
+    'update meeting item' => 'update meeting item',
+    'update meeting' => 'update meeting',
+    'update member' => 'update member',
+    'update project activity link' => 'update project activity link',
+    'update project activity' => 'update project activity',
+    'update project report' => 'update project report',
+    'update project' => 'update project',
+    'update role' => 'update role',
+    'update subpayment' => 'update subpayment',
+    'update subscription' => 'update subscription',
+    'upload files' => 'upload files',
+    'upload file' => 'upload file',
+    'use advanced search' => 'use advanced search',
+    'use orgRight helpdesk' => 'use orgRight helpdesk',
+    'view advanced help index' => 'view advanced help index',
+    'view advanced help popup' => 'view advanced help popup',
+    'view advanced help topic' => 'view advanced help topic',
+    'view agenda item' => 'view agenda item',
+    'view appointment' => 'view appointment',
+    'view assignment' => 'view assignment',
+    'view committee' => 'view committee',
+    'view document' => 'view document',
+    'view drawer' => 'view drawer',
+    'view file' => 'view file',
+    'view folder' => 'view folder',
+    'view meeting item' => 'view meeting item',
+    'view meeting' => 'view meeting',
+    'view member' => 'view member',
+    'view orgright help index' => 'view orgright help index',
+    'view orgright help popup' => 'view orgright help popup',
+    'view orgright help topic' => 'view orgright help topic',
+    'view project activity' => 'view project activity',
+    'view project report' => 'view project report',
+    'view project' => 'view project',
+    'view role' => 'view role',
+    'view subpayment' => 'view subpayment',
+    'view subscription' => 'view subscription',
+    'view uploaded files' => 'view uploaded files',
+  );
+  // for role 3: administratopr
+  $form_state['values'][3] = array(
+    'access administration pages' => 'access administration pages',
+    'access all views' => 'access all views',
+    'access comments' => 'access comments',
+    'access content' => 'access content',
+    'access feedback form' => 'access feedback form',
+    'access user profiles' => 'access user profiles',
+    'administer actions' => 'administer actions',
+    'administer comments' => 'administer comments',
+    'administer forums' => 'administer forums',
+    'administer menu' => 'administer menu',
+    'administer nodes' => 'administer nodes',
+    'administer orgRight modules' => 'administer orgRight modules',
+    'administer permissions' => 'administer permissions',
+    'administer rules' => 'administer rules',
+    'administer search' => 'administer search',
+    'administer taxonomy' => 'administer taxonomy',
+    'administer url aliases' => 'administer url aliases',
+    'administer users' => 'administer users',
+    'administer views' => 'administer views',
+    'change own username' => 'change own username',
+    'create agenda item' => 'create agenda item',
+    'create appointment' => 'create appointment',
+    'create assignment' => 'create assignment',
+    'create committee' => 'create committee',
+    'create document' => 'create document',
+    'create drawer' => 'create drawer',
+    'create folder' => 'create folder',
+    'create forum topics' => 'create forum topics',
+    'create meeting' => 'create meeting',
+    'create meeting item' => 'create meeting item',
+    'create member' => 'create member',
+    'create page content' => 'create page content',
+    'create project activity' => 'create project activity',
+    'create project activity link' => 'create project activity link',
+    'create project' => 'create project',
+    'create project report' => 'create project report',
+    'create public page' => 'create public page',
+    'create role' => 'create role',
+    'create story content' => 'create story content',
+    'create subpayment' => 'create subpayment',
+    'create subscription' => 'create subscription',
+    'create url aliases' => 'create url aliases',
+    'delete agenda item' => 'delete agenda item',
+    'delete any forum topic' => 'delete any forum topic',
+    'delete any page content' => 'delete any page content',
+    'delete any story content' => 'delete any story content',
+    'delete appointment' => 'delete appointment',
+    'delete assignment' => 'delete assignment',
+    'delete committee' => 'delete committee',
+    'delete document' => 'delete document',
+    'delete drawer' => 'delete drawer',
+    'delete file' => 'delete file',
+    'delete folder' => 'delete folder',
+    'delete meeting' => 'delete meeting',
+    'delete meeting item' => 'delete meeting item',
+    'delete member' => 'delete member',
+    'delete own forum topics' => 'delete own forum topics',
+    'delete own page content' => 'delete own page content',
+    'delete own story content' => 'delete own story content',
+    'delete project activity' => 'delete project activity',
+    'delete project activity link' => 'delete project activity link',
+    'delete project' => 'delete project',
+    'delete project report' => 'delete project report',
+    'delete public page' => 'delete public page',
+    'delete revisions' => 'delete revisions',
+    'delete role' => 'delete role',
+    'delete subpayment' => 'delete subpayment',
+    'delete subscription' => 'delete subscription',
+    'edit any forum topic' => 'edit any forum topic',
+    'edit any page content' => 'edit any page content',
+    'edit any story content' => 'edit any story content',
+    'edit own forum topics' => 'edit own forum topics',
+    'edit own page content' => 'edit own page content',
+    'edit own story content' => 'edit own story content',
+    'post comments' => 'post comments',
+    'post comments without approval' => 'post comments without approval',
+    'replace file' => 'replace file',
+    'revert revisions' => 'revert revisions',
+    'search content' => 'search content',
+    'update agenda item' => 'update agenda item',
+    'update appointment' => 'update appointment',
+    'update assignment' => 'update assignment',
+    'update committee' => 'update committee',
+    'update document' => 'update document',
+    'update drawer' => 'update drawer',
+    'update folder' => 'update folder',
+    'update meeting item' => 'update meeting item',
+    'update meeting' => 'update meeting',
+    'update member' => 'update member',
+    'update project activity link' => 'update project activity link',
+    'update project activity' => 'update project activity',
+    'update project report' => 'update project report',
+    'update project' => 'update project',
+    'update public page' => 'update public page',
+    'update role' => 'update role',
+    'update subpayment' => 'update subpayment',
+    'update subscription' => 'update subscription',
+    'upload files' => 'upload files',
+    'upload file' => 'upload file',
+    'use advanced search' => 'use advanced search',
+    'use orgRight helpdesk' => 'use orgRight helpdesk',
+    'view advanced help index' => 'view advanced help index',
+    'view advanced help popup' => 'view advanced help popup',
+    'view advanced help topic' => 'view advanced help topic',
+    'view agenda item' => 'view agenda item',
+    'view appointment' => 'view appointment',
+    'view assignment' => 'view assignment',
+    'view committee' => 'view committee',
+    'view document' => 'view document',
+    'view drawer' => 'view drawer',
+    'view feedback messages' => 'view feedback messages',
+    'view file' => 'view file',
+    'view folder' => 'view folder',
+    'view meeting item' => 'view meeting item',
+    'view meeting' => 'view meeting',
+    'view member' => 'view member',
+    'view orgright help index' => 'view orgright help index',
+    'view orgright help popup' => 'view orgright help popup',
+    'view orgright help topic' => 'view orgright help topic',
+    'view project activity' => 'view project activity',
+    'view project report' => 'view project report',
+    'view project' => 'view project',
+    'view public page' => 'view public page',
+    'view revisions' => 'view revisions',
+    'view role' => 'view role',
+    'view subpayment' => 'view subpayment',
+    'view subscription' => 'view subscription',
+    'view uploaded files' => 'view uploaded files',
+  );
+  drupal_execute('user_admin_perm', $form_state);
+}
+
+function orgright_create_public_page() {
+
+}
+
+function orgright_create_welcome_page() {
+
+}
+
+
+/**
+ * Implementation of hook_uninstall()
+ */
+function orgright_uninstall() {
+  // any other actions to take when module is un-installed go here
+  db_query("DELETE FROM {menu_custom} WHERE menu_name = 'orgright'");
+  db_query("DELETE FROM {menu_links} WHERE module = 'orgright'");
+  variable_del('taxonomy_override_selector');
+}
+
+/**
+ * Implementation of hook_disable()
+ */
+function orgright_disable() {
+  // actions to take when the module is disabled should go here.
+  variable_set('taxonomy_override_selector', FALSE);
+}
+
+/**
+ * Module update functions go here
+ */
+function orgright_update_6002 () {
+  // Remove the private node types (article and memo) and swap to public page
+  // using mapping: page or story=>public, memo=>page and article=>story
+  if (db_query("UPDATE {node} n SET type = 'public' WHERE type = 'page' OR type = 'story'") &&
+      db_query("UPDATE {node} n SET type = 'story' WHERE type = 'article'") &&
+      db_query("UPDATE {node} n SET type = 'page' WHERE type = 'memo'")) {
+    return array();
+  }
+  else {
+    return array('#abort'=>array('success'=>FALSE, 'query'=>'Node type update failure'));
+  }
+}
+
+function orgright_update_6001 () {
+  // Remove the publicpage module, and replace with private node types
+  // using mapping: page=>memo and story=>article
+  if (db_query("UPDATE {node} n SET type = 'memo' WHERE type = 'page'") &&
+      db_query("UPDATE {node} n SET type = 'article' WHERE type = 'story'") &&
+      db_query("UPDATE {node} n SET type = 'page' WHERE type = 'public'")) {
+    return array();
+  }
+  else {
+    return array('#abort'=>array('success'=>FALSE, 'query'=>'Node type update failure'));
+  }
+}
+
+function orgright_update_6000 () {
+  return array();
+}
