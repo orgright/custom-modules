@@ -27,7 +27,7 @@ function adminnotice_disable() {
 /**
  * Implementation of hook_schema()
  */
-// === "org_notices" table === 
+// === "org_notices" table ===
 function adminnotice_schema() {
   $schema['org_notices'] = array(
     'description' => t('Stores details for notices that are not held in the node tables'),

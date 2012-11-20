@@ -69,7 +69,9 @@ function membership_member_view(&$node, $teaser, $page) {
     '#weight' => 10,
   );
   // If a teaser is being generated, then we are done
-  if ($teaser) { return; }
+  if ($teaser) {
+    return;
+  }
   // else continue adding more detail
   $description = t('Notes');
   $notes = check_markup($node->notes, orgright_get_field_filter());
@@ -106,7 +108,7 @@ function membership_member_view(&$node, $teaser, $page) {
   }
   // Include a link to add new child member
   ++$weight;
-  $linktext = l(t('Add new child membership'), 'membership/members/add/parent~'.$node->nid);
+  $linktext = l(t('Add new child membership'), 'membership/members/add/parent~' . $node->nid);
   $node->content['add-child'] = array(
     '#value' => membership_theme_link('add-child', $linktext),
     '#weight' => $weight,
@@ -133,7 +135,7 @@ function membership_member_view(&$node, $teaser, $page) {
       $subitem = $this_appointment['assigntype'];
       $ref = $this_appointment['nid'];
       $attributes = array(
-        ': ' . l($this_appointment['role'], 'node/'.$this_appointment['rnid']),
+        ': ' . l($this_appointment['role'], 'node/' . $this_appointment['rnid']),
         ', role assigned: ' . $assigndate,
       );
       if ($this_appointment['ceasedate']) {
@@ -164,7 +166,7 @@ function membership_member_view(&$node, $teaser, $page) {
         $subitem = $this_appointment['assigntype'];
         $ref = $this_appointment['nid'];
         $attributes = array(
-          ': ' . l($this_appointment['role'], 'node/'.$this_appointment['rnid']),
+          ': ' . l($this_appointment['role'], 'node/' . $this_appointment['rnid']),
           ', role assigned: ' . $assigndate,
           ', ceased: ' . $ceasedate,
         );
@@ -178,7 +180,7 @@ function membership_member_view(&$node, $teaser, $page) {
   }
   // Include a link to add new role assignment
   ++$weight;
-  $linktext = l(t('Add new committee role assignment'), 'committee/assignments/add/member~'.$node->nid);
+  $linktext = l(t('Add new committee role assignment'), 'committee/assignments/add/member~' . $node->nid);
   $node->content['add-assignment'] = array(
     '#value' => membership_theme_link('add-assignment', $linktext),
     '#weight' => $weight,
@@ -205,7 +207,7 @@ function membership_member_view(&$node, $teaser, $page) {
       $subitem = $this_appointment['appointtype'];
       $ref = $this_appointment['nid'];
       $attributes = array(
-        ' to ' . l($this_appointment['committee'], 'node/'.$this_appointment['cnid']),
+        ' to ' . l($this_appointment['committee'], 'node/' . $this_appointment['cnid']),
         ' on ' . $appointdate,
       );
       if ($this_appointment['retiredate']) {
@@ -227,7 +229,7 @@ function membership_member_view(&$node, $teaser, $page) {
       );
       foreach ($node->appointments as $this_appointment) {
         // skip any appointments that have not yet retired
-        if (!$this_appointment['retiredate']  || $this_appointment['retiredate'] >= $today) {
+        if (!$this_appointment['retiredate'] || $this_appointment['retiredate'] >= $today) {
           continue;
         }
         // Prepare the dates appointdate and retiredate for display
@@ -236,7 +238,7 @@ function membership_member_view(&$node, $teaser, $page) {
         $subitem = $this_appointment['appointtype'];
         $ref = $this_appointment['nid'];
         $attributes = array(
-          ' to ' . l($this_appointment['committee'], 'node/'.$this_appointment['cnid']),
+          ' to ' . l($this_appointment['committee'], 'node/' . $this_appointment['cnid']),
           ' on ' . $appointdate,
           ', retired on ' . $retiredate,
         );
@@ -250,7 +252,7 @@ function membership_member_view(&$node, $teaser, $page) {
   }
   // Include a link to add new committee appointment
   ++$weight;
-  $linktext = l(t('Add new committee appointment'), 'committee/appointments/add/member~'.$node->nid);
+  $linktext = l(t('Add new committee appointment'), 'committee/appointments/add/member~' . $node->nid);
   $node->content['add-appointment'] = array(
     '#value' => membership_theme_link('add-appointment', $linktext),
     '#weight' => $weight,
@@ -287,7 +289,7 @@ function membership_member_view(&$node, $teaser, $page) {
   }
   // Include a link to add new subscription
   ++$weight;
-  $linktext = l(t('Add new subscription'), 'membership/subscriptions/add/member~'.$node->nid);
+  $linktext = l(t('Add new subscription'), 'membership/subscriptions/add/member~' . $node->nid);
   $node->content['add-subscription'] = array(
     '#value' => membership_theme_link('add-subscription', $linktext),
     '#weight' => $weight,
@@ -319,13 +321,13 @@ function membership_member_view(&$node, $teaser, $page) {
   }
   // Include a link to add new subscription payment
   ++$weight;
-  $linktext = l(t('Add new subscription payment'), 'membership/subpayments/add/member~'.$node->nid);
+  $linktext = l(t('Add new subscription payment'), 'membership/subpayments/add/member~' . $node->nid);
   $node->content['add-subpayment'] = array(
     '#value' => membership_theme_link('add-subpayment', $linktext),
     '#weight' => $weight,
   );
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Membership')=>'membership', t('Members')=>'membership/members'));
+  orgright_breadcrumb(array(t('Membership') => 'membership', t('Members') => 'membership/members'));
 }
 
 function membership_subscription_view(&$node, $teaser, $page) {
@@ -366,7 +368,9 @@ function membership_subscription_view(&$node, $teaser, $page) {
     '#weight' => 6,
   );
   // If a teaser is being generated, then we are done
-  if ($teaser) { return; }
+  if ($teaser) {
+    return;
+  }
   // else continue adding more detail
   $description = t('Notes');
   $node->content['notes'] = array(
@@ -378,7 +382,7 @@ function membership_subscription_view(&$node, $teaser, $page) {
   if (isset($node->subpayments)) {
     //orgright_debug_msg('membership','payment details found');
     $heading = t('The following payment details are held for this subscription');
-      ++$weight;
+    ++$weight;
     $node->content['subpayments'] = array(
       '#value' => membership_theme_heading('subpayments', $heading),
       '#weight' => $weight,
@@ -401,13 +405,13 @@ function membership_subscription_view(&$node, $teaser, $page) {
   }
   // Include a link to add new subscription payment
   ++$weight;
-  $linktext = l(t('Add new subscription payment'), 'membership/subpayments/add/subscription~'.$node->nid.'/member~'.$node->mnid);
+  $linktext = l(t('Add new subscription payment'), 'membership/subpayments/add/subscription~' . $node->nid . '/member~' . $node->mnid);
   $node->content['add-subpayment'] = array(
     '#value' => membership_theme_link('add-subpayment', $linktext),
     '#weight' => $weight,
   );
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Membership')=>'membership', t('Subscriptions')=>'membership/subscriptions'));
+  orgright_breadcrumb(array(t('Membership') => 'membership', t('Subscriptions') => 'membership/subscriptions'));
 }
 
 function membership_subpayment_view(&$node, $teaser, $page) {
@@ -440,7 +444,9 @@ function membership_subpayment_view(&$node, $teaser, $page) {
     '#weight' => 7,
   );
   // If a teaser is being generated, then we are done
-  if ($teaser) { return; }
+  if ($teaser) {
+    return;
+  }
   // else continue adding more detail
   $description = t('Notes');
   $node->content['notes'] = array(
@@ -448,7 +454,7 @@ function membership_subpayment_view(&$node, $teaser, $page) {
     '#weight' => 9,
   );
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Membership')=>'membership', t('Payments')=>'membership/subpayments'));
+  orgright_breadcrumb(array(t('Membership') => 'membership', t('Payments') => 'membership/subpayments'));
 }
 
 /**

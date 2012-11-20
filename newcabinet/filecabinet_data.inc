@@ -37,7 +37,7 @@ function filecabinet_drawer_nodeapi(&$node, $op, $teaser, $page) {
       // Node is being loaded, so add any additional data to $node
       if ($node->ouid) {
         // Load owner name
-        $node->owner = db_result(db_query("SELECT u.name FROM {users} u WHERE u.uid = %d",$node->ouid));
+        $node->owner = db_result(db_query("SELECT u.name FROM {users} u WHERE u.uid = %d", $node->ouid));
       }
       if ($node->wnid) {
         // Load parent drawer reference
@@ -45,11 +45,15 @@ function filecabinet_drawer_nodeapi(&$node, $op, $teaser, $page) {
         $node->parent = db_result(db_query($sql, $node->wnid));
       }
       // Stop here if a teaser display is required
-      if ($teaser) { return; }
+      if ($teaser) {
+        return;
+      }
       // Specify the fields that are used for rules event triggers on change
-      $fields = array('wnid','ouid','drawer','drawerstatus','drawerperm');
+      $fields = array('wnid', 'ouid', 'drawer', 'drawerstatus', 'drawerperm');
       $original = array();
-      foreach ($fields as $field) { $original[$field] = $node->$field; }
+      foreach ($fields as $field) {
+        $original[$field] = $node->$field;
+      }
       $node->original = serialize($original);
       $node->rules_update = FALSE;
       // Load an array of subsidiary drawers
@@ -57,7 +61,7 @@ function filecabinet_drawer_nodeapi(&$node, $op, $teaser, $page) {
       $result = db_query($sql, $node->nid);
       while ($drawer = db_fetch_object($result)) {
         // find name of owner (user)
-        $drawer->owner = db_result(db_query("SELECT u.name FROM {users} u WHERE u.uid = %d",$drawer->ouid));
+        $drawer->owner = db_result(db_query("SELECT u.name FROM {users} u WHERE u.uid = %d", $drawer->ouid));
         $node->drawers[] = (array)$drawer;
       }
       // Load an array of folders
@@ -75,14 +79,16 @@ function filecabinet_drawer_nodeapi(&$node, $op, $teaser, $page) {
       return;
     case 'update':
       // Ignore updates caused by rules actions
-      if ($node->rules_update) { return; }
+      if ($node->rules_update) {
+        return;
+      }
       // Trigger the specified rules events
       if (module_exists('rules')) {
         rules_invoke_event('filecabinet_event_drawer_update', $node);
         if ($original = unserialize($node->original)) {
           foreach ($original as $field => $value) {
             if ($node->$field != $value) {
-              rules_invoke_event('filecabinet_event_drawer_'.$field.'_update', $node);
+              rules_invoke_event('filecabinet_event_drawer_' . $field . '_update', $node);
             }
           }
         }
@@ -127,11 +133,15 @@ function filecabinet_folder_nodeapi(&$node, $op, $teaser, $page) {
         $node->parentperm = $parent->folderperm;
       }
       // Stop here if a teaser display is required
-      if ($teaser) { return; }
+      if ($teaser) {
+        return;
+      }
       // Specify the fields that are used for rules event triggers on change
-      $fields = array('fnid','wnid','folder','folderstatus','folderperm');
+      $fields = array('fnid', 'wnid', 'folder', 'folderstatus', 'folderperm');
       $original = array();
-      foreach ($fields as $field) { $original[$field] = $node->$field; }
+      foreach ($fields as $field) {
+        $original[$field] = $node->$field;
+      }
       $node->original = serialize($original);
       $node->rules_update = FALSE;
       // Load an array of sub-folders
@@ -164,14 +174,16 @@ function filecabinet_folder_nodeapi(&$node, $op, $teaser, $page) {
       return;
     case 'update':
       // Ignore updates caused by rules actions
-      if ($node->rules_update) { return; }
+      if ($node->rules_update) {
+        return;
+      }
       // Trigger the specified rules events
       if (module_exists('rules')) {
         rules_invoke_event('filecabinet_event_folder_update', $node);
         if ($original = unserialize($node->original)) {
           foreach ($original as $field => $value) {
             if ($node->$field != $value) {
-              rules_invoke_event('filecabinet_event_folder_'.$field.'_update', $node);
+              rules_invoke_event('filecabinet_event_folder_' . $field . '_update', $node);
             }
           }
         }
@@ -227,11 +239,15 @@ function filecabinet_document_nodeapi(&$node, $op, $teaser, $page) {
         $node->filemime = $file->filemime;
       }
       // Stop here if a teaser display is required
-      if ($teaser) { return; }
+      if ($teaser) {
+        return;
+      }
       // Specify the fields that are used for rules event triggers on change
-      $fields = array('fnid','mnid','afid','docname','docversion','docdate','doctype','docstatus');
+      $fields = array('fnid', 'mnid', 'afid', 'docname', 'docversion', 'docdate', 'doctype', 'docstatus');
       $original = array();
-      foreach ($fields as $field) { $original[$field] = $node->$field; }
+      foreach ($fields as $field) {
+        $original[$field] = $node->$field;
+      }
       $node->original = serialize($original);
       $node->rules_update = FALSE;
       // Load an array of attached documents
@@ -254,12 +270,12 @@ function filecabinet_document_nodeapi(&$node, $op, $teaser, $page) {
       $num = 0;
       while ($doclink = db_fetch_object($result)) {
         $nodetitle = db_result(db_query("SELECT title FROM {node} WHERE nid = %d", $doclink->xnid));
-        $node->doclinks[$num]['xnid'] = $doclink->xnid;  
-        $node->doclinks[$num]['nodetype'] = $doclink->nodetype;  
+        $node->doclinks[$num]['xnid'] = $doclink->xnid;
+        $node->doclinks[$num]['nodetype'] = $doclink->nodetype;
         $node->doclinks[$num]['linktype'] = $doclink->linktype;
         $node->doclinks[$num]['nodetitle'] = $nodetitle;
-        $num++;  
-      }       
+        $num++;
+      }
       return;
     case 'insert':
       // Trigger the specified rules events
@@ -269,14 +285,16 @@ function filecabinet_document_nodeapi(&$node, $op, $teaser, $page) {
       return;
     case 'update':
       // Ignore updates caused by rules actions
-      if ($node->rules_update) { return; }
+      if ($node->rules_update) {
+        return;
+      }
       // Trigger the specified rules events
       if (module_exists('rules')) {
         rules_invoke_event('filecabinet_event_document_update', $node);
         if ($original = unserialize($node->original)) {
           foreach ($original as $field => $value) {
             if ($node->$field != $value) {
-              rules_invoke_event('filecabinet_event_document_'.$field.'_update', $node);
+              rules_invoke_event('filecabinet_event_document_' . $field . '_update', $node);
             }
           }
         }
@@ -390,42 +408,44 @@ function filecabinet_document_update($node) {
     $node->docdesc,
     $node->notes,
     $node->uid,
-    $node->vid);      
+    $node->vid);
 }
 
 /**
  * Delete functions called from hook_delete() in module file
  */
 function filecabinet_drawer_delete($node) {
-    db_query("DELETE FROM {org_drawers} WHERE nid = %d", $node->nid);
+  db_query("DELETE FROM {org_drawers} WHERE nid = %d", $node->nid);
 }
 
 function filecabinet_folder_delete($node) {
-    db_query("DELETE FROM {org_folders} WHERE nid = %d", $node->nid);
+  db_query("DELETE FROM {org_folders} WHERE nid = %d", $node->nid);
 }
 
 function filecabinet_document_delete($node) {
-    // First retrieve a list all files associated with the document
-    $files = db_query("SELECT DISTINCT afid FROM {org_documents} WHERE nid = %d", $node->nid);
-    // Then delete the document node
-    db_query("DELETE FROM {org_documents} WHERE nid = %d", $node->nid);
-    // delete and doclinks that exist
-    db_query("DELETE FROM {org_doclinks} WHERE dnid = %d", $node->nid);
-    // Now delete the files if they are not used
-    module_load_include('inc', 'filecabinet', 'filecabinet_file');
-    while ($file = db_fetch_object($files)) {
-      filecabinet_delete_file($file->afid);
-    }
+  // First retrieve a list all files associated with the document
+  $files = db_query("SELECT DISTINCT afid FROM {org_documents} WHERE nid = %d", $node->nid);
+  // Then delete the document node
+  db_query("DELETE FROM {org_documents} WHERE nid = %d", $node->nid);
+  // delete and doclinks that exist
+  db_query("DELETE FROM {org_doclinks} WHERE dnid = %d", $node->nid);
+  // Now delete the files if they are not used
+  module_load_include('inc', 'filecabinet', 'filecabinet_file');
+  while ($file = db_fetch_object($files)) {
+    filecabinet_delete_file($file->afid);
+  }
 }
 
-function filecabinet_delete_file($file_id, $min=0) {
+function filecabinet_delete_file($file_id, $min = 0) {
   //orgright_debug_msg('filecabinet','Fn: filecabinet_delete_file fid='.$file_id.', min='.$min);
   // The passed $min parameter is the smallest count value that allows file deletion
   // if the file is not used, delete it (it may still be used in old revisions)
   $count = db_result(db_query("SELECT COUNT(afid) FROM {org_documents} WHERE afid = %d", $file_id));
   if ($count <= $min) {
     $filepath = db_result(db_query("SELECT filepath FROM {files} WHERE fid = %d", $file_id));
-    if ($filepath) { file_delete($filepath); }
+    if ($filepath) {
+      file_delete($filepath);
+    }
   }
 }
 

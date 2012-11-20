@@ -1,21 +1,21 @@
 // $Id$
 if (Drupal.jsEnabled) {
-  $(document).ready(function() {
-    // 
+  $(document).ready(function () {
+    //
   });
 }
 
 function showCabinet(id) {
-  $.get("/node/" + id, function(data) {
+  $.get("/node/" + id, function (data) {
     $("#filexplorer").empty().html(data);
     $('#scrollbar1').tinyscrollbar_update();
   });
-    
+
 }
 
 function showdrawer(id) {
   if ($("#content" + id).html().length == 0) {
-    $.get("/node/" + id, function(data) {
+    $.get("/node/" + id, function (data) {
       $("#content" + id).html(data);
       $('#scrollbar1').tinyscrollbar_update();
     });
@@ -30,7 +30,7 @@ function showfolder(id) {
 }
 
 function showdocument(id) {
-  $.get("/node/" + id, function(data) {
+  $.get("/node/" + id, function (data) {
     $("#filedetails").empty().html(data);
   });
 }

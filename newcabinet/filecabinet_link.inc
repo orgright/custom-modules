@@ -47,10 +47,10 @@ function filecabinet_doclink_node_view(&$node, $teaser) {
         $subitem = $doclink['docname'];
         $ref = $doclink['nid'];
         $attributes = array(
-          ', version '.$doclink['docversion'],
-          ', '.$docdate,
-          ', status '.$doclink['docstatus'],
-          ' '. l('[edit link]', 'filecabinet/documents/doclink/edit/document~'.$doclink['nid'].'/node~'.$node->nid),
+          ', version ' . $doclink['docversion'],
+          ', ' . $docdate,
+          ', status ' . $doclink['docstatus'],
+          ' ' . l('[edit link]', 'filecabinet/documents/doclink/edit/document~' . $doclink['nid'] . '/node~' . $node->nid),
         );
         $weight++;
         $node->content['doclinks'][] = array(
@@ -61,7 +61,7 @@ function filecabinet_doclink_node_view(&$node, $teaser) {
     }
     // Include a link to add new doclink
     ++$weight;
-    $linktext = l(t('Link a filecabinet document to this item'), 'filecabinet/documents/doclink/node~'.$node->nid);
+    $linktext = l(t('Link a filecabinet document to this item'), 'filecabinet/documents/doclink/node~' . $node->nid);
     $node->content['add-doclink'] = array(
       '#value' => filecabinet_theme_link('add-doclink', $linktext),
       '#weight' => $weight,
@@ -79,18 +79,18 @@ function filecabinet_doclink_node_validate(&$node, $form) {
   if ($clicked_button == $form['buttons']['submit']['#value']) {
     // Check that any returned values for previous doclinks are OK
     $num = 1;
-    while (isset($form['#post']['savename_'.$num])) {
+    while (isset($form['#post']['savename_' . $num])) {
       // previous doclink to check
-      if ($form['#post']['doc_'.$num] != $form['#post']['savename_'.$num]) {
+      if ($form['#post']['doc_' . $num] != $form['#post']['savename_' . $num]) {
         // name has changed
-        if ($form['#post']['doc_'.$num] != strip_tags($form['#post']['doc_'.$num])) {
-          form_set_error('doc_'.$num,t('HTML or PHP tags are not permitted in this field'));
+        if ($form['#post']['doc_' . $num] != strip_tags($form['#post']['doc_' . $num])) {
+          form_set_error('doc_' . $num, t('HTML or PHP tags are not permitted in this field'));
         }
         // Check that the name returned in "docname" is valid
         module_load_include('inc', 'filecabinet', 'filecabinet_form');
-        $dnid = filecabinet_validate_docname($form['#post']['doc_'.$num]);
+        $dnid = filecabinet_validate_docname($form['#post']['doc_' . $num]);
         if (!$dnid) {
-          form_set_error('doc_'.$num,t('The name specified is not a known document'));
+          form_set_error('doc_' . $num, t('The name specified is not a known document'));
         }
       }
       $num++;
@@ -99,14 +99,14 @@ function filecabinet_doclink_node_validate(&$node, $form) {
     if (!empty($form['#post']['docname'])) {
       // Check that entered details of new doc are acceptable - use PHP strip_tags function to check
       if ($form['#post']['docname'] != strip_tags($form['#post']['docname'])) {
-        form_set_error('docname',t('HTML or PHP tags are not permitted in this field'));
+        form_set_error('docname', t('HTML or PHP tags are not permitted in this field'));
       }
       module_load_include('inc', 'filecabinet', 'filecabinet_form');
       $dnid = filecabinet_validate_docname($form['#post']['docname']);
       if (!$dnid) {
-        form_set_error('docname',t('The name specified is not a known document'));
+        form_set_error('docname', t('The name specified is not a known document'));
       }
-    //orgright_debug_msg('filecabinet','validate: dnid='.$node->dnid.', xnid='.$node->nid);
+      //orgright_debug_msg('filecabinet','validate: dnid='.$node->dnid.', xnid='.$node->nid);
     }
   }
   elseif ($clicked_button == $form['buttons']['delete']['#value']) {
@@ -114,7 +114,7 @@ function filecabinet_doclink_node_validate(&$node, $form) {
     // Check if this item has linked documents
     $count = db_result(db_query("SELECT COUNT(xnid) FROM {org_doclinks} WHERE xnid = %d", $node->nid));
     if ($count) {
-      form_set_error('docname',t('This item is still linked to @num documents!', array('@num'=>$count)));
+      form_set_error('docname', t('This item is still linked to @num documents!', array('@num' => $count)));
     }
   }
 }
@@ -138,7 +138,7 @@ function filecabinet_doclink_node_form_alter(&$form, $form_state, $node) {
     $num = 0;
     foreach ($node->doclinks as $doclink) {
       $num++;
-      $form['doclink']['doc_'.$num] = array(
+      $form['doclink']['doc_' . $num] = array(
         '#type' => 'textfield',
         '#title' => t('Document'),
         '#description' => t('Document linked to this information item'),
@@ -146,23 +146,23 @@ function filecabinet_doclink_node_form_alter(&$form, $form_state, $node) {
         '#maxlength' => 64,
         '#size' => 40,
         '#required' => FALSE,
-        '#weight' => $num*2,
+        '#weight' => $num * 2,
         '#autocomplete_path' => 'filecabinet/autocomplete/docnames',
       );
-      $form['doclink']['link_'.$num] = array(
+      $form['doclink']['link_' . $num] = array(
         '#type' => 'select',
         '#title' => t('Link type'),
         '#description' => t('Type of link'),
         '#default_value' => $doclink['linktype'],
         '#options' => $doclink_linktype_list,
         '#required' => FALSE,
-        '#weight' => $num*2+1,
+        '#weight' => $num * 2 + 1,
       );
-      $form['doclink']['savename_'.$num] = array(
+      $form['doclink']['savename_' . $num] = array(
         '#type' => 'value',
         '#value' => $doclink['docname'],
       );
-      $form['doclink']['savednid_'.$num] = array(
+      $form['doclink']['savednid_' . $num] = array(
         '#type' => 'value',
         '#value' => $doclink['dnid'],
       );
@@ -180,7 +180,7 @@ function filecabinet_doclink_node_form_alter(&$form, $form_state, $node) {
     '#maxlength' => 64,
     '#size' => 40,
     '#required' => FALSE,
-    '#weight' => $num*2+2,
+    '#weight' => $num * 2 + 2,
     '#autocomplete_path' => 'filecabinet/autocomplete/docnames',
   );
   $form['doclink']['linktype'] = array(
@@ -190,7 +190,7 @@ function filecabinet_doclink_node_form_alter(&$form, $form_state, $node) {
     '#default_value' => $linktype,
     '#options' => $doclink_linktype_list,
     '#required' => FALSE,
-    '#weight' => $num*2+3,
+    '#weight' => $num * 2 + 3,
   );
 
 }
@@ -207,9 +207,9 @@ function filecabinet_doclink_node_insert(&$node) {
     // convert $node to array for easier processing
     $anode = (array)$node;
     $num = 1;
-    while (isset($anode['savename_'.$num])) {
-      if (!empty($anode['doc_'.$num])) {
-        filecabinet_doclink_insert_row($anode['doc_'.$num], $anode['nid'], $anode['type'], $anode['link_'.$num]);
+    while (isset($anode['savename_' . $num])) {
+      if (!empty($anode['doc_' . $num])) {
+        filecabinet_doclink_insert_row($anode['doc_' . $num], $anode['nid'], $anode['type'], $anode['link_' . $num]);
       }
       $num++;
     }

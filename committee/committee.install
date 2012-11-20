@@ -29,7 +29,7 @@ function committee_disable() {
 /**
  * Implementation of hook_schema()
  */
-// === "org_committees" table === 
+// === "org_committees" table ===
 function committee_schema() {
   $schema['org_committees'] = array(
     'description' => t('Stores details for committees that are not held in the node tables'),
@@ -242,7 +242,7 @@ function committee_schema() {
         'not null' => TRUE,
         'default' => 0,
         'description' => t('The {node}.nid of the member associated with this assignment'),
-      ), 
+      ),
       'rnid' => array(
         'type' => 'int',
         'unsigned' => TRUE,
@@ -301,12 +301,12 @@ function committee_update_6002() {
   // Modify the appointtype column of the appointments table
   $sql = "ALTER TABLE org_appointments MODIFY appointtype VARCHAR(16) NOT NULL";
   if (!db_query($sql)) {
-    return array('#abort'=>array('success'=>FALSE, 'query'=>'Modify column in table org_appointments failed'));
+    return array('#abort' => array('success' => FALSE, 'query' => 'Modify column in table org_appointments failed'));
   }
   // Modify the assigntype column of the assignments table
   $sql = "ALTER TABLE org_assignments MODIFY assigntype VARCHAR(16) NOT NULL";
   if (!db_query($sql)) {
-    return array('#abort'=>array('success'=>FALSE, 'query'=>'Modify column in table org_assignments failed'));
+    return array('#abort' => array('success' => FALSE, 'query' => 'Modify column in table org_assignments failed'));
   }
   return array();
 }
@@ -316,27 +316,43 @@ function committee_update_6001() {
   // Drop all default specifications for text columns
   $sql = "ALTER TABLE org_committees ";
   $cols = array('committee', 'notes');
-  foreach ($cols as $col) { $sql .= " ALTER COLUMN $col DROP DEFAULT,"; }
+  foreach ($cols as $col) {
+    $sql .= " ALTER COLUMN $col DROP DEFAULT,";
+  }
   $sql = substr($sql, 0, -1);
-  if (!db_query($sql)) { return array('#abort'=>array('success'=>FALSE, 'query'=>'Alter table org_committees failed')); }
+  if (!db_query($sql)) {
+    return array('#abort' => array('success' => FALSE, 'query' => 'Alter table org_committees failed'));
+  }
 
   $sql = "ALTER TABLE org_roles ";
   $cols = array('role', 'notes');
-  foreach ($cols as $col) { $sql .= " ALTER COLUMN $col DROP DEFAULT,"; }
+  foreach ($cols as $col) {
+    $sql .= " ALTER COLUMN $col DROP DEFAULT,";
+  }
   $sql = substr($sql, 0, -1);
-  if (!db_query($sql)) { return array('#abort'=>array('success'=>FALSE, 'query'=>'Alter table org_roles failed')); }
+  if (!db_query($sql)) {
+    return array('#abort' => array('success' => FALSE, 'query' => 'Alter table org_roles failed'));
+  }
 
   $sql = "ALTER TABLE org_appointments ";
   $cols = array('appointtype', 'appointdate', 'retiredate', 'notes');
-  foreach ($cols as $col) { $sql .= " ALTER COLUMN $col DROP DEFAULT,"; }
+  foreach ($cols as $col) {
+    $sql .= " ALTER COLUMN $col DROP DEFAULT,";
+  }
   $sql = substr($sql, 0, -1);
-  if (!db_query($sql)) { return array('#abort'=>array('success'=>FALSE, 'query'=>'Alter table org_appointments failed')); }
+  if (!db_query($sql)) {
+    return array('#abort' => array('success' => FALSE, 'query' => 'Alter table org_appointments failed'));
+  }
 
   $sql = "ALTER TABLE org_assignments ";
   $cols = array('assigntype', 'assigndate', 'ceasedate', 'notes');
-  foreach ($cols as $col) { $sql .= " ALTER COLUMN $col DROP DEFAULT,"; }
+  foreach ($cols as $col) {
+    $sql .= " ALTER COLUMN $col DROP DEFAULT,";
+  }
   $sql = substr($sql, 0, -1);
-  if (!db_query($sql)) { return array('#abort'=>array('success'=>FALSE, 'query'=>'Alter table org_appointments failed')); }
+  if (!db_query($sql)) {
+    return array('#abort' => array('success' => FALSE, 'query' => 'Alter table org_appointments failed'));
+  }
 
   return array();
 }

@@ -45,7 +45,7 @@ function helpservice_menu() {
     'type' => MENU_NORMAL_ITEM,
     'menu_name' => 'orgright',
     'weight' => 9,
-    );
+  );
   $items['helpservice/search/%menu_tail'] = array(
     'title' => 'Search orgRight Help',
     'page callback' => 'helpservice_search_view',
@@ -63,8 +63,8 @@ function helpservice_menu() {
 }
 
 /**
-* Inplementation of hook_menu_alter().
-**/
+ * Inplementation of hook_menu_alter().
+ **/
 function helpservice_menu_alter(&$menu_entries) {
   // We need to fix the menu item provided by search module to restrict access.
   $menu_entries['search/helpservice/%menu_tail']['access callback'] = 'user_access';
@@ -196,7 +196,9 @@ function helpservice_index_page($module = '') {
     while ($info = db_fetch_object($result)) {
       $module_info = unserialize($info->info);
       $module = $info->name;
-      if (empty($topics[$module]) || isset($settings[$module]['hide'])) { continue; }
+      if (empty($topics[$module]) || isset($settings[$module]['hide'])) {
+        continue;
+      }
       if (isset($settings[$module]['index name'])) {
         $name = $settings[$module]['index name'];
       }
@@ -204,11 +206,13 @@ function helpservice_index_page($module = '') {
         $name = $settings[$module]['name'];
       }
       else {
-       $name = t($module_info['name']);
+        $name = t($module_info['name']);
       }
       // add weight (as string of length 3) to front of name for sort
-      if (!$weight = $settings[$module]['weight']) { $weight = 0; }
-      $name = substr('000'.$weight,-3) . $name;
+      if (!$weight = $settings[$module]['weight']) {
+        $weight = 0;
+      }
+      $name = substr('000' . $weight, -3) . $name;
       $modules[$name] = $module;
     }
 
@@ -217,7 +221,7 @@ function helpservice_index_page($module = '') {
     $items = array();
     foreach ($modules as $name => $module) {
       // strip the three character weight value from front of name
-      $items[] = helpservice_l(substr($name,3), "helpservice/$module");
+      $items[] = helpservice_l(substr($name, 3), "helpservice/$module");
     }
 
     drupal_set_title(t('orgRight Help Index'));
@@ -282,18 +286,20 @@ function helpservice_get_topic_hierarchy(&$topics) {
       if (empty($info['parent'])) {
         $parent = '';
       }
-      else if (strpos($info['parent'], '%')) {
-        list($parent_module, $parent) = explode('%', $info['parent']);
-        if (empty($topics[$parent_module][$parent])) {
-          // If it doesn't exist, top level.
-          $parent = '';
-        }
-      }
       else {
-        $parent = $info['parent'];
-        if (empty($module_topics[$parent])) {
-          // If it doesn't exist, top level.
-          $parent = '';
+        if (strpos($info['parent'], '%')) {
+          list($parent_module, $parent) = explode('%', $info['parent']);
+          if (empty($topics[$parent_module][$parent])) {
+            // If it doesn't exist, top level.
+            $parent = '';
+          }
+        }
+        else {
+          $parent = $info['parent'];
+          if (empty($module_topics[$parent])) {
+            // If it doesn't exist, top level.
+            $parent = '';
+          }
         }
       }
 
@@ -471,23 +477,23 @@ function theme_helpservice_topic($module, $topic, $type = 'icon') {
   if (user_access('view orgright help popup')) {
     drupal_add_css(drupal_get_path('module', 'helpservice') . '/helpservice-icon.css');
     $tlink = l($text, "helpservice/$module/$topic", array(
-      'attributes' => array(
-        'class' => $class,
-        'tabindex' => '0',
-        'onclick' => 'var w=window.open(this.href, "helpservice_window", "width='. $info['popup width'] .',height='. $info['popup height'] .',scrollbars,resizable"); w.focus(); return false;',
-        'title' => $info['title'],
-      ),
-      'query' => array('popup' => TRUE),
-      'html' => TRUE)
+        'attributes' => array(
+          'class' => $class,
+          'tabindex' => '0',
+          'onclick' => 'var w=window.open(this.href, "helpservice_window", "width=' . $info['popup width'] . ',height=' . $info['popup height'] . ',scrollbars,resizable"); w.focus(); return false;',
+          'title' => $info['title'],
+        ),
+        'query' => array('popup' => TRUE),
+        'html' => TRUE)
     );
   }
   else {
     $tlink = l($text, "helpservice/$module/$topic", array(
-      'attributes' => array(
-        'class' => $class,
-        'title' => $info['title']
-      ),
-      'html' => TRUE)
+        'attributes' => array(
+          'class' => $class,
+          'title' => $info['title']
+        ),
+        'html' => TRUE)
     );
   }
   return $tlink;
@@ -502,6 +508,7 @@ function helpservice_get_topic_filename($module, $topic) {
     return "./$info[path]/$info[file]";
   }
 }
+
 /**
  * Load and render a help topic.
  */
@@ -543,9 +550,9 @@ function helpservice_view_topic($module, $topic, $bookmark = '', $popup = FALSE)
 
     // If a bookmark was specified, then extract just that part of the file
     $matches = array();
-    if ($bookmark && preg_match('/<!--&'.$bookmark.'-->(.*?)<!--&/s', $output, $matches)) {
+    if ($bookmark && preg_match('/<!--&' . $bookmark . '-->(.*?)<!--&/s', $output, $matches)) {
       $output = $matches[1];
-    } 
+    }
     // Make some exchanges. The strtr is because url() translates $ into %24
     // but we need to change it back for the regex replacement.
 
@@ -566,12 +573,12 @@ function helpservice_view_topic($module, $topic, $bookmark = '', $popup = FALSE)
     // Change 'path:' to the URL to the base help directory.
     $output = preg_replace('/href="path:([^"]+)"/', 'href="' . $base_path . $info['path'] . '/$1"', $output);
     $output = preg_replace('/src="path:([^"]+)"/', 'src="' . $base_path . $info['path'] . '/$1"', $output);
-    $output = str_replace('&path&', $base_path . $info['path'] .'/', $output);
+    $output = str_replace('&path&', $base_path . $info['path'] . '/', $output);
 
     // Change 'trans_path:' to the URL to the actual help directory.
     $output = preg_replace('/href="trans_path:([^"]+)"/', 'href="' . $base_path . $file_info['path'] . '/$1"', $output);
     $output = preg_replace('/src="trans_path:([^"]+)"/', 'src="' . $base_path . $file_info['path'] . '/$1"', $output);
-    $output = str_replace('&trans_path&', $base_path . $file_info['path'] .'/', $output);
+    $output = str_replace('&trans_path&', $base_path . $file_info['path'] . '/', $output);
 
     // Change 'base_url:' to the URL to the site.
     $output = preg_replace('/href="base_url:([^"]+)"/', 'href="' . strtr(url('$1'), array('%24' => '$')) . '"', $output);
@@ -737,7 +744,7 @@ function _helpservice_parse_ini() {
 /**
  * Implementation of hook_search()
  */
-function helpservice_search($op = 'search', $keys = null) {
+function helpservice_search($op = 'search', $keys = NULL) {
   switch ($op) {
     case 'name':
       return t('orgRight Help');
@@ -767,8 +774,8 @@ function helpservice_search($op = 'search', $keys = null) {
         $info = $topics[$sid->module][$sid->topic];
         $text = helpservice_view_topic($sid->module, $sid->topic);
         $results[] = array('link' => helpservice_url("helpservice/$sid->module/$sid->topic"),
-                           'title' => $info['title'],
-                           'snippet' => search_excerpt($keys, $text));
+          'title' => $info['title'],
+          'snippet' => search_excerpt($keys, $text));
       }
       return $results;
   }
@@ -853,7 +860,7 @@ function helpservice_update_index() {
 function template_preprocess_helpservice_popup(&$variables) {
   // Add favicon.
   if (theme_get_setting('toggle_favicon')) {
-    drupal_set_html_head('<link rel="shortcut icon" href="'. check_url(theme_get_setting('favicon')) .'" type="image/x-icon" />');
+    drupal_set_html_head('<link rel="shortcut icon" href="' . check_url(theme_get_setting('favicon')) . '" type="image/x-icon" />');
   }
 
   global $theme;
@@ -871,18 +878,18 @@ function template_preprocess_helpservice_popup(&$variables) {
   drupal_add_css(drupal_get_path('module', 'helpservice') . '/helpservice-popup.css');
   drupal_add_css(drupal_get_path('module', 'helpservice') . '/helpservice.css');
 
-  $variables['head_title']        = implode(' | ', $head_title);
-  $variables['base_path']         = base_path();
-  $variables['front_page']        = url();
-  $variables['breadcrumb']        = theme('breadcrumb', drupal_get_breadcrumb());
-  $variables['feed_icons']        = drupal_get_feeds();
-  $variables['head']              = drupal_get_html_head();
-  $variables['language']          = $GLOBALS['language'];
-  $variables['language']->dir     = $GLOBALS['language']->direction ? 'rtl' : 'ltr';
-  $variables['logo']              = theme_get_setting('logo');
-  $variables['messages']          = theme('status_messages');
-  $variables['site_name']         = (theme_get_setting('toggle_name') ? variable_get('site_name', 'Drupal') : '');
-  $variables['css']               = drupal_add_css();
+  $variables['head_title'] = implode(' | ', $head_title);
+  $variables['base_path'] = base_path();
+  $variables['front_page'] = url();
+  $variables['breadcrumb'] = theme('breadcrumb', drupal_get_breadcrumb());
+  $variables['feed_icons'] = drupal_get_feeds();
+  $variables['head'] = drupal_get_html_head();
+  $variables['language'] = $GLOBALS['language'];
+  $variables['language']->dir = $GLOBALS['language']->direction ? 'rtl' : 'ltr';
+  $variables['logo'] = theme_get_setting('logo');
+  $variables['messages'] = theme('status_messages');
+  $variables['site_name'] = (theme_get_setting('toggle_name') ? variable_get('site_name', 'Drupal') : '');
+  $variables['css'] = drupal_add_css();
   $css = drupal_add_css();
 
   // Remove theme css.
@@ -892,11 +899,11 @@ function template_preprocess_helpservice_popup(&$variables) {
     }
   }
 
-  $variables['styles']            = drupal_get_css($css);
-  $variables['scripts']           = drupal_get_js();
-  $variables['title']             = drupal_get_title();
+  $variables['styles'] = drupal_get_css($css);
+  $variables['scripts'] = drupal_get_js();
+  $variables['title'] = drupal_get_title();
   // Closure should be filled last.
-  $variables['closure']           = theme('closure');
+  $variables['closure'] = theme('closure');
 }
 
 /**

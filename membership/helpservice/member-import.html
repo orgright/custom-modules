@@ -1,31 +1,66 @@
 <!-- $Id$ -->
 <h2>Import Member Details</h2>
 
-Member details can be imported from an existing membership database using a prepared CSV file (see <a href="&topic:orgright/orgright-csv-file&">What is a CSV file</a>).
+Member details can be imported from an existing membership database using a prepared CSV file (see
+<a href="&topic:orgright/orgright-csv-file&">What is a CSV file</a>).
 
-The first line in the member import file must contain field names corresponding to the <em>orgRight</em> member details fields (see below).  These fields can be in any order. The "<strong>name</strong>" field is required, but all others are optional. 
+The first line in the member import file must contain field names corresponding to the
+<em>orgRight</em> member details fields (see below).  These fields can be in any order. The "
+<strong>name</strong>" field is required, but all others are optional.
 
-Information from any unrecognised fields will be imported into the "<strong>notes</strong>" field. Any html and php tags (text enclosed in "<strong>&lt;</strong>" and "<strong>&gt;</strong>" characters) will be removed from all imported fields.  It is recommended that all such characters are converted to either parentheses (), braces {}, or square brackets [].
+Information from any unrecognised fields will be imported into the "<strong>notes</strong>" field. Any html and php tags (text enclosed in "
+<strong>&lt;</strong>" and "<strong>
+  &gt;</strong>" characters) will be removed from all imported fields.  It is recommended that all such characters are converted to either parentheses (), braces {}, or square brackets [].
 
 It is recommended that all text strings in a CSV file are enclosed in quotation marks (eg "some text") to prevent embedded commas from disrupting the separation into fields.
 
-The following fields are available for member details:<ul><li>"name"</li><li>"address"</li><li>"city"</li><li>"postcode"</li><li>"phone"</li><li>"email"</li><li>"category"</li><li>"status"</li><li>"date joined"</li><li>"date left"</li><li>"primary member"</li><li>"notes"</li></ul>
+The following fields are available for member details:
+<ul>
+  <li>"name"</li>
+  <li>"address"</li>
+  <li>"city"</li>
+  <li>"postcode"</li>
+  <li>"phone"</li>
+  <li>"email"</li>
+  <li>"category"</li>
+  <li>"status"</li>
+  <li>"date joined"</li>
+  <li>"date left"</li>
+  <li>"primary member"</li>
+  <li>"notes"</li>
+</ul>
 
 The "address", "phone", "phone" and "notes" fields are multi-line capable, so encode line-breaks with semi-colon + question mark pairs (";?"). The "date joined" and "date left" fields should be formatted as "dd-mm-yyyy". Imported category and status values will be checked against the list of currently defined values, but there are options below to add new values to the current list.'
 
-A record in the CSV import file will be ignored if:<ul>
-<li>a primary member is specified but a member with this name does not exist in the database.  This may occur if the records in the CSV file are in a sequence where the primary member is specified later.  In this case, simply re-importing the same file will allow the rejected record to be successfully imported.</li>
-<li>an unknown category or status value is specifed and the option to add new category or status values was not selected.  In this case, either manually add the required additional category or status values (see <a href="&topic:orgright/orgright-configuration&">administration</a>), enable automatic addition on new category or status values, or edit the CSV file to remove the unknown category or status values.
+A record in the CSV import file will be ignored if:
+<ul>
+  <li>a primary member is specified but a member with this name does not exist
+    in the database. This may occur if the records in the CSV file are in a
+    sequence where the primary member is specified later. In this case, simply
+    re-importing the same file will allow the rejected record to be successfully
+    imported.
+  </li>
+  <li>an unknown category or status value is specifed and the option to add new
+    category or status values was not selected. In this case, either manually
+    add the required additional category or status values (see <a
+      href="&topic:orgright/orgright-configuration&">administration</a>), enable
+    automatic addition on new category or status values, or edit the CSV file to
+    remove the unknown category or status values.
 </ul>
 
-<!--&selectfile--><strong><em>Select file</em></strong>:  Select a CSV formatted file that contains the member details. The first line of this file must contain the field names in the same order that they appear in subsequent records.
+<!--&selectfile--><strong><em>Select
+  file</em></strong>:  Select a CSV formatted file that contains the member details. The first line of this file must contain the field names in the same order that they appear in subsequent records.
 
 The maximum size of CSV file that can be imported is 1MB. Break larger files into several sections that can be imported separately.
 
-<!--&defaultcategory--><strong><em>Default category</em></strong>:  Specify the category value that an imported member will be given if the record in the CSV file does not include a category value.
+<!--&defaultcategory--><strong><em>Default
+  category</em></strong>:  Specify the category value that an imported member will be given if the record in the CSV file does not include a category value.
 
-<!--&defaultstatus--><strong><em>Default status</em></strong>:    Specify the status value that an imported member will be given if the record in the CSV file does not include a status value.
+<!--&defaultstatus--><strong><em>Default
+  status</em></strong>:    Specify the status value that an imported member will be given if the record in the CSV file does not include a status value.
 
-<!--&addnewcategory--><strong><em>Add new categories</em></strong>:  Specify whether to add unknown category values to the current list of categories.
+<!--&addnewcategory--><strong><em>Add new
+  categories</em></strong>:  Specify whether to add unknown category values to the current list of categories.
 
-<!--&addnewstatus--><strong><em>Add new status values</em></strong>: Specify whether to add unknown status values to the current list of status values.
+<!--&addnewstatus--><strong><em>Add new status
+  values</em></strong>: Specify whether to add unknown status values to the current list of status values.

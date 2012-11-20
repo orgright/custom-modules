@@ -34,7 +34,7 @@ function adminnotice_node_info() {
     ),
   );
 }
-  
+
 /**
  * Implementation of hook_perm()
  */
@@ -46,21 +46,21 @@ function adminnotice_perm() {
     'update admin notice',
     'delete admin notice',
   );
-}   
+}
 
 /**
  * Implementation of hook_access()
- */ 
+ */
 function adminnotice_access($op, $node, $account) {
   //orgright_debug_msg('adminnotice','Fn: adminnotice_access',5);
   // Determine node type ($node will either be the string "type" or a node object)
   $node_type = ($op == 'create') ? $node : $node->type;
   // Limit access to the functions provided by this module
   switch ($node_type) {
-  case 'notice':
-    return adminnotice_public_access($op, $account);
-  default:
-    return FALSE;
+    case 'notice':
+      return adminnotice_public_access($op, $account);
+    default:
+      return FALSE;
   }
 }
 
@@ -196,6 +196,7 @@ function adminnotice_delete($node) {
     db_query("DELETE FROM {org_notices} WHERE nid = %d", $node->nid);
   }
 }
+
 /**
  * Implementation of hook_node_api()
  */
@@ -211,7 +212,9 @@ function adminnotice_nodeapi(&$node, $op, $teaser, $page) {
         return;
       case 'update':
         // Ignore updates caused by rules actions
-        if ($node->rules_update) { return; }
+        if ($node->rules_update) {
+          return;
+        }
         // Trigger the specified rules events
         return;
       case 'delete':
@@ -229,7 +232,7 @@ function adminnotice_nodeapi(&$node, $op, $teaser, $page) {
 /**
  * Implementation of hook_cron()
  */
-function adminnotice_cron () {
+function adminnotice_cron() {
   // This function will be called each time cron is run
   //orgright_debug_msg('adminnotice','Fn: adminnotice_cron');
   // define a user and check to see whether there are any new notices to retrieve
@@ -265,16 +268,18 @@ function adminnotice_cron () {
     $node->nref = $nref;
     node_save($node);
     unset($node);
-    watchdog('orgright', t('Retrieved admin notice #@num', array('@num'=>$nref)));
+    watchdog('orgright', t('Retrieved admin notice #@num', array('@num' => $nref)));
   }
 }
 
 
-function adminnotice_check_notices ($user) {
+function adminnotice_check_notices($user) {
   // This function will connect to the Helpdesk site and retrieve a list of new notices
   // get the site name (including a sub-directory if being used)
   $thissite = orgright_get_domain();
-  if ($sitesubdir = orgright_get_sitesubdir()) { $thissite .= '+'.$sitesubdir; }
+  if ($sitesubdir = orgright_get_sitesubdir()) {
+    $thissite .= '+' . $sitesubdir;
+  }
   // get the name of the user to connect as
   $username = $user->name;
   // get the most recent notice NID retrieved.
@@ -285,17 +290,19 @@ function adminnotice_check_notices ($user) {
   // get the URL to connect to
   $helpdeskurl = orgright_get_helpdeskurl();
   // and ask for the list of new notices
-  $result = xmlrpc($helpdeskurl.'/xmlrpc.php', 'fromportal.checkNewNotices', $thissite, $username, $lastnid);
+  $result = xmlrpc($helpdeskurl . '/xmlrpc.php', 'fromportal.checkNewNotices', $thissite, $username, $lastnid);
   // if everything is valid, returned value is an array of nids (may be empty)
-  // else returned value is error message.  But first test for XMLRPC errors 
+  // else returned value is error message.  But first test for XMLRPC errors
   if ($error = xmlrpc_error()) {
-    if ($error->code <= 0) { $error->message = t('Outgoing HTTP request failed - socket could not be opened'); }
-    watchdog ('orgright', t('Adminnotice: Cannot authenticate connection - request returned an error: %msg (@code).',
+    if ($error->code <= 0) {
+      $error->message = t('Outgoing HTTP request failed - socket could not be opened');
+    }
+    watchdog('orgright', t('Adminnotice: Cannot authenticate connection - request returned an error: %msg (@code).',
       array('%msg' => $error->message, '@code' => $error->code)));
     $result = NULL;
   }
   if (!is_array($result)) {
-    watchdog ('orgright', t('Adminnotice: Error: message = @msg', array('@msg'=>$result)));
+    watchdog('orgright', t('Adminnotice: Error: message = @msg', array('@msg' => $result)));
     $result = NULL;
   }
   // All looks OK, so return list of new notice NIDs
@@ -308,22 +315,26 @@ function adminnotice_retrieve_notice($user, $nnid) {
 
   // get the site name (including a sub-directory if being used)
   $thissite = orgright_get_domain();
-  if ($sitesubdir = orgright_get_sitesubdir()) { $thissite .= '+'.$sitesubdir; }
+  if ($sitesubdir = orgright_get_sitesubdir()) {
+    $thissite .= '+' . $sitesubdir;
+  }
   // get the name of the user to connect as
   $username = $user->name;
   // get the URL to connect to
   $helpdeskurl = orgright_get_helpdeskurl();
-  $result = xmlrpc($helpdeskurl.'/xmlrpc.php', 'fromportal.retrieveNotice', $thissite, $username, $nnid);
+  $result = xmlrpc($helpdeskurl . '/xmlrpc.php', 'fromportal.retrieveNotice', $thissite, $username, $nnid);
   // if everything is valid, returned value is an array of node fields
-  // else returned value is NULL.  But first test for XMLRPC errors 
+  // else returned value is NULL.  But first test for XMLRPC errors
   if ($error = xmlrpc_error()) {
-    if ($error->code <= 0) { $error->message = t('Outgoing HTTP request failed - socket could not be opened'); }
-    watchdog ('orgright', t('Adminnotice: Cannot authenticate connection - request returned an error: %msg (@code).',
+    if ($error->code <= 0) {
+      $error->message = t('Outgoing HTTP request failed - socket could not be opened');
+    }
+    watchdog('orgright', t('Adminnotice: Cannot authenticate connection - request returned an error: %msg (@code).',
       array('%msg' => $error->message, '@code' => $error->code)));
     $result = NULL;
   }
   if (!$result) {
-    watchdog ('orgright',t('Adminnotice: Insufficient privilege to retrieve notice @nid', array('@nid'=>$nnid)));
+    watchdog('orgright', t('Adminnotice: Insufficient privilege to retrieve notice @nid', array('@nid' => $nnid)));
   }
   return $result;
 }

@@ -46,11 +46,15 @@ function committee_committee_nodeapi(&$node, $op, $teaser, $page) {
         $node->parent = $committee->committee;
       }
       // Stop here if a teaser display is required
-      if ($teaser) { return; }
+      if ($teaser) {
+        return;
+      }
       // Specify the fields that are used for rules event triggers on change
       $fields = array('pnid');
       $original = array();
-      foreach ($fields as $field) { $original[$field] = $node->$field; }
+      foreach ($fields as $field) {
+        $original[$field] = $node->$field;
+      }
       $node->original = serialize($original);
       $node->rules_update = FALSE;
       // information that might be required below
@@ -98,14 +102,16 @@ function committee_committee_nodeapi(&$node, $op, $teaser, $page) {
       return;
     case 'update':
       // Ignore updates caused by rules actions
-      if ($node->rules_update) { return; }
+      if ($node->rules_update) {
+        return;
+      }
       // Trigger the specified rules events
       if (module_exists('rules')) {
         rules_invoke_event('committee_event_commitee_update', $node);
         if ($original = unserialize($node->original)) {
           foreach ($original as $field => $value) {
             if ($node->$field != $value) {
-              rules_invoke_event('committee_event_commitee_'.$field.'_update', $node);
+              rules_invoke_event('committee_event_commitee_' . $field . '_update', $node);
             }
           }
         }
@@ -136,13 +142,19 @@ function committee_role_nodeapi(&$node, $op, $teaser, $page) {
         $committee = db_fetch_object(db_query($sql, $node->cnid));
         $node->committee = $committee->committee;
       }
-      else { $node->committee = '[none]'; }
+      else {
+        $node->committee = '[none]';
+      }
       // Stop here if a teaser display is required
-      if ($teaser) { return; }
+      if ($teaser) {
+        return;
+      }
       // Specify the fields that are used for rules event triggers on change
-      $fields = array('cnid','multiperson','allowvacant');
+      $fields = array('cnid', 'multiperson', 'allowvacant');
       $original = array();
-      foreach ($fields as $field) { $original[$field] = $node->$field; }
+      foreach ($fields as $field) {
+        $original[$field] = $node->$field;
+      }
       $node->original = serialize($original);
       $node->rules_update = FALSE;
       // Load an array of assignments
@@ -165,14 +177,16 @@ function committee_role_nodeapi(&$node, $op, $teaser, $page) {
       return;
     case 'update':
       // Ignore updates caused by rules actions
-      if ($node->rules_update) { return; }
+      if ($node->rules_update) {
+        return;
+      }
       // Trigger the specified rules events
       if (module_exists('rules')) {
         rules_invoke_event('committee_event_role_update', $node);
         if ($original = unserialize($node->original)) {
           foreach ($original as $field => $value) {
             if ($node->$field != $value) {
-              rules_invoke_event('committee_event_role_'.$field.'_update', $node);
+              rules_invoke_event('committee_event_role_' . $field . '_update', $node);
             }
           }
         }
@@ -206,9 +220,11 @@ function committee_appointment_nodeapi(&$node, $op, $teaser, $page) {
       $committee = db_fetch_object(db_query($sql, $node->cnid));
       $node->committee = $committee->committee;
       // Specify the fields that are used for rules event triggers on change
-      $fields = array('mnid','cnid','appointtype','appointdate','retiredate');
+      $fields = array('mnid', 'cnid', 'appointtype', 'appointdate', 'retiredate');
       $original = array();
-      foreach ($fields as $field) { $original[$field] = $node->$field; }
+      foreach ($fields as $field) {
+        $original[$field] = $node->$field;
+      }
       $node->original = serialize($original);
       $node->rules_update = FALSE;
       return;
@@ -220,14 +236,16 @@ function committee_appointment_nodeapi(&$node, $op, $teaser, $page) {
       return;
     case 'update':
       // Ignore updates caused by rules actions
-      if ($node->rules_update) { return; }
+      if ($node->rules_update) {
+        return;
+      }
       // Trigger the specified rules events
       if (module_exists('rules')) {
         rules_invoke_event('committee_event_appointment_update', $node);
         if ($original = unserialize($node->original)) {
           foreach ($original as $field => $value) {
             if ($node->$field != $value) {
-              rules_invoke_event('committee_event_appointment_'.$field.'_update', $node);
+              rules_invoke_event('committee_event_appointment_' . $field . '_update', $node);
             }
           }
         }
@@ -267,11 +285,15 @@ function committee_assignment_nodeapi(&$node, $op, $teaser, $page) {
         $committee = db_fetch_object(db_query($sql, $role->cnid));
         $node->committee = $committee->committee;
       }
-      else { $node->committee = '[none]'; }
+      else {
+        $node->committee = '[none]';
+      }
       // Specify the fields that are used for rules event triggers on change
-      $fields = array('mnid','rnid','assigntype','assigndate','ceasedate');
+      $fields = array('mnid', 'rnid', 'assigntype', 'assigndate', 'ceasedate');
       $original = array();
-      foreach ($fields as $field) { $original[$field] = $node->$field; }
+      foreach ($fields as $field) {
+        $original[$field] = $node->$field;
+      }
       $node->original = serialize($original);
       $node->rules_update = FALSE;
       return;
@@ -283,14 +305,16 @@ function committee_assignment_nodeapi(&$node, $op, $teaser, $page) {
       return;
     case 'update':
       // Ignore updates caused by rules actions
-      if ($node->rules_update) { return; }
+      if ($node->rules_update) {
+        return;
+      }
       // Trigger the specified rules events
       if (module_exists('rules')) {
         rules_invoke_event('committee_event_assignment_update', $node);
         if ($original = unserialize($node->original)) {
           foreach ($original as $field => $value) {
             if ($node->$field != $value) {
-              rules_invoke_event('committee_event_assignment_'.$field.'_update', $node);
+              rules_invoke_event('committee_event_assignment_' . $field . '_update', $node);
             }
           }
         }
@@ -362,7 +386,6 @@ function committee_assignment_insert($node) {
 }
 
 
-
 /**
  * Update functions called from hook_update() in module file
  */
@@ -407,25 +430,25 @@ function committee_assignment_update($node) {
     $node->ceasedate,
     $node->notes,
     $node->uid,
-    $node->vid);      
+    $node->vid);
 }
 
 /**
  * Delete functions called from hook_delete() in module file
  */
-function committee_committee_delete ($node) {
+function committee_committee_delete($node) {
   db_query("DELETE FROM {org_committees} WHERE nid = %d", $node->nid);
 }
 
-function committee_role_delete ($node) {
+function committee_role_delete($node) {
   db_query("DELETE FROM {org_roles} WHERE nid = %d", $node->nid);
 }
 
-function committee_appointment_delete ($node) {
+function committee_appointment_delete($node) {
   db_query("DELETE FROM {org_appointments} WHERE nid = %d", $node->nid);
 }
 
-function committee_assignment_delete ($node) {
+function committee_assignment_delete($node) {
   db_query("DELETE FROM {org_assignments} WHERE nid = %d", $node->nid);
 }
 

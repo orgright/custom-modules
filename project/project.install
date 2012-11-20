@@ -29,7 +29,7 @@ function project_disable() {
 /**
  * Implementation of hook_schema()
  */
-// === "org_projects" table === 
+// === "org_projects" table ===
 function project_schema() {
   $schema['org_projects'] = array(
     'description' => t('Stores details for projects that are not held in the node tables'),
@@ -93,10 +93,10 @@ function project_schema() {
         'description' => t('Flag to indicate whether the schedule for this project needs to be re-calculated'),
       ),
       'projsched' => array(
-         'type' => 'text',
-         'size' => 'big',
-         'not null' => TRUE,
-         'description' => t('Text type graphic representation of the project schedule'),
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => TRUE,
+        'description' => t('Text type graphic representation of the project schedule'),
       ),
       'notes' => array(
         'type' => 'varchar',
@@ -233,7 +233,7 @@ function project_schema() {
         'default' => 0,
         'description' => t('The UID of the user who last modified this projactivity'),
       ),
-	),
+    ),
     'primary key' => array('vid'),
     'indexes' => array(
       'nid' => array('nid'),
@@ -288,8 +288,8 @@ function project_schema() {
         'default' => 0,
         'description' => t('The UID of the user who last modified this project activity link'),
       ),
-	),
-    'primary key' => array('anid1','anid2'),
+    ),
+    'primary key' => array('anid1', 'anid2'),
     'indexes' => array(
       'anid1' => array('anid1'),
       'anid2' => array('anid2'),
@@ -358,7 +358,7 @@ function project_schema() {
         'default' => 0,
         'description' => t('The UID of the user who last modified this project report'),
       ),
-	),
+    ),
     'primary key' => array('vid'),
     'indexes' => array(
       'nid' => array('nid'),
@@ -375,37 +375,57 @@ function project_schema() {
 /**
  * Module update functions go here
  */
-function project_update_6001 () {
+function project_update_6001() {
   // Drop all default specifications for text columns
   $sql = "ALTER TABLE org_projects ";
   $cols = array('project', 'projcategory', 'projstatus', 'projdatype', 'projdate', 'projsched', 'notes');
-  foreach ($cols as $col) { $sql .= " ALTER COLUMN $col DROP DEFAULT,"; }
+  foreach ($cols as $col) {
+    $sql .= " ALTER COLUMN $col DROP DEFAULT,";
+  }
   $sql = substr($sql, 0, -1);
-  if (!db_query($sql)) { return array('#abort'=>array('success'=>FALSE, 'query'=>'Alter table org_projects failed')); }
+  if (!db_query($sql)) {
+    return array('#abort' => array('success' => FALSE, 'query' => 'Alter table org_projects failed'));
+  }
 
   $sql = "ALTER TABLE org_projactivities ";
   $cols = array('activity', 'activicategory', 'activistatus', 'duratype', 'actividatype', 'actividate', 'actualstart', 'actualfinish', 'schedstart', 'schedfinish', 'notes');
-  foreach ($cols as $col) { $sql .= " ALTER COLUMN $col DROP DEFAULT,"; }
+  foreach ($cols as $col) {
+    $sql .= " ALTER COLUMN $col DROP DEFAULT,";
+  }
   $sql = substr($sql, 0, -1);
-  if (!db_query($sql)) { return array('#abort'=>array('success'=>FALSE, 'query'=>'Alter table org_projactivities failed')); }
+  if (!db_query($sql)) {
+    return array('#abort' => array('success' => FALSE, 'query' => 'Alter table org_projactivities failed'));
+  }
 
   $sql = "ALTER TABLE org_projreports ";
   $cols = array('projreport', 'projrepdate', 'notes');
-  foreach ($cols as $col) { $sql .= " ALTER COLUMN $col DROP DEFAULT,"; }
+  foreach ($cols as $col) {
+    $sql .= " ALTER COLUMN $col DROP DEFAULT,";
+  }
   $sql = substr($sql, 0, -1);
-  if (!db_query($sql)) { return array('#abort'=>array('success'=>FALSE, 'query'=>'Alter table org_projreports failed')); }
+  if (!db_query($sql)) {
+    return array('#abort' => array('success' => FALSE, 'query' => 'Alter table org_projreports failed'));
+  }
 
   $sql = "ALTER TABLE org_projactivitylinks ";
   $cols = array('link', 'notes');
-  foreach ($cols as $col) { $sql .= " ALTER COLUMN $col DROP DEFAULT,"; }
+  foreach ($cols as $col) {
+    $sql .= " ALTER COLUMN $col DROP DEFAULT,";
+  }
   $sql = substr($sql, 0, -1);
-  if (!db_query($sql)) { return array('#abort'=>array('success'=>FALSE, 'query'=>'Alter table org_projactivitiylinks failed')); }
+  if (!db_query($sql)) {
+    return array('#abort' => array('success' => FALSE, 'query' => 'Alter table org_projactivitiylinks failed'));
+  }
   // and set the default for these numeric columns
   $sql = "ALTER TABLE org_projactivitylinks ";
   $cols = array('anid1', 'anid2', 'pnid');
-  foreach ($cols as $col) { $sql .= " ALTER COLUMN $col SET DEFAULT 0,"; }
+  foreach ($cols as $col) {
+    $sql .= " ALTER COLUMN $col SET DEFAULT 0,";
+  }
   $sql = substr($sql, 0, -1);
-  if (!db_query($sql)) { return array('#abort'=>array('success'=>FALSE, 'query'=>'Alter table org_projactivitiylinks failed')); }
+  if (!db_query($sql)) {
+    return array('#abort' => array('success' => FALSE, 'query' => 'Alter table org_projactivitiylinks failed'));
+  }
 
   return array();
 }

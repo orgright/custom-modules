@@ -27,7 +27,9 @@ function committee_committee_view(&$node, $teaser, $page) {
     '#weight' => 5,
   );
   // If a teaser is being generated, then we are done
-  if ($teaser) { return; }
+  if ($teaser) {
+    return;
+  }
   // else continue adding more detail
   $description = t('Notes');
   $notes = check_markup($node->notes, orgright_get_field_filter());
@@ -47,8 +49,7 @@ function committee_committee_view(&$node, $teaser, $page) {
     foreach ($node->subcommittees as $this_subcommittee) {
       $subitem = $this_subcommittee['committee'];
       $ref = $this_subcommittee['nid'];
-      $attributes = array(
-      );
+      $attributes = array();
       ++$weight;
       $node->content['subcommittees'][] = array(
         '#value' => committee_theme_subitem('subcommittee', $subitem, $ref, $attributes),
@@ -58,7 +59,7 @@ function committee_committee_view(&$node, $teaser, $page) {
   }
   // Include a link to add new sub-committee
   ++$weight;
-  $linktext = l(t('Add new sub-committee'), 'committee/committees/add/parent~'.$node->nid);
+  $linktext = l(t('Add new sub-committee'), 'committee/committees/add/parent~' . $node->nid);
   $node->content['add-subcommittee'] = array(
     '#value' => committee_theme_link('add-subcommittee', $linktext),
     '#weight' => $weight,
@@ -78,11 +79,13 @@ function committee_committee_view(&$node, $teaser, $page) {
       $attributes = array();
       if (isset($this_role['assignment'])) {
         foreach ($this_role['assignment'] as $this_assignment) {
-          $attributes[] =  ' : ' . l($this_assignment['member'], 'node/'.$this_assignment['mnid']);
-          $attributes[] =  ', ' . strtolower($this_assignment['assigntype']) . ' on '.$this_assignment['assigndate'];
+          $attributes[] = ' : ' . l($this_assignment['member'], 'node/' . $this_assignment['mnid']);
+          $attributes[] = ', ' . strtolower($this_assignment['assigntype']) . ' on ' . $this_assignment['assigndate'];
         }
       }
-      else { $attributes[] = '&nbsp;'; }
+      else {
+        $attributes[] = '&nbsp;';
+      }
       ++$weight;
       $node->content['roles'][] = array(
         '#value' => committee_theme_subitem('roles', $subitem, $ref, $attributes),
@@ -92,7 +95,7 @@ function committee_committee_view(&$node, $teaser, $page) {
   }
   // Include a link to add new role
   ++$weight;
-  $linktext = l(t('Add new committee role'), 'committee/roles/add/committee~'.$node->nid);
+  $linktext = l(t('Add new committee role'), 'committee/roles/add/committee~' . $node->nid);
   $node->content['add-role'] = array(
     '#value' => committee_theme_link('add-role', $linktext),
     '#weight' => $weight,
@@ -112,8 +115,8 @@ function committee_committee_view(&$node, $teaser, $page) {
       $subitem = 'Appointment';
       $ref = $this_appointment['nid'];
       $attributes = array(
-        ': ' . l($this_appointment['member'], 'node/'.$this_appointment['mnid']),
-        ', ' . strtolower($this_appointment['appointtype']) . ' on '.$appointdate,
+        ': ' . l($this_appointment['member'], 'node/' . $this_appointment['mnid']),
+        ', ' . strtolower($this_appointment['appointtype']) . ' on ' . $appointdate,
       );
       ++$weight;
       $node->content['appointments'][] = array(
@@ -124,13 +127,13 @@ function committee_committee_view(&$node, $teaser, $page) {
   }
   // Include a link to add new appointment
   ++$weight;
-  $linktext = l(t('Add new appointment'), 'committee/appointments/add/committee~'.$node->nid);
+  $linktext = l(t('Add new appointment'), 'committee/appointments/add/committee~' . $node->nid);
   $node->content['add-appointment'] = array(
     '#value' => committee_theme_link('add-appointment', $linktext),
     '#weight' => $weight,
   );
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Committee')=>'committee', t('Committees')=>'committee/committees'));
+  orgright_breadcrumb(array(t('Committee') => 'committee', t('Committees') => 'committee/committees'));
 }
 
 function committee_role_view(&$node, $teaser, $page) {
@@ -149,16 +152,18 @@ function committee_role_view(&$node, $teaser, $page) {
   //$node->content['body']['#weight'] = 0;
   $description = t('Multiple persons');
   $node->content['multiperson'] = array(
-    '#value' => committee_theme_item('multiperson', $description, ($node->multiperson?'Yes':'No')),
+    '#value' => committee_theme_item('multiperson', $description, ($node->multiperson ? 'Yes' : 'No')),
     '#weight' => 5,
   );
   $description = t('Allow vacant');
   $node->content['allowvacant'] = array(
-    '#value' => committee_theme_item('allowvacant', $description, ($node->allowvacant?'Yes':'No')),
+    '#value' => committee_theme_item('allowvacant', $description, ($node->allowvacant ? 'Yes' : 'No')),
     '#weight' => 6,
   );
   // If a teaser is being generated, then we are done
-  if ($teaser) { return; }
+  if ($teaser) {
+    return;
+  }
   // else continue adding more detail
   $description = t('Notes');
   $notes = check_markup($node->notes, orgright_get_field_filter());
@@ -182,17 +187,21 @@ function committee_role_view(&$node, $teaser, $page) {
       if ($this_assignment['ceasedate']) {
         $ceasedate = date_format_date(date_make_date($this_assignment['ceasedate']), 'custom', 'd M Y');
       }
-      else { $ceasedate = ''; }
+      else {
+        $ceasedate = '';
+      }
       $subitem = 'Assignment';
-      if ($this_assignment['assigndate'] > $today) { $subitem = 'Pending assignment'; }
+      if ($this_assignment['assigndate'] > $today) {
+        $subitem = 'Pending assignment';
+      }
       $ref = $this_assignment['nid'];
       $attributes = array(
-        ': ' . l($this_assignment['member'], 'node/'.$this_assignment['mnid']),
+        ': ' . l($this_assignment['member'], 'node/' . $this_assignment['mnid']),
         ', ' . strtolower($this_assignment['assigntype']),
-        ' on '.$assigndate,
+        ' on ' . $assigndate,
       );
       if ($ceasedate) {
-        $attributes[] = (($this_assignment['ceasedate'] > $today)?', will cease on ':', ceased ').$ceasedate;
+        $attributes[] = (($this_assignment['ceasedate'] > $today) ? ', will cease on ' : ', ceased ') . $ceasedate;
       }
       ++$weight;
       $node->content['assignments'][] = array(
@@ -203,13 +212,13 @@ function committee_role_view(&$node, $teaser, $page) {
   }
   // Include a link to add new assignment
   ++$weight;
-  $linktext = l(t('Add new assignment'), 'committee/assignments/add/role~'.$node->nid.'/committee~'.$node->cnid);
+  $linktext = l(t('Add new assignment'), 'committee/assignments/add/role~' . $node->nid . '/committee~' . $node->cnid);
   $node->content['add-assignment'] = array(
     '#value' => committee_theme_link('add-assignment', $linktext),
     '#weight' => $weight,
   );
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Committee')=>'committee', t('Roles')=>'committee/roles'));
+  orgright_breadcrumb(array(t('Committee') => 'committee', t('Roles') => 'committee/roles'));
 }
 
 function committee_appointment_view(&$node, $teaser, $page) {
@@ -248,7 +257,9 @@ function committee_appointment_view(&$node, $teaser, $page) {
     );
   }
   // If a teaser is being generated, then we are done
-  if ($teaser) { return; }
+  if ($teaser) {
+    return;
+  }
   // else continue adding more detail
   $description = t('Notes');
   $notes = check_markup($node->notes, orgright_get_field_filter());
@@ -257,7 +268,7 @@ function committee_appointment_view(&$node, $teaser, $page) {
     '#weight' => 9,
   );
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Committee')=>'committee', t('Appointments')=>'committee/appointments'));
+  orgright_breadcrumb(array(t('Committee') => 'committee', t('Appointments') => 'committee/appointments'));
 }
 
 function committee_assignment_view(&$node, $teaser, $page) {
@@ -301,7 +312,9 @@ function committee_assignment_view(&$node, $teaser, $page) {
     );
   }
   // If a teaser is being generated, then we are done
-  if ($teaser) { return; }
+  if ($teaser) {
+    return;
+  }
   // else continue adding more detail
   $description = t('Notes');
   $notes = check_markup($node->notes, orgright_get_field_filter());
@@ -310,7 +323,7 @@ function committee_assignment_view(&$node, $teaser, $page) {
     '#weight' => 9,
   );
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Committee')=>'committee', t('Assignments')=>'committee/assignments'));
+  orgright_breadcrumb(array(t('Committee') => 'committee', t('Assignments') => 'committee/assignments'));
 }
 
 /**

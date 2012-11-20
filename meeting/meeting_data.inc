@@ -25,7 +25,6 @@ function meeting_mtg_item_load($node) {
 }
 
 
-
 /**
  * Node manipulation functions called from hook_nodeapi() in module file
  */
@@ -42,11 +41,15 @@ function meeting_meeting_nodeapi(&$node, $op, $teaser, $page) {
         $node->committee = $committee;
       }
       // Stop here if a teaser display is required
-      if ($teaser) { return; }
+      if ($teaser) {
+        return;
+      }
       // Specify the fields that are used for rules event triggers on change
-      $fields = array('cnid','meeting','mtgtype','mtgstatus', 'mtgdate','start','finish','location');
+      $fields = array('cnid', 'meeting', 'mtgtype', 'mtgstatus', 'mtgdate', 'start', 'finish', 'location');
       $original = array();
-      foreach ($fields as $field) { $original[$field] = $node->$field; }
+      foreach ($fields as $field) {
+        $original[$field] = $node->$field;
+      }
       $node->original = serialize($original);
       $node->rules_update = FALSE;
       // Load an array of agenda items
@@ -61,7 +64,7 @@ function meeting_meeting_nodeapi(&$node, $op, $teaser, $page) {
       while ($mtg_item = db_fetch_object($result)) {
         // find the associated member's name
         if ($mtg_item->mnid) {
-          $member = db_result(db_query("SELECT m.member FROM {node} n JOIN {org_members} m ON m.nid = n.nid WHERE m.vid = n.vid AND m.nid = %d",$mtg_item->mnid));
+          $member = db_result(db_query("SELECT m.member FROM {node} n JOIN {org_members} m ON m.nid = n.nid WHERE m.vid = n.vid AND m.nid = %d", $mtg_item->mnid));
           $mtg_item->member = $member;
         }
         $node->mtg_items[] = (array)$mtg_item;
@@ -75,14 +78,16 @@ function meeting_meeting_nodeapi(&$node, $op, $teaser, $page) {
       return;
     case 'update':
       // Ignore updates caused by rules actions
-      if ($node->rules_update) { return; }
+      if ($node->rules_update) {
+        return;
+      }
       // Trigger the specified rules events
       if (module_exists('rules')) {
         rules_invoke_event('meeting_event_meeting_update', $node);
         if ($original = unserialize($node->original)) {
           foreach ($original as $field => $value) {
             if ($node->$field != $value) {
-              rules_invoke_event('meeting_event_meeting_'.$field.'_update', $node);
+              rules_invoke_event('meeting_event_meeting_' . $field . '_update', $node);
             }
           }
         }
@@ -111,7 +116,7 @@ function meeting_agenda_item_nodeapi(&$node, $op, $teaser, $page) {
         $sql = "SELECT g.cnid, g.meeting, g.mtgtype, g.mtgstatus, g.mtgdate FROM {node} n JOIN {org_meetings} g ON g.nid = n.nid WHERE g.vid = n.vid AND g.nid = %d";
         $meeting = db_fetch_object(db_query($sql, $node->gnid));
         // find associated committee name
-        $committee = db_result(db_query("SELECT c.committee FROM {node} n JOIN {org_committees} c ON c.nid = n.nid WHERE c.vid = n.vid AND c.nid = %d",$meeting->cnid));
+        $committee = db_result(db_query("SELECT c.committee FROM {node} n JOIN {org_committees} c ON c.nid = n.nid WHERE c.vid = n.vid AND c.nid = %d", $meeting->cnid));
         $node->cnid = $meeting->cnid;
         $node->committee = $committee;
         $node->meeting = $meeting->meeting;
@@ -120,9 +125,11 @@ function meeting_agenda_item_nodeapi(&$node, $op, $teaser, $page) {
         $node->mtgdate = $meeting->mtgdate;
       }
       // Specify the fields that are used for rules event triggers on change
-      $fields = array('gnid','sequence', 'agitstatus');
+      $fields = array('gnid', 'sequence', 'agitstatus');
       $original = array();
-      foreach ($fields as $field) { $original[$field] = $node->$field; }
+      foreach ($fields as $field) {
+        $original[$field] = $node->$field;
+      }
       $node->original = serialize($original);
       $node->rules_update = FALSE;
       return;
@@ -134,14 +141,16 @@ function meeting_agenda_item_nodeapi(&$node, $op, $teaser, $page) {
       return;
     case 'update':
       // Ignore updates caused by rules actions
-      if ($node->rules_update) { return; }
+      if ($node->rules_update) {
+        return;
+      }
       // Trigger the specified rules events
       if (module_exists('rules')) {
         rules_invoke_event('meeting_event_agenda_item_update', $node);
         if ($original = unserialize($node->original)) {
           foreach ($original as $field => $value) {
             if ($node->$field != $value) {
-              rules_invoke_event('meeting_event_agenda_item_'.$field.'_update', $node);
+              rules_invoke_event('meeting_event_agenda_item_' . $field . '_update', $node);
             }
           }
         }
@@ -170,7 +179,7 @@ function meeting_mtg_item_nodeapi(&$node, $op, $teaser, $page) {
         $sql = "SELECT g.cnid, g.meeting, g.mtgtype, g.mtgstatus, g.mtgdate FROM {node} n JOIN {org_meetings} g ON g.nid = n.nid WHERE g.vid = n.vid AND g.nid = %d";
         $meeting = db_fetch_object(db_query($sql, $node->gnid));
         // find associated committee name
-        $committee = db_result(db_query("SELECT c.committee FROM {node} n JOIN {org_committees} c ON c.nid = n.nid WHERE c.vid = n.vid AND c.nid = %d",$meeting->cnid));
+        $committee = db_result(db_query("SELECT c.committee FROM {node} n JOIN {org_committees} c ON c.nid = n.nid WHERE c.vid = n.vid AND c.nid = %d", $meeting->cnid));
         $node->cnid = $meeting->cnid;
         $node->committee = $committee;
         $node->meeting = $meeting->meeting;
@@ -185,9 +194,11 @@ function meeting_mtg_item_nodeapi(&$node, $op, $teaser, $page) {
         $node->member = $member;
       }
       // Specify the fields that are used for rules event triggers on change
-      $fields = array('gnid','mnid','itemname','itemtype','itemstatus','itemdate');
+      $fields = array('gnid', 'mnid', 'itemname', 'itemtype', 'itemstatus', 'itemdate');
       $original = array();
-      foreach ($fields as $field) { $original[$field] = $node->$field; }
+      foreach ($fields as $field) {
+        $original[$field] = $node->$field;
+      }
       $node->original = serialize($original);
       $node->rules_update = FALSE;
       return;
@@ -199,14 +210,16 @@ function meeting_mtg_item_nodeapi(&$node, $op, $teaser, $page) {
       return;
     case 'update':
       // Ignore updates caused by rules actions
-      if ($node->rules_update) { return; }
+      if ($node->rules_update) {
+        return;
+      }
       // Trigger the specified rules events
       if (module_exists('rules')) {
         rules_invoke_event('meeting_event_mtg_item_update', $node);
         if ($original = unserialize($node->original)) {
           foreach ($original as $field => $value) {
             if ($node->$field != $value) {
-              rules_invoke_event('meeting_event_mtg_item_'.$field.'_update', $node);
+              rules_invoke_event('meeting_event_mtg_item_' . $field . '_update', $node);
             }
           }
         }
@@ -310,7 +323,7 @@ function meeting_mtg_item_update($node) {
     $node->itemdate,
     $node->notes,
     $node->uid,
-    $node->vid);      
+    $node->vid);
 }
 
 
@@ -318,14 +331,14 @@ function meeting_mtg_item_update($node) {
  * Delete functions called from hook_delete() in module file
  */
 function meeting_member_delete($node) {
-    db_query("DELETE FROM {org_meetings} WHERE nid = %d", $node->nid);
+  db_query("DELETE FROM {org_meetings} WHERE nid = %d", $node->nid);
 }
 
 function meeting_subscription_delete($node) {
-    db_query("DELETE FROM {org_agenda_items} WHERE nid = %d", $node->nid);
+  db_query("DELETE FROM {org_agenda_items} WHERE nid = %d", $node->nid);
 }
 
 function meeting_subpayment_delete($node) {
-    db_query("DELETE FROM {org_mtg_items} WHERE nid = %d", $node->nid);
+  db_query("DELETE FROM {org_mtg_items} WHERE nid = %d", $node->nid);
 }
 

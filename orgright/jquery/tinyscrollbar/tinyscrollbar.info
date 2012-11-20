@@ -1,0 +1,8 @@
+; $Id$
+name = Tiny Scrollbar
+description = Lightweight jQuery plugin for scrolling content
+project_url = http://www.baijs.nl/tinyscrollbar
+;stylesheets[][] = style.css
+scripts[][] = jquery.tinyscrollbar.min.js
+;scripts[1.4.4][] = jquery.test[1.4.4].min.js
+

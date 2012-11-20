@@ -53,8 +53,8 @@ function committee_committees_list() {
   while ($committee = db_fetch_object($result)) {
     // Generate a line of listing for this committee
     $committee_output = '';
-    $committee_output .= l($committee->committee, 'node/'.$committee->nid) . ' ';
-    $committee_output .= l('[edit]', 'node/'.$committee->nid.'/edit');
+    $committee_output .= l($committee->committee, 'node/' . $committee->nid) . ' ';
+    $committee_output .= l('[edit]', 'node/' . $committee->nid . '/edit');
     $today = orgright_get_date_ymd();
     $app_output = '';
     // Prepare a list of members currently appointed to this committee
@@ -62,13 +62,15 @@ function committee_committees_list() {
     $appointments = db_query(db_rewrite_sql($sql), $committee->nid);
     while ($appt = db_fetch_object($appointments)) {
       // ignore retired appointments
-      if ($appt->retiredate && $appt->retiredate < $today) { continue; }
+      if ($appt->retiredate && $appt->retiredate < $today) {
+        continue;
+      }
       // Extract the member name
       $sql = "SELECT m.member FROM {node} n JOIN {org_members} m ON m.nid = n.nid WHERE m.vid = n.vid AND m.nid = %d";
       $member = db_fetch_object(db_query($sql, $appt->mnid));
       // Prepare the appointment date for display
       $dateappoint = date_format_date(date_make_date($appt->appointdate), 'custom', 'd M Y');
-      $app_output .= '<li>' . l($member->member, 'node/'.$appt->mnid);
+      $app_output .= '<li>' . l($member->member, 'node/' . $appt->mnid);
       $app_output .= ' ' . strtolower($appt->appointtype);
       $app_output .= ' on ' . $dateappoint;
       $app_output .= '</li>';
@@ -80,7 +82,7 @@ function committee_committees_list() {
     $output .= '<p>' . $committee_output . '</p>';
   }
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Committee')=>'committee'));
+  orgright_breadcrumb(array(t('Committee') => 'committee'));
   //orgright_debug_msg('committee',$output);
   return $output;
 }
@@ -91,7 +93,7 @@ function committee_committees_add() {
   // First get an array of any arguments passed to this function
   $args = func_get_args();
   // Create a new node data structure of the correct type
-  $node = orgright_create_node('committee'); 
+  $node = orgright_create_node('committee');
   // Set the page title to display
   drupal_set_title(t('Create Committee'));
   // Load the required include file
@@ -99,7 +101,7 @@ function committee_committees_add() {
   // then call the form constructor function
   $output = drupal_get_form('committee_node_form', $node, $args);
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Committee')=>'committee'));
+  orgright_breadcrumb(array(t('Committee') => 'committee'));
   // and return results
   return $output;
 }
@@ -112,20 +114,24 @@ function committee_roles_list() {
   $cnid = -1;
   while ($role = db_fetch_object($result)) {
     if ($role->cnid <> $cnid) {
-      if ($cnid > -1) { $output .= '</ul>'; }
+      if ($cnid > -1) {
+        $output .= '</ul>';
+      }
       // Extract the committee name
       if ($role->cnid) {
         $sql = "SELECT c.committee FROM {node} n JOIN {org_committees} c ON c.nid = n.nid WHERE c.vid = n.vid AND c.nid = %d";
         $committee = db_result(db_query($sql, $role->cnid)) . ' committee';
       }
-      else { $committee = '[no committee]'; }
-      $output .= '<p class="committee-list">Roles specified for ' . (($role->cnid) ? l($committee, 'node/'.$role->cnid) : $committee) . '</p><ul>';
+      else {
+        $committee = '[no committee]';
+      }
+      $output .= '<p class="committee-list">Roles specified for ' . (($role->cnid) ? l($committee, 'node/' . $role->cnid) : $committee) . '</p><ul>';
       $cnid = $role->cnid;
     }
     // Generate a line of listing for this role
     $role_output = '';
-    $role_output .= l($role->role, 'node/'.$role->nid) . ' ';
-    $role_output .= l('[edit]', 'node/'.$role->nid.'/edit');
+    $role_output .= l($role->role, 'node/' . $role->nid) . ' ';
+    $role_output .= l('[edit]', 'node/' . $role->nid . '/edit');
     // Find details of any current assignments to this role
     $today = orgright_get_date_ymd();
     $count = 0;
@@ -134,7 +140,9 @@ function committee_roles_list() {
     $assignments = db_query($sql, $role->nid);
     while ($assignment = db_fetch_object($assignments)) {
       // ignored ceased assignments
-      if ($assignment->ceasedate && $assignment->ceasedate < $today) { continue; }
+      if ($assignment->ceasedate && $assignment->ceasedate < $today) {
+        continue;
+      }
       // Extract the member name
       $sql = "SELECT m.member FROM {node} n JOIN {org_members} m ON m.nid = n.nid WHERE m.vid = n.vid AND m.nid = %d";
       $member = db_result(db_query($sql, $assignment->mnid));
@@ -142,14 +150,14 @@ function committee_roles_list() {
       $assigndate = date_format_date(date_make_date($assignment->assigndate), 'custom', 'd M Y');
       $assign_output .= '<li>';
       if ($assignment->assigndate > $today) {
-        $assign_output .= l('Pending assignment', 'node/'.$assignment->nid);
+        $assign_output .= l('Pending assignment', 'node/' . $assignment->nid);
       }
       else {
         $count++;
-        $assign_output .= l('Assignment', 'node/'.$assignment->nid);
+        $assign_output .= l('Assignment', 'node/' . $assignment->nid);
       }
       //$assign_output .= ' ' . l('[edit]', 'node/'.$assignment->nid.'/edit');
-      $assign_output .= ', ' . l($member, 'node/'.$assignment->mnid);
+      $assign_output .= ', ' . l($member, 'node/' . $assignment->mnid);
       $assign_output .= ' ' . strtolower($assignment->assigntype);
       $assign_output .= ' on ' . $assigndate;
       $assign_output .= '</li>';
@@ -160,12 +168,16 @@ function committee_roles_list() {
     if ($count > 1 && !$role->multiperson) {
       $role_output .= t(' *** role should not have multiple assignments ***');
     }
-    if ($assign_output) { $role_output .= '<ul>' . $assign_output . '</ul>'; }
+    if ($assign_output) {
+      $role_output .= '<ul>' . $assign_output . '</ul>';
+    }
     $output .= '<li>' . $role_output . '</li>';
   }
-  if ($cnid > -1) { $output .= '</ul>'; }
+  if ($cnid > -1) {
+    $output .= '</ul>';
+  }
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Committee')=>'committee'));
+  orgright_breadcrumb(array(t('Committee') => 'committee'));
   //orgright_debug_msg('committee',$output);
   return $output;
 }
@@ -176,7 +188,7 @@ function committee_roles_add() {
   // First get an array of any arguments passed to this function
   $args = func_get_args();
   // Create a new node data structure of the correct type
-  $node = orgright_create_node('role'); 
+  $node = orgright_create_node('role');
   // Set the page title to display
   drupal_set_title(t('Create Committee Role'));
   // Load the required include file
@@ -184,7 +196,7 @@ function committee_roles_add() {
   // then call the form constructor function
   $output = drupal_get_form('role_node_form', $node, $args);
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Committee')=>'committee'));
+  orgright_breadcrumb(array(t('Committee') => 'committee'));
   // and return results
   return $output;
 }
@@ -198,16 +210,20 @@ function committee_appointments_list() {
   $cnid = -1;
   while ($appt = db_fetch_object($result)) {
     // ignore retired appointments
-    if ($appt->retiredate && $appt->retiredate < $today) { continue; }
+    if ($appt->retiredate && $appt->retiredate < $today) {
+      continue;
+    }
     // Extract the member name
     $sql = "SELECT m.member FROM {node} n JOIN {org_members} m ON m.nid = n.nid WHERE m.vid = n.vid AND m.nid = %d";
     $member = db_fetch_object(db_query($sql, $appt->mnid));
     if ($appt->cnid <> $cnid) {
-      if ($cnid > -1) { $output .= '</ul>'; }
+      if ($cnid > -1) {
+        $output .= '</ul>';
+      }
       // Extract the committee name
       $sql = "SELECT c.committee FROM {node} n JOIN {org_committees} c ON c.nid = n.nid WHERE c.vid = n.vid AND c.nid = %d";
       $committee = db_fetch_object(db_query($sql, $appt->cnid));
-      $output .= '<p class="committee-list">Appointments to ' . l($committee->committee, 'node/'.$appt->cnid) . ' committee</p><ul>';
+      $output .= '<p class="committee-list">Appointments to ' . l($committee->committee, 'node/' . $appt->cnid) . ' committee</p><ul>';
       $cnid = $appt->cnid;
     }
     // Prepare the appoint and retire dates for display
@@ -215,23 +231,25 @@ function committee_appointments_list() {
     // Generate a line of listing for this appointment
     $appointment_output = '';
     if ($appt->appointdate > $today) {
-      $appointment_output .= l('Pending appointment', 'node/'.$appt->nid) . ' ';
+      $appointment_output .= l('Pending appointment', 'node/' . $appt->nid) . ' ';
     }
     else {
-      $appointment_output .= l('Appointment', 'node/'.$appt->nid) . ' ';
+      $appointment_output .= l('Appointment', 'node/' . $appt->nid) . ' ';
     }
-    $appointment_output .= l('[edit]', 'node/'.$appt->nid.'/edit');
-    $appointment_output .= ' of ' . l($member->member, 'node/'.$appt->mnid);
+    $appointment_output .= l('[edit]', 'node/' . $appt->nid . '/edit');
+    $appointment_output .= ' of ' . l($member->member, 'node/' . $appt->mnid);
     $appointment_output .= ', ' . strtolower($appt->appointtype);
     $appointment_output .= ' on ' . $dateappoint;
     if ($appt->retiredate) {
       $appointment_output .= ', to retire on ' . date_format_date(date_make_date($appt->retiredate), 'custom', 'd M Y');
     }
-    $output .= '<li>' .$appointment_output . '</li>';
+    $output .= '<li>' . $appointment_output . '</li>';
   }
-  if ($cnid > -1) { $output .= '</ul>'; }
+  if ($cnid > -1) {
+    $output .= '</ul>';
+  }
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Committee')=>'committee'));
+  orgright_breadcrumb(array(t('Committee') => 'committee'));
   return $output;
 }
 
@@ -241,7 +259,7 @@ function committee_appointments_add() {
   // First get an array of any arguments passed to this function
   $args = func_get_args();
   // Create a new node data structure of the correct type
-  $node = orgright_create_node('appointment'); 
+  $node = orgright_create_node('appointment');
   // Set the page title to display
   drupal_set_title(t('Create Committee Appointment'));
   // Load the required include file
@@ -249,7 +267,7 @@ function committee_appointments_add() {
   // then call the form constructor function
   $output = drupal_get_form('appointment_node_form', $node, $args);
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Committee')=>'committee'));
+  orgright_breadcrumb(array(t('Committee') => 'committee'));
   // and return results
   return $output;
 }
@@ -263,7 +281,9 @@ function committee_assignments_list() {
   $assignments = array();
   while ($assign = db_fetch_object($result)) {
     // ignore ceased assignments
-    if ($assign->ceasedate && $assign->ceasedate < $today) { continue; }
+    if ($assign->ceasedate && $assign->ceasedate < $today) {
+      continue;
+    }
     // Extract the role name and committee
     $sql = "SELECT r.role, r.cnid FROM {node} n JOIN {org_roles} r ON r.nid = n.nid WHERE r.vid = n.vid AND r.nid = %d";
     $role = db_fetch_object(db_query($sql, $assign->rnid));
@@ -272,7 +292,7 @@ function committee_assignments_list() {
     // Extract the member name
     $sql = "SELECT m.member FROM {node} n JOIN {org_members} m ON m.nid = n.nid WHERE m.vid = n.vid AND m.nid = %d";
     $assign->member = db_result(db_query($sql, $assign->mnid));
-    $key = substr('00000'.$assign->cnid,-6) . substr('00000'.$assign->rnid,-6) . substr('00000'.$assign->nid,-6);
+    $key = substr('00000' . $assign->cnid, -6) . substr('00000' . $assign->rnid, -6) . substr('00000' . $assign->nid, -6);
     $assignments[$key] = $assign;
   }
   // Now sort the assignments into committee/role sequence
@@ -282,14 +302,18 @@ function committee_assignments_list() {
     // Prepare the assign date for display
     $assigndate = date_format_date(date_make_date($assign->assigndate), 'custom', 'd M Y');
     if ($assign->cnid <> $cnid) {
-      if ($cnid > -1) { $output .= '</ul>'; }
+      if ($cnid > -1) {
+        $output .= '</ul>';
+      }
       // Extract the committee name
       if ($assign->cnid) {
         $sql = "SELECT c.committee from {node} n JOIN org_committees c ON c.nid = n.nid WHERE c.vid = n.vid AND c.nid = %d";
         $committee = db_result(db_query($sql, $assign->cnid));
       }
-      else { $committee = '[no commitee]'; }
-      $output .= '<p class="committee-list">Assignments to roles of ' . (($assign->cnid) ? l($committee, 'node/'.$assign->cnid) : $committee) . ' committee</p>';
+      else {
+        $committee = '[no commitee]';
+      }
+      $output .= '<p class="committee-list">Assignments to roles of ' . (($assign->cnid) ? l($committee, 'node/' . $assign->cnid) : $committee) . ' committee</p>';
       $cnid = $assign->cnid;
       $output .= '<ul>';
     }
@@ -297,15 +321,15 @@ function committee_assignments_list() {
     //$assignment_output = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
     $assignment_output = '';
     if ($assign->assigndate > $today) {
-      $assignment_output .= l('Pending assignment', 'node/'.$assign->nid) . ' ';
+      $assignment_output .= l('Pending assignment', 'node/' . $assign->nid) . ' ';
     }
     else {
-      $assignment_output .= l('Assignment', 'node/'.$assign->nid) . ' ';
+      $assignment_output .= l('Assignment', 'node/' . $assign->nid) . ' ';
     }
-    $assignment_output .= l('[edit]', 'node/'.$assign->nid.'/edit');
-    $assignment_output .= ' of ' . l($assign->member, 'node/'.$assign->mnid);
+    $assignment_output .= l('[edit]', 'node/' . $assign->nid . '/edit');
+    $assignment_output .= ' of ' . l($assign->member, 'node/' . $assign->mnid);
     $assignment_output .= ', ' . strtolower($assign->assigntype);
-    $assignment_output .= ' to ' . l($assign->role, 'node/'.$assign->rnid);
+    $assignment_output .= ' to ' . l($assign->role, 'node/' . $assign->rnid);
     $assignment_output .= ' on ' . $assigndate;
     if ($assign->ceasedate) {
       $ceasedate = date_format_date(date_make_date($assign->ceasedate), 'custom', 'd M Y');
@@ -313,9 +337,11 @@ function committee_assignments_list() {
     }
     $output .= '<li>' . $assignment_output . '</li>';
   }
-  if ($cnid > -1) { $output .= '</ul>'; }
+  if ($cnid > -1) {
+    $output .= '</ul>';
+  }
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Committee')=>'committee'));
+  orgright_breadcrumb(array(t('Committee') => 'committee'));
   return $output;
 }
 
@@ -325,7 +351,7 @@ function committee_assignments_add() {
   // First get an array of any arguments passed to this function
   $args = func_get_args();
   // Create a new node data structure of the correct type
-  $node = orgright_create_node('assignment'); 
+  $node = orgright_create_node('assignment');
   // Set the page title to display
   drupal_set_title(t('Create Role Assignment'));
   // Load the required include file
@@ -333,7 +359,7 @@ function committee_assignments_add() {
   // then call the form constructor function
   $output = drupal_get_form('assignment_node_form', $node, $args);
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Committee')=>'committee'));
+  orgright_breadcrumb(array(t('Committee') => 'committee'));
   // and return results
   return $output;
 }
@@ -344,15 +370,15 @@ function committee_assignments_add() {
 function committee_autocomplete_committees($string = '') {
   // Generate a list of committees for the autocomplete js function
   $committees = array();
-  $qargs = array('%'.strtolower($string).'%');
+  $qargs = array('%' . strtolower($string) . '%');
   $sql = "SELECT DISTINCT committee FROM {org_committees} WHERE LOWER(committee) LIKE '%s'";
   //orgright_debug_msg('committee','Autocomplete committees for: ' . $qargs[0]);
   //$result = db_query_range(db_rewrite_sql($sql, '{org_committees}', 'vid', $qargs), 0, 12);
   $result = db_query_range($sql, $qargs, 0, 12);
-  while($obj = db_fetch_object($result)) {
+  while ($obj = db_fetch_object($result)) {
     $committees[$obj->committee] = $obj->committee;
   }
-  //print drupal_to_js($committees); 
+  //print drupal_to_js($committees);
   // requires php 5.2:
   drupal_json($committees);
   exit;
@@ -361,18 +387,18 @@ function committee_autocomplete_committees($string = '') {
 function committee_autocomplete_roles($string = '') {
   // Generate a list of roles for the autocomplete js function
   $roles = array();
-  $qargs = array('%'.strtolower($string).'%');
+  $qargs = array('%' . strtolower($string) . '%');
   $sql = "SELECT DISTINCT role FROM {org_roles} WHERE LOWER(role) LIKE '%s'";
   //orgright_debug_msg('committee','Autocomplete scodes for: ' . $qargs[0]);
   //$result = db_query_range(db_rewrite_sql($sql, '{org_appointments}', 'vid', $qargs), 0, 12);
   $result = db_query_range($sql, $qargs, 0, 12);
-  while($obj = db_fetch_object($result)) {
+  while ($obj = db_fetch_object($result)) {
     $roles[$obj->role] = $obj->role;
   }
-  //print drupal_to_js($roles); 
+  //print drupal_to_js($roles);
   // requires php 5.2:
   drupal_json($roles);
   exit;
 }
 
- 
+

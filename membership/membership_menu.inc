@@ -45,21 +45,23 @@ function membership_members_list() {
   $standings = membership_get_member_list_standings();
   $sql = "SELECT m.nid, m.category, m.member, m.address, m.city, m.postcode, m.email, m.phone FROM {node} n JOIN {org_members} m ON m.nid = n.nid WHERE m.vid = n.vid AND (m.standing = ''";
   foreach ($standings as $standing) {
-    $sql .= " OR m.standing = '".$standing."'";
+    $sql .= " OR m.standing = '" . $standing . "'";
   }
   $sql .= ")  ORDER BY m.category, m.member";
   $result = db_query(db_rewrite_sql($sql));
   $category = '[none]';
   while ($member = db_fetch_object($result)) {
     if ($member->category <> $category) {
-      if ($category <> '[none]') { $output .= '</ul>'; }
+      if ($category <> '[none]') {
+        $output .= '</ul>';
+      }
       $category = $member->category;
       $output .= '<p>Membership category: <strong>' . $category . '</strong><p><ul>';
     }
     // Generate a line of listing for this member
     $member_output = '';
-    $member_output .= l($member->member, 'node/'.$member->nid) . ' ';
-    $member_output .= l('[edit]', 'node/'.$member->nid.'/edit') . ' ';
+    $member_output .= l($member->member, 'node/' . $member->nid) . ' ';
+    $member_output .= l('[edit]', 'node/' . $member->nid . '/edit') . ' ';
     $member_output .= orgright_multi_field_to_string($member->phone, '; ') . ', ';
     $member_output .= orgright_multi_field_to_string($member->address, '; ') . ', ';
     $member_output .= $member->city . ', ';
@@ -67,9 +69,11 @@ function membership_members_list() {
     $member_output .= orgright_multi_field_to_string($member->email, '; ');
     $output .= '<li>' . $member_output . '</li>';
   }
-  if ($category <> '[none]') { $output .= '</ul>'; }
+  if ($category <> '[none]') {
+    $output .= '</ul>';
+  }
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Membership')=>'membership'));
+  orgright_breadcrumb(array(t('Membership') => 'membership'));
   //orgright_debug_msg('membership',$output);
   return $output;
 }
@@ -80,7 +84,7 @@ function membership_members_add() {
   // First get an array of any arguments passed to this function
   $args = func_get_args();
   // Create a new node data structure of the correct type
-  $node = orgright_create_node('member'); 
+  $node = orgright_create_node('member');
   // Set the page title to display
   drupal_set_title(t('Create Member'));
   // Load the required include file
@@ -88,7 +92,7 @@ function membership_members_add() {
   // then call the form constructor function
   $output = drupal_get_form('member_node_form', $node, $args);
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Membership')=>'membership'));
+  orgright_breadcrumb(array(t('Membership') => 'membership'));
   // and return results
   return $output;
 }
@@ -101,7 +105,7 @@ function membership_members_import() {
   module_load_include('inc', 'membership', 'membership_form');
   $output = drupal_get_form('membership_import_members_form', $args);
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Membership')=>'membership'));
+  orgright_breadcrumb(array(t('Membership') => 'membership'));
   return $output;
 }
 
@@ -113,7 +117,7 @@ function membership_members_export() {
   module_load_include('inc', 'membership', 'membership_form');
   $output = drupal_get_form('membership_export_members_form', $args);
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Membership')=>'membership'));
+  orgright_breadcrumb(array(t('Membership') => 'membership'));
   return $output;
 }
 
@@ -125,11 +129,13 @@ function membership_subscriptions_list() {
   $mnid = 0;
   while ($subscription = db_fetch_object($result)) {
     if ($subscription->mnid <> $mnid) {
-      if ($mnid) { $output .= '</ul>'; }
+      if ($mnid) {
+        $output .= '</ul>';
+      }
       // Extract the member name
       $sql = "SELECT m.member FROM {node} n JOIN {org_members} m ON m.nid = n.nid WHERE m.vid = n.vid AND m.nid = %d";
       $member = db_result(db_query($sql, $subscription->mnid));
-      $output .= '<p>Subscriptions for: ' . l($member, 'node/'.$subscription->mnid) . '<p><ul>';
+      $output .= '<p>Subscriptions for: ' . l($member, 'node/' . $subscription->mnid) . '<p><ul>';
       $mnid = $subscription->mnid;
     }
     // and calculate the total paid against this subscription
@@ -140,8 +146,8 @@ function membership_subscriptions_list() {
     $dateto = date_format_date(date_make_date($subscription->dateto), 'custom', 'd M Y');
     // Generate a line of listing for this subscription
     $subscription_output = '';
-    $subscription_output .= l('Subscription', 'node/'.$subscription->nid) . ' ';
-    $subscription_output .= l('[edit]', 'node/'.$subscription->nid.'/edit') . ': ';
+    $subscription_output .= l('Subscription', 'node/' . $subscription->nid) . ' ';
+    $subscription_output .= l('[edit]', 'node/' . $subscription->nid . '/edit') . ': ';
     $subscription_output .= $subscription->scode . ' ';
     $subscription_output .= 'From: ' . $datefrom . ' ';
     $subscription_output .= 'to: ' . $dateto . ', ';
@@ -149,9 +155,11 @@ function membership_subscriptions_list() {
     $subscription_output .= 'Total paid: ' . $totpaid;
     $output .= '<li>' . $subscription_output . '</li>';
   }
-  if ($mnid) { $output .= '</ul>'; }
+  if ($mnid) {
+    $output .= '</ul>';
+  }
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Membership')=>'membership'));
+  orgright_breadcrumb(array(t('Membership') => 'membership'));
   return $output;
 }
 
@@ -161,7 +169,7 @@ function membership_subscriptions_add() {
   // First get an array of any arguments passed to this function
   $args = func_get_args();
   // Create a new node data structure of the correct type
-  $node = orgright_create_node('subscription'); 
+  $node = orgright_create_node('subscription');
   // Set the page title to display
   drupal_set_title(t('Create Subscription'));
   // Load the required include file
@@ -169,7 +177,7 @@ function membership_subscriptions_add() {
   // then call the form constructor function
   $output = drupal_get_form('subscription_node_form', $node, $args);
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Membership')=>'membership'));
+  orgright_breadcrumb(array(t('Membership') => 'membership'));
   // and return results
   return $output;
 }
@@ -182,7 +190,7 @@ function membership_subscriptions_wizard() {
   module_load_include('inc', 'membership', 'membership_form');
   $output = drupal_get_form('membership_subscription_wizard', $args);
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Membership')=>'membership'));
+  orgright_breadcrumb(array(t('Membership') => 'membership'));
   return $output;
 }
 
@@ -194,11 +202,13 @@ function membership_subpayments_list() {
   $mnid = 0;
   while ($subpayment = db_fetch_object($result)) {
     if ($subpayment->mnid <> $mnid) {
-      if ($mnid) { $output .= '</ul>'; }
+      if ($mnid) {
+        $output .= '</ul>';
+      }
       // Extract the member name
       $sql = "SELECT m.member FROM {node} n JOIN {org_members} m ON m.nid = n.nid WHERE m.vid = n.vid AND m.nid = %d";
       $member = db_result(db_query($sql, $subpayment->mnid));
-      $output .= '<p>Subscription payments from: ' . l($member, 'node/'.$subpayment->mnid) . '<p><ul>';
+      $output .= '<p>Subscription payments from: ' . l($member, 'node/' . $subpayment->mnid) . '<p><ul>';
       $mnid = $subpayment->mnid;
     }
     // Extract the subscription code and amount
@@ -208,16 +218,18 @@ function membership_subpayments_list() {
     $datepaid = date_format_date(date_make_date($subpayment->datepaid), 'custom', 'd M Y');
     // Generate a line of listing for this payment
     $subpayment_output = '';
-    $subpayment_output .= l('Payment', 'node/'.$subpayment->nid) . ' ';
-    $subpayment_output .= l('[edit]', 'node/'.$subpayment->nid.'/edit') . ' ';
+    $subpayment_output .= l('Payment', 'node/' . $subpayment->nid) . ' ';
+    $subpayment_output .= l('[edit]', 'node/' . $subpayment->nid . '/edit') . ' ';
     $subpayment_output .= 'of $' . $subpayment->payment . '</a> ';
     $subpayment_output .= 'on ' . $datepaid . ' ';
-    $subpayment_output .= 'for subscription: ' . l($subscription->scode, 'node/'.$subpayment->snid);
+    $subpayment_output .= 'for subscription: ' . l($subscription->scode, 'node/' . $subpayment->snid);
     $output .= '<li>' . $subpayment_output . '</li>';
   }
-  if ($mnid) { $output .= '</ul>'; }
+  if ($mnid) {
+    $output .= '</ul>';
+  }
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Membership')=>'membership'));
+  orgright_breadcrumb(array(t('Membership') => 'membership'));
   return $output;
 }
 
@@ -227,7 +239,7 @@ function membership_subpayments_add() {
   // First get an array of any arguments passed to this function
   $args = func_get_args();
   // Create a new node data structure of the correct type
-  $node = orgright_create_node('subpayment'); 
+  $node = orgright_create_node('subpayment');
   // Set the page title to display
   drupal_set_title(t('Create Subscription Payment'));
   // Load the required include file
@@ -235,7 +247,7 @@ function membership_subpayments_add() {
   // then call the node form constructor function
   $output = drupal_get_form('subpayment_node_form', $node, $args);
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Membership')=>'membership'));
+  orgright_breadcrumb(array(t('Membership') => 'membership'));
   // and return results
   return $output;
 }
@@ -246,16 +258,16 @@ function membership_subpayments_add() {
 function membership_autocomplete_members($string = '') {
   // Generate a list of members for the autocomplete js function
   $members = array();
-  $qargs = array('%'.strtolower($string).'%');
+  $qargs = array('%' . strtolower($string) . '%');
   $sql = "SELECT DISTINCT member FROM {org_members} WHERE LOWER(member) LIKE '%s'";
   $msg = 'Autocomplete members for: ' . $qargs[0];
   //orgright_debug_msg('membership',$msg);
   //$result = db_query_range(db_rewrite_sql($sql, '{org_members}', 'vid', $qargs), 0, 12);
   $result = db_query_range($sql, $qargs, 0, 12);
-  while($obj = db_fetch_object($result)) {
+  while ($obj = db_fetch_object($result)) {
     $members[$obj->member] = $obj->member;
   }
-  //print drupal_to_js($members); 
+  //print drupal_to_js($members);
   // requires php 5.2:
   drupal_json($members);
   exit;
@@ -264,16 +276,16 @@ function membership_autocomplete_members($string = '') {
 function membership_autocomplete_scodes($string = '') {
   // Generate a list of scodes for the autocomplete js function
   $scodes = array();
-  $qargs = array('%'.strtolower($string).'%');
+  $qargs = array('%' . strtolower($string) . '%');
   $sql = "SELECT DISTINCT scode FROM {org_subscriptions} WHERE LOWER(scode) LIKE '%s'";
   $msg = 'Autocomplete scodes for: ' . $qargs[0];
   //orgright_debug_msg('membership',$msg);
   //$result = db_query_range(db_rewrite_sql($sql, '{org_subscriptions}', 'vid', $qargs), 0, 12);
   $result = db_query_range($sql, $qargs, 0, 12);
-  while($obj = db_fetch_object($result)) {
+  while ($obj = db_fetch_object($result)) {
     $scodes[$obj->scode] = $obj->scode;
   }
-  //print drupal_to_js($scodes); 
+  //print drupal_to_js($scodes);
   // requires php 5.2:
   drupal_json($scodes);
   exit;

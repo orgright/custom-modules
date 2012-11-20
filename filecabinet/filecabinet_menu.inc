@@ -49,7 +49,9 @@ function filecabinet_drawers_list() {
   $ouid = 0;
   while ($drawer = db_fetch_object($result)) {
     if ($drawer->ouid <> $ouid) {
-      if ($ouid) { $output .= '</ul>'; }
+      if ($ouid) {
+        $output .= '</ul>';
+      }
       // Extract the owner's name
       $sql = "SELECT u.name FROM {users} u WHERE u.uid = %d";
       $owner = db_result(db_query($sql, $drawer->ouid));
@@ -63,18 +65,20 @@ function filecabinet_drawers_list() {
     }
     // Generate a line of listing for this drawer
     $drawer_output = '';
-    $drawer_output .= l($drawer->drawer, 'node/'.$drawer->nid) . ' ';
-    $drawer_output .= l('[edit]', 'node/'.$drawer->nid.'/edit');
+    $drawer_output .= l($drawer->drawer, 'node/' . $drawer->nid) . ' ';
+    $drawer_output .= l('[edit]', 'node/' . $drawer->nid . '/edit');
     if ($drawer->wnid) {
-      $drawer_output .= ' within drawer ' . l($parent, 'node/'.$drawer->wnid);
+      $drawer_output .= ' within drawer ' . l($parent, 'node/' . $drawer->wnid);
     }
     $drawer_output .= ', ' . strtolower($drawer->drawerstatus);
     $drawer_output .= ', ' . strtolower($drawer->drawerperm);
     $output .= '<li>' . $drawer_output . '</li>';
   }
-  if ($ouid) { $output .= '</ul>'; }
+  if ($ouid) {
+    $output .= '</ul>';
+  }
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Filing cabinet')=>'filecabinet'));
+  orgright_breadcrumb(array(t('Filing cabinet') => 'filecabinet'));
   return $output;
 }
 
@@ -84,7 +88,7 @@ function filecabinet_drawers_add() {
   // First get an array of any arguments passed to this function
   $args = func_get_args();
   // Create a new node data structure of the correct type
-  $node = orgright_create_node('drawer'); 
+  $node = orgright_create_node('drawer');
   // Set the page title to display
   drupal_set_title(t('Create Drawer'));
   // Load the required include file
@@ -92,7 +96,7 @@ function filecabinet_drawers_add() {
   // then call the form constructor function
   $output = drupal_get_form('drawer_node_form', $node, $args);
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Filing cabinet')=>'filecabinet'));
+  orgright_breadcrumb(array(t('Filing cabinet') => 'filecabinet'));
   // and return results
   return $output;
 }
@@ -105,19 +109,25 @@ function filecabinet_folders_list() {
   $folders = array();
   while ($folder = db_fetch_object($result)) {
     // find the drawer details and save object in an array
-    if (!$folder->wnid) { $folder->wnid = filecabinet_get_folder_drawer($folder->fnid); }
+    if (!$folder->wnid) {
+      $folder->wnid = filecabinet_get_folder_drawer($folder->fnid);
+    }
     $sql = "SELECT w.drawer FROM {node} n JOIN {org_drawers} w ON w.nid = n.nid WHERE w.vid = n.vid AND w.nid = %d";
     $folder->drawer = db_result(db_query($sql, $folder->wnid));
-    $folders[$folder->drawer.'-'.$folder->folder] = $folder;
+    $folders[$folder->drawer . '-' . $folder->folder] = $folder;
   }
-  if (!$folders) { return ''; }
+  if (!$folders) {
+    return '';
+  }
   // now sort the array on the drawer-folder key
   ksort($folders);
   $wnid = 0;
   foreach ($folders as $folder) {
     if ($folder->wnid <> $wnid) {
-      if ($wnid) { $output .= '</ul>'; }
-      $output .= '<p class="filecabinet-list">Folders in drawer ' . l($folder->drawer, 'node/'.$folder->wnid) . '</p><ul>';
+      if ($wnid) {
+        $output .= '</ul>';
+      }
+      $output .= '<p class="filecabinet-list">Folders in drawer ' . l($folder->drawer, 'node/' . $folder->wnid) . '</p><ul>';
       $wnid = $folder->wnid;
     }
     // Extract the parent folder (if any)
@@ -127,17 +137,19 @@ function filecabinet_folders_list() {
     }
     // Generate a line of listing for this folder
     $folder_output = '';
-    $folder_output .= l($folder->folder, 'node/'.$folder->nid) . ' ';
-    $folder_output .= l('[edit]', 'node/'.$folder->nid.'/edit');
+    $folder_output .= l($folder->folder, 'node/' . $folder->nid) . ' ';
+    $folder_output .= l('[edit]', 'node/' . $folder->nid . '/edit');
     $folder_output .= ', status ' . strtolower($folder->folderstatus);
     if ($folder->fnid) {
-      $folder_output .= ', within folder ' . l($parent, 'node/'.$folder->fnid);
+      $folder_output .= ', within folder ' . l($parent, 'node/' . $folder->fnid);
     }
     $output .= '<ul>' . $folder_output . '</ul>';
   }
-  if ($wnid > -1) { $output .= '</ul>'; }
+  if ($wnid > -1) {
+    $output .= '</ul>';
+  }
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Filing cabinet')=>'filecabinet'));
+  orgright_breadcrumb(array(t('Filing cabinet') => 'filecabinet'));
   return $output;
 }
 
@@ -147,7 +159,7 @@ function filecabinet_folders_add() {
   // First get an array of any arguments passed to this function
   $args = func_get_args();
   // Create a new node data structure of the correct type
-  $node = orgright_create_node('folder'); 
+  $node = orgright_create_node('folder');
   // Set the page title to display
   drupal_set_title(t('Create Folder'));
   // Load the required include file
@@ -155,7 +167,7 @@ function filecabinet_folders_add() {
   // then call the form constructor function
   $output = drupal_get_form('folder_node_form', $node, $args);
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Filing cabinet')=>'filecabinet'));
+  orgright_breadcrumb(array(t('Filing cabinet') => 'filecabinet'));
   // and return results
   return $output;
 }
@@ -168,19 +180,25 @@ function filecabinet_documents_list() {
   $fnid = 0;
   while ($document = db_fetch_object($result)) {
     // find the folder details and save object in an array
-    if (!$document->fnid) { $document->fnid = filecabinet_get_document_folder($document->dnid); }
+    if (!$document->fnid) {
+      $document->fnid = filecabinet_get_document_folder($document->dnid);
+    }
     $sql = "SELECT f.folder FROM {node} n JOIN {org_folders} f ON f.nid = n.nid WHERE f.vid = n.vid AND f.nid = %d";
     $document->folder = db_result(db_query($sql, $document->fnid));
-    $documents[$document->folder.'-'.$document->docname] = $document;
+    $documents[$document->folder . '-' . $document->docname] = $document;
   }
-  if (!$documents) { return ''; }
+  if (!$documents) {
+    return '';
+  }
   // now sort the array on the folder-document key
   ksort($documents);
   $fnid = 0;
   foreach ($documents as $document) {
     if ($document->fnid <> $fnid) {
-      if ($fnid) { $output .= '</ul>'; }
-      $output .= '<p class="filecabinet-list">Documents in folder ' . l($document->folder, 'node/'.$document->fnid) . '</p><ul>';
+      if ($fnid) {
+        $output .= '</ul>';
+      }
+      $output .= '<p class="filecabinet-list">Documents in folder ' . l($document->folder, 'node/' . $document->fnid) . '</p><ul>';
       $fnid = $document->fnid;
     }
     if ($document->dnid) {
@@ -197,29 +215,31 @@ function filecabinet_documents_list() {
       $file = db_fetch_object(db_query($sql, $document->afid));
       // Prepare the filepath URL
       $file_url = file_create_url($file->filepath);
-    }       
+    }
     // Prepare the date for display
     $docdate = date_format_date(date_make_date($document->docdate), 'custom', 'd M Y');
     // Generate a line of listing for this payment
     $document_output = '';
-    $document_output .= l($document->docname.' v:'.$document->docversion, 'node/'.$document->nid) . ' ';
-    $document_output .= l('[edit]', 'node/'.$document->nid.'/edit');
+    $document_output .= l($document->docname . ' v:' . $document->docversion, 'node/' . $document->nid) . ' ';
+    $document_output .= l('[edit]', 'node/' . $document->nid . '/edit');
     $document_output .= ', ' . $docdate;
-    $document_output .= ', ' . l($member, 'node/'.$document->mnid);
+    $document_output .= ', ' . l($member, 'node/' . $document->mnid);
     $document_output .= ', ' . strtolower($document->doctype);
     $document_output .= ', ' . strtolower($document->docstatus);
     if ($document->dnid) {
-      $document_output .= ' attached to ' . l($headoc, 'node/'.$document->dnid);
+      $document_output .= ' attached to ' . l($headoc, 'node/' . $document->dnid);
     }
     if ($document->afid) {
-      $document_output .= ', with file ' . l($file->filename, $file_url, array('attributes'=>array('target'=>'_blank')));
+      $document_output .= ', with file ' . l($file->filename, $file_url, array('attributes' => array('target' => '_blank')));
       $document_output .= ', ' . filecabinet_display_filesize($file->filesize);
     }
     $output .= '<li>' . $document_output . '</li>';
   }
-  if ($fnid) { $output .= '</ul>'; }
+  if ($fnid) {
+    $output .= '</ul>';
+  }
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Filing cabinet')=>'filecabinet'));
+  orgright_breadcrumb(array(t('Filing cabinet') => 'filecabinet'));
   return $output;
 }
 
@@ -229,7 +249,7 @@ function filecabinet_documents_add() {
   // First get an array of any arguments passed to this function
   $args = func_get_args();
   // Create a new node data structure of the correct type
-  $node = orgright_create_node('document'); 
+  $node = orgright_create_node('document');
   // Set the page title to display
   drupal_set_title(t('Create Document'));
   // Load the required include file
@@ -237,7 +257,7 @@ function filecabinet_documents_add() {
   // then call the form constructor function
   $output = drupal_get_form('document_node_form', $node, $args);
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Filing cabinet')=>'filecabinet'));
+  orgright_breadcrumb(array(t('Filing cabinet') => 'filecabinet'));
   // and return results
   return $output;
 }
@@ -248,9 +268,9 @@ function filecabinet_doclink_add() {
   // First get an array of any arguments passed to this function
   $args = func_get_args();
   // call the form constructor function
-  $output = drupal_get_form('filecabinet_doclink_form','add', $args);
+  $output = drupal_get_form('filecabinet_doclink_form', 'add', $args);
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Filing cabinet')=>'filecabinet'));
+  orgright_breadcrumb(array(t('Filing cabinet') => 'filecabinet'));
   // and return the results
   return $output;
 }
@@ -261,9 +281,9 @@ function filecabinet_doclink_edit() {
   // First get an array of any arguments passed to this function
   $args = func_get_args();
   // call the form constructor function
-  $output = drupal_get_form('filecabinet_doclink_form','edit', $args);
+  $output = drupal_get_form('filecabinet_doclink_form', 'edit', $args);
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Filing cabinet')=>'filecabinet'));
+  orgright_breadcrumb(array(t('Filing cabinet') => 'filecabinet'));
   // and return the results
   return $output;
 }
@@ -274,16 +294,16 @@ function filecabinet_doclink_edit() {
 function filecabinet_autocomplete_drawers($string = '') {
   // Generate a list of drawers for the autocomplete js function
   $drawers = array();
-  $qargs = array('%'.strtolower($string).'%');
+  $qargs = array('%' . strtolower($string) . '%');
   $sql = "SELECT DISTINCT drawer FROM {org_drawers} WHERE LOWER(drawer) LIKE '%s'";
   $msg = 'Autocomplete drawers for: ' . $qargs[0];
   //orgright_debug_msg('filecabinet',$msg,8);
   //$result = db_query_range(db_rewrite_sql($sql, '{org_drawers}', 'vid', $qargs), 0, 12);
   $result = db_query_range($sql, $qargs, 0, 12);
-  while($obj = db_fetch_object($result)) {
+  while ($obj = db_fetch_object($result)) {
     $drawers[$obj->drawer] = $obj->drawer;
   }
-  //print drupal_to_js($drawers); 
+  //print drupal_to_js($drawers);
   // requires php 5.2:
   drupal_json($drawers);
   exit;
@@ -292,16 +312,16 @@ function filecabinet_autocomplete_drawers($string = '') {
 function filecabinet_autocomplete_folders($string = '') {
   // Generate a list of folders for the autocomplete js function
   $folders = array();
-  $qargs = array('%'.strtolower($string).'%');
+  $qargs = array('%' . strtolower($string) . '%');
   $sql = "SELECT DISTINCT folder FROM {org_folders} WHERE LOWER(folder) LIKE '%s'";
   $msg = 'Autocomplete folders for: ' . $qargs[0];
   //orgright_debug_msg('filecabinet',$msg,8);
   //$result = db_query_range(db_rewrite_sql($sql, '{org_folders}', 'vid', $qargs), 0, 12);
   $result = db_query_range($sql, $qargs, 0, 12);
-  while($obj = db_fetch_object($result)) {
+  while ($obj = db_fetch_object($result)) {
     $folders[$obj->folder] = $obj->folder;
   }
-  //print drupal_to_js($folders); 
+  //print drupal_to_js($folders);
   // requires php 5.2:
   drupal_json($folders);
   exit;
@@ -310,16 +330,16 @@ function filecabinet_autocomplete_folders($string = '') {
 function filecabinet_autocomplete_docnames($string = '') {
   // Generate a list of folders for the autocomplete js function
   $docnames = array();
-  $qargs = array('%'.strtolower($string).'%');
+  $qargs = array('%' . strtolower($string) . '%');
   $sql = "SELECT DISTINCT docname FROM {org_documents} WHERE LOWER(docname) LIKE '%s'";
   $msg = 'Autocomplete documents for: ' . $qargs[0];
   //orgright_debug_msg('filecabinet',$msg,8);
   //$result = db_query_range(db_rewrite_sql($sql, '{org_documents}', 'vid', $qargs), 0, 12);
   $result = db_query_range($sql, $qargs, 0, 12);
-  while($obj = db_fetch_object($result)) {
+  while ($obj = db_fetch_object($result)) {
     $docnames[$obj->docname] = $obj->docname;
   }
-  //print drupal_to_js($docnames); 
+  //print drupal_to_js($docnames);
   // requires php 5.2:
   drupal_json($docnames);
   exit;
@@ -329,20 +349,25 @@ function filecabinet_autocomplete_infoitems($string = '') {
   // Generate a list of folders for the autocomplete js function
   // get a list of node types that qualify as targets
   $infoitems = array();
-  $qargs = array('%'.strtolower($string).'%');
+  $qargs = array('%' . strtolower($string) . '%');
   $nodetypes = filecabinet_get_doclink_nodetypes();
   $where = '';
-  foreach ($nodetypes as $type) { $where .= " OR type = '%s'"; $qargs[] = $type; }
-  if ($where) { $where = ' AND (' . substr($where,4) . ')'; }
-  $sql = "SELECT DISTINCT title FROM {node} WHERE LOWER(title) LIKE '%s'".$where;
+  foreach ($nodetypes as $type) {
+    $where .= " OR type = '%s'";
+    $qargs[] = $type;
+  }
+  if ($where) {
+    $where = ' AND (' . substr($where, 4) . ')';
+  }
+  $sql = "SELECT DISTINCT title FROM {node} WHERE LOWER(title) LIKE '%s'" . $where;
   $msg = 'Autocomplete documents for: ' . $qargs[0];
   //orgright_debug_msg('filecabinet',$msg,8);
   //$result = db_query_range(db_rewrite_sql($sql, '{org_documents}', 'vid', $qargs), 0, 12);
   $result = db_query_range($sql, $qargs, 0, 12);
-  while($obj = db_fetch_object($result)) {
+  while ($obj = db_fetch_object($result)) {
     $infoitems[$obj->title] = $obj->title;
   }
-  //print drupal_to_js($infoitems); 
+  //print drupal_to_js($infoitems);
   // requires php 5.2:
   drupal_json($infoitems);
   exit;
@@ -351,16 +376,16 @@ function filecabinet_autocomplete_infoitems($string = '') {
 function filecabinet_autocomplete_owners($string = '') {
   // Generate a list of owners for the autocomplete js function
   $owners = array();
-  $qargs = array(O_MAX_PROTECTED_USER, '%'.strtolower($string).'%');
+  $qargs = array(O_MAX_PROTECTED_USER, '%' . strtolower($string) . '%');
   $sql = "SELECT DISTINCT name FROM {users} WHERE uid > %d AND LOWER(name) LIKE '%s'";
   //$msg = 'Autocomplete owners for: ' . $qargs[0];
   //orgright_debug_msg('filecabinet',$msg,8);
   //$result = db_query_range(db_rewrite_sql($sql, '{users}', 'uid', $qargs), 0, 12);
   $result = db_query_range($sql, $qargs, 0, 12);
-  while($obj = db_fetch_object($result)) {
+  while ($obj = db_fetch_object($result)) {
     $owners[$obj->name] = $obj->name;
   }
-  //print drupal_to_js($owners); 
+  //print drupal_to_js($owners);
   // requires php 5.2:
   drupal_json($owners);
   exit;
@@ -379,7 +404,7 @@ function filecabinet_drawers_list_array() {
     $this_owners_drawers = $output[$this_ouid];
     if (!isset($this_owners_drawers)) {
       $this_owners_drawers = array();
-    
+
       // Extract the owner's name
       $sql = "SELECT u.name FROM {users} u WHERE u.uid = %d";
       $owner = db_result(db_query($sql, $drawer->ouid));
@@ -415,8 +440,8 @@ function filecabinet_create_top_level_cabinets_list() {
   $drawersList = filecabinet_drawers_list_array();
 
   //$content .= print_r($drawersList, true);
-  foreach($drawersList as $user => $drawers) {
-    foreach($drawers['drawers'] as $drawer => $details) {
+  foreach ($drawersList as $user => $drawers) {
+    foreach ($drawers['drawers'] as $drawer => $details) {
       //Only display it if it doesn't have a parent
       if (!isset($details['parentId'])) {
         $content .= '<div id="cabinet' . $details['id'] . '"><a style="cursor: pointer" onclick="showCabinet(' . $details['id'] . ');"><img src="' . drupal_get_path("module", "filecabinet") . '/images/cabinet.png" style="float: left" />' . $drawer . '</a></div>';
@@ -434,7 +459,7 @@ function filecabinet_create_top_level_cabinets_list() {
   $content .= "$('#scrollbar2').tinyscrollbar({axis: 'x'});";
   $content .= '});';
   $content .= '//--></script>';
-  
+
   return $content;
 }
 

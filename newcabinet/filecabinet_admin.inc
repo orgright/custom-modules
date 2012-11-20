@@ -16,7 +16,7 @@ function filecabinet_admin() {
  * @ingroup forms
  * @see system_settings_form()
  */
-function filecabinet_admin_form_build (&$form_state = NULL) {
+function filecabinet_admin_form_build(&$form_state = NULL) {
   //orgright_debug_msg('filecabinet','Fn: filecabinet_admin_form_build',5);
   $form = array();
   // Check to see whether this is a new form, or a rebuild
@@ -141,7 +141,7 @@ function filecabinet_admin_form_build (&$form_state = NULL) {
       '#size' => 16,
       '#required' => FALSE,
       '#weight' => 4,
-    );  
+    );
     $form['drawer_statuses']['drawer_status_add'] = array(
       '#type' => 'submit',
       '#value' => t('Add drawer status'),
@@ -181,7 +181,7 @@ function filecabinet_admin_form_build (&$form_state = NULL) {
       '#size' => 16,
       '#required' => FALSE,
       '#weight' => 4,
-    );  
+    );
     $form['folder_statuses']['folder_status_add'] = array(
       '#type' => 'submit',
       '#value' => t('Add folder status'),
@@ -221,7 +221,7 @@ function filecabinet_admin_form_build (&$form_state = NULL) {
       '#size' => 16,
       '#required' => FALSE,
       '#weight' => 4,
-    );  
+    );
     $form['document_statuses']['document_status_add'] = array(
       '#type' => 'submit',
       '#value' => t('Add document status'),
@@ -261,7 +261,7 @@ function filecabinet_admin_form_build (&$form_state = NULL) {
       '#size' => 16,
       '#required' => FALSE,
       '#weight' => 4,
-    );  
+    );
     $form['document_types']['document_type_add'] = array(
       '#type' => 'submit',
       '#value' => t('Add document type'),
@@ -326,7 +326,7 @@ function filecabinet_admin_form_build (&$form_state = NULL) {
       '#size' => 16,
       '#required' => FALSE,
       '#weight' => 4,
-    );  
+    );
     $form['doclink_linktypes']['doclink_linktype_add'] = array(
       '#type' => 'submit',
       '#value' => t('Add link type'),
@@ -402,7 +402,7 @@ function filecabinet_admin_form_build (&$form_state = NULL) {
           '#size' => 16,
           '#required' => TRUE,
           '#weight' => 1,
-        );  
+        );
         $form['submit'] = array(
           '#type' => 'submit',
           '#value' => t('Save changes'),
@@ -416,13 +416,13 @@ function filecabinet_admin_form_build (&$form_state = NULL) {
           '#value' => $drawer_status_value,
           '#suffix' => '</div>',
           '#weight' => 1,
-        );  
+        );
         $form['submit'] = array(
           '#type' => 'submit',
           '#value' => t('Confirm deletion'),
           '#weight' => 2,
         );
-      } 
+      }
     }
     elseif (isset($form_state['storage']['this_folder_status'])) {
       // Are either editing or deleting a folder status
@@ -439,7 +439,7 @@ function filecabinet_admin_form_build (&$form_state = NULL) {
           '#size' => 16,
           '#required' => TRUE,
           '#weight' => 1,
-        );  
+        );
         $form['submit'] = array(
           '#type' => 'submit',
           '#value' => t('Save changes'),
@@ -453,13 +453,13 @@ function filecabinet_admin_form_build (&$form_state = NULL) {
           '#value' => $folder_status_value,
           '#suffix' => '</div>',
           '#weight' => 1,
-        );  
+        );
         $form['submit'] = array(
           '#type' => 'submit',
           '#value' => t('Confirm deletion'),
           '#weight' => 2,
         );
-      } 
+      }
     }
     if (isset($form_state['storage']['this_document_status'])) {
       // Are either editing or deleting a document status
@@ -476,7 +476,7 @@ function filecabinet_admin_form_build (&$form_state = NULL) {
           '#size' => 16,
           '#required' => TRUE,
           '#weight' => 1,
-        );  
+        );
         $form['submit'] = array(
           '#type' => 'submit',
           '#value' => t('Save changes'),
@@ -490,13 +490,13 @@ function filecabinet_admin_form_build (&$form_state = NULL) {
           '#value' => $document_status_value,
           '#suffix' => '</div>',
           '#weight' => 1,
-        );  
+        );
         $form['submit'] = array(
           '#type' => 'submit',
           '#value' => t('Confirm deletion'),
           '#weight' => 2,
         );
-      } 
+      }
     }
     elseif (isset($form_state['storage']['this_document_type'])) {
       // Are either editing or deleting a document type
@@ -513,7 +513,7 @@ function filecabinet_admin_form_build (&$form_state = NULL) {
           '#size' => 16,
           '#required' => TRUE,
           '#weight' => 1,
-        );  
+        );
         $form['submit'] = array(
           '#type' => 'submit',
           '#value' => t('Save changes'),
@@ -527,7 +527,7 @@ function filecabinet_admin_form_build (&$form_state = NULL) {
           '#value' => $document_type_value,
           '#suffix' => '</div>',
           '#weight' => 1,
-        );  
+        );
         $form['submit'] = array(
           '#type' => 'submit',
           '#value' => t('Confirm deletion'),
@@ -550,7 +550,7 @@ function filecabinet_admin_form_build (&$form_state = NULL) {
           '#size' => 16,
           '#required' => TRUE,
           '#weight' => 1,
-        );  
+        );
         $form['submit'] = array(
           '#type' => 'submit',
           '#value' => t('Save changes'),
@@ -564,7 +564,7 @@ function filecabinet_admin_form_build (&$form_state = NULL) {
           '#value' => $doclink_linktype_value,
           '#suffix' => '</div>',
           '#weight' => 1,
-        );  
+        );
         $form['submit'] = array(
           '#type' => 'submit',
           '#value' => t('Confirm deletion'),
@@ -583,7 +583,7 @@ function filecabinet_admin_form_build (&$form_state = NULL) {
 }
 
 function filecabinet_form_filecabinet_admin_form_alter(&$form, &$form_state) {
- //orgright_debug_msg('filecabinet','Fn: filecabinet_form_filecabinet_admin_form_alter',5);
+  //orgright_debug_msg('filecabinet','Fn: filecabinet_form_filecabinet_admin_form_alter',5);
   // Remove submit and reset buttons
   unset($form['buttons']['submit']);
   unset($form['buttons']['reset']);
@@ -596,34 +596,33 @@ function filecabinet_admin_form_validate($form, &$form_state) {
   // check for clicked button in default drawer owner fieldset
   if ($clicked_button == $form['default_owner']['default_owner_submit']['#value']) {
     // Check that the name returned is valid
-    module_load_include('inc', 'filecabinet', 'filecabinet_form'); 
+    module_load_include('inc', 'filecabinet', 'filecabinet_form');
     $ouid = filecabinet_validate_owner($form_state['values']['default_owner_name']);
     if ($ouid) {
       $form_state['storage']['ouid'] = $ouid;
     }
     else {
-      form_set_error('default_owner_name',t('The name specified is not a known user'));
+      form_set_error('default_owner_name', t('The name specified is not a known user'));
     }
-  }
-  // check for clicked button in default mail capture fieldset
+  } // check for clicked button in default mail capture fieldset
   elseif ($clicked_button == $form['mail_capture']['default_mail_submit']['#value']) {
     // Check that the name returned in "default_mail_folder" valid
-    module_load_include('inc', 'filecabinet', 'filecabinet_form'); 
+    module_load_include('inc', 'filecabinet', 'filecabinet_form');
     $fnid = filecabinet_validate_folder($form_state['values']['default_mail_folder']);
     if ($fnid) {
       $form_state['storage']['fnid'] = $fnid;
     }
     else {
-      form_set_error('default_mail_folder',t('The name specified is not a valid filecabinet folder'));
+      form_set_error('default_mail_folder', t('The name specified is not a valid filecabinet folder'));
     }
     // Check that the name returned in "default_mail_member" valid
-    module_load_include('inc', 'membership', 'membership_form'); 
+    module_load_include('inc', 'membership', 'membership_form');
     $mnid = membership_validate_member($form_state['values']['default_mail_member']);
     if ($mnid) {
       $form_state['storage']['mnid'] = $mnid;
     }
     else {
-      form_set_error('default_mail_member',t('The name specified is not a valid member'));
+      form_set_error('default_mail_member', t('The name specified is not a valid member'));
     }
     // Check that the value returned in "default_mail_doctype" is valid
     $doctype = $form_state['values']['default_mail_doctype'];
@@ -631,7 +630,7 @@ function filecabinet_admin_form_validate($form, &$form_state) {
       $form_state['storage']['doctype'] = $doctype;
     }
     else {
-      form_set_error('default_mail_doctype',t('The type specified is not valid'));
+      form_set_error('default_mail_doctype', t('The type specified is not valid'));
     }
     // Check that the value returned in "default_mail_docstatus" is valid
     $docstatus = $form_state['values']['default_mail_docstatus'];
@@ -639,17 +638,16 @@ function filecabinet_admin_form_validate($form, &$form_state) {
       $form_state['storage']['docstatus'] = $docstatus;
     }
     else {
-      form_set_error('default_mail_docstatus',t('The status specified is not valid'));
+      form_set_error('default_mail_docstatus', t('The status specified is not valid'));
     }
-  }
-  // check for clicked button in drawer status fieldset
+  } // check for clicked button in drawer status fieldset
   elseif ($clicked_button == $form['drawer_statuses']['drawer_status_add']['#value']) {
     //orgright_debug_msg('filecabinet','new drawer status='.$form_state['values']['drawer_status_new'],8);
     if (!$form_state['values']['drawer_status_new']) {
-      form_set_error('drawer_status_new',t('A value must be specified for the new drawer status'));
+      form_set_error('drawer_status_new', t('A value must be specified for the new drawer status'));
     }
     if ($form_state['values']['drawer_status_new'] != strip_tags($form_state['values']['drawer_status_new'])) {
-      form_set_error('drawer_status_new',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('drawer_status_new', t('HTML or PHP tags are not permitted in this field'));
     }
   }
   elseif ($clicked_button == $form['drawer_statuses']['drawer_status_edit']['#value']) {
@@ -661,15 +659,14 @@ function filecabinet_admin_form_validate($form, &$form_state) {
     $form_state['storage']['this_drawer_status'] = $form_state['values']['drawer_status_list'];
     $form_state['storage']['operation'] = 'delete_drawer_status';
     $form_state['rebuild'] = TRUE;
-  }
-  // check for clicked button in folder status fieldset
+  } // check for clicked button in folder status fieldset
   elseif ($clicked_button == $form['folder_statuses']['folder_status_add']['#value']) {
     //orgright_debug_msg('filecabinet','new folder status='.$form_state['values']['folder_status_new'],8);
     if (!$form_state['values']['folder_status_new']) {
-      form_set_error('folder_status_new',t('A value must be specified for the new folder status'));
+      form_set_error('folder_status_new', t('A value must be specified for the new folder status'));
     }
     if ($form_state['values']['folder_status_new'] != strip_tags($form_state['values']['folder_status_new'])) {
-      form_set_error('folder_status_new',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('folder_status_new', t('HTML or PHP tags are not permitted in this field'));
     }
   }
   elseif ($clicked_button == $form['folder_statuses']['folder_status_edit']['#value']) {
@@ -681,15 +678,14 @@ function filecabinet_admin_form_validate($form, &$form_state) {
     $form_state['storage']['this_folder_status'] = $form_state['values']['folder_status_list'];
     $form_state['storage']['operation'] = 'delete_folder_status';
     $form_state['rebuild'] = TRUE;
-  }
-  // check for clicked button in document status fieldset
+  } // check for clicked button in document status fieldset
   elseif ($clicked_button == $form['document_statuses']['document_status_add']['#value']) {
     //orgright_debug_msg('filecabinet','new document status='.$form_state['values']['document_status_new'],8);
     if (!$form_state['values']['document_status_new']) {
-      form_set_error('document_status_new',t('A value must be specified for the new document status'));
+      form_set_error('document_status_new', t('A value must be specified for the new document status'));
     }
     if ($form_state['values']['document_status_new'] != strip_tags($form_state['values']['document_status_new'])) {
-      form_set_error('document_status_new',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('document_status_new', t('HTML or PHP tags are not permitted in this field'));
     }
   }
   elseif ($clicked_button == $form['document_statuses']['document_status_edit']['#value']) {
@@ -701,15 +697,14 @@ function filecabinet_admin_form_validate($form, &$form_state) {
     $form_state['storage']['this_document_status'] = $form_state['values']['document_status_list'];
     $form_state['storage']['operation'] = 'delete_document_status';
     $form_state['rebuild'] = TRUE;
-  }
-  // check for clicked button in document type fieldset
+  } // check for clicked button in document type fieldset
   elseif ($clicked_button == $form['document_types']['document_type_add']['#value']) {
     //orgright_debug_msg('filecabinet','new document_type='.$form_state['values']['document_type_new'],8);
     if (!$form_state['values']['document_type_new']) {
-      form_set_error('document_type_new',t('A value must be specified for the new document type'));
+      form_set_error('document_type_new', t('A value must be specified for the new document type'));
     }
     if ($form_state['values']['document_type_new'] != strip_tags($form_state['values']['document_type_new'])) {
-      form_set_error('document_type_new',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('document_type_new', t('HTML or PHP tags are not permitted in this field'));
     }
   }
   elseif ($clicked_button == $form['document_types']['document_type_edit']['#value']) {
@@ -724,15 +719,14 @@ function filecabinet_admin_form_validate($form, &$form_state) {
   }
   elseif ($clicked_button == $form['doclink_nodetypes']['doclink_nodetype_submit']['#value']) {
     // The submit button for doclink target node types has been clicked
-  }
-  // check for clicked button in doclink linktype fieldset
+  } // check for clicked button in doclink linktype fieldset
   elseif ($clicked_button == $form['doclink_linktypes']['doclink_linktype_add']['#value']) {
     //orgright_debug_msg('filecabinet','new doclink_linktype='.$form_state['values']['doclink_linktype_new'],8);
     if (!$form_state['values']['doclink_linktype_new']) {
-      form_set_error('doclink_linktype_new',t('A value must be specified for the new document link type'));
+      form_set_error('doclink_linktype_new', t('A value must be specified for the new document link type'));
     }
     if ($form_state['values']['doclink_linktype_new'] != strip_tags($form_state['values']['doclink_linktype_new'])) {
-      form_set_error('doclink_linktype_new',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('doclink_linktype_new', t('HTML or PHP tags are not permitted in this field'));
     }
   }
   elseif ($clicked_button == $form['doclink_linktypes']['doclink_linktype_edit']['#value']) {
@@ -745,20 +739,20 @@ function filecabinet_admin_form_validate($form, &$form_state) {
     $form_state['storage']['operation'] = 'delete_doclink_linktype';
     $form_state['rebuild'] = TRUE;
   }
-  elseif ($clicked_button == $form['upload_settings']['upload_settings_submit']['#value']){
+  elseif ($clicked_button == $form['upload_settings']['upload_settings_submit']['#value']) {
     // The submit button for the upload file seetings has been clicked
     if (preg_replace('/[,.-]/', '//', $form_state['values']['upload_extensions']) != $form_state['values']['upload_extensions']) {
-        form_set_error('upload_extensions', t('Specify a list of allowed upload extensions, each separated by spaces'));
+      form_set_error('upload_extensions', t('Specify a list of allowed upload extensions, each separated by spaces'));
     }
     if (!is_numeric($form_state['values']['upload_filesize']) || $form_state['values']['upload_filesize'] < 0) {
-        form_set_error('upload_filesize', t('A number greater than zero must be specified for the upload file size'));
-      }
+      form_set_error('upload_filesize', t('A number greater than zero must be specified for the upload file size'));
+    }
     if (is_numeric($form_state['values']['upload_filesize']) && $form_state['values']['upload_filesize'] > file_upload_max_size()) {
-        form_set_error('upload_filesize', t('Your PHP settings limit the maximum file size per upload to %size.', array('%size' => format_size(file_upload_max_size()))));
+      form_set_error('upload_filesize', t('Your PHP settings limit the maximum file size per upload to %size.', array('%size' => format_size(file_upload_max_size()))));
     }
     if (!is_numeric($form_state['values']['upload_usersize']) || $form_state['values']['upload_usersize'] < 0) {
-        form_set_error('upload_usersize', t('A number greater than zero must be specified for the upload user space'));
-      }
+      form_set_error('upload_usersize', t('A number greater than zero must be specified for the upload user space'));
+    }
     if ($form_state['values']['upload_resolution'] != 0) {
       if (!preg_match('/^[0-9]+x[0-9]+$/', $form_state['values']['upload_max_resolution'])) {
         form_set_error('upload_max_resolution', t('The maximum allowed image resolution should be expressed as WIDTHxHEIGHT (e.g. 640x480).'));
@@ -769,34 +763,34 @@ function filecabinet_admin_form_validate($form, &$form_state) {
     // The save changes or confirm deletion button has been clicked
     if ($form_state['storage']['operation'] == 'edit_drawer_status') {
       if (!$form_state['values']['drawer_status']) {
-        form_set_error('drawer_status',t('A value must be specified for the drawer status'));
+        form_set_error('drawer_status', t('A value must be specified for the drawer status'));
       }
       if ($form_state['values']['drawer_status'] != strip_tags($form_state['values']['drawer_status'])) {
-        form_set_error('drawer_status',t('HTML or PHP tags are not permitted in this field'));
+        form_set_error('drawer_status', t('HTML or PHP tags are not permitted in this field'));
       }
     }
     if ($form_state['storage']['operation'] == 'edit_folder_status') {
       if (!$form_state['values']['folder_status']) {
-        form_set_error('folder_status',t('A value must be specified for the folder status'));
+        form_set_error('folder_status', t('A value must be specified for the folder status'));
       }
       if ($form_state['values']['folder_status'] != strip_tags($form_state['values']['folder_status'])) {
-        form_set_error('folder_status',t('HTML or PHP tags are not permitted in this field'));
+        form_set_error('folder_status', t('HTML or PHP tags are not permitted in this field'));
       }
     }
     if ($form_state['storage']['operation'] == 'edit_document_status') {
       if (!$form_state['values']['document_status']) {
-        form_set_error('document_status',t('A value must be specified for the document status'));
+        form_set_error('document_status', t('A value must be specified for the document status'));
       }
       if ($form_state['values']['document_status'] != strip_tags($form_state['values']['document_status'])) {
-        form_set_error('document_status',t('HTML or PHP tags are not permitted in this field'));
+        form_set_error('document_status', t('HTML or PHP tags are not permitted in this field'));
       }
     }
     if ($form_state['storage']['operation'] == 'edit_document_type') {
       if (!$form_state['values']['document_type']) {
-        form_set_error('document_type',t('A value must be specified for the document type'));
+        form_set_error('document_type', t('A value must be specified for the document type'));
       }
       if ($form_state['values']['document_type'] != strip_tags($form_state['values']['document_type'])) {
-        form_set_error('document_type',t('HTML or PHP tags are not permitted in this field'));
+        form_set_error('document_type', t('HTML or PHP tags are not permitted in this field'));
       }
     }
   }
@@ -810,8 +804,7 @@ function filecabinet_admin_form_submit($form, &$form_state) {
   if ($clicked_button == $form['default_owner']['default_owner_submit']['#value']) {
     variable_set('filecabinet_default_owner_uid', $form_state['storage']['ouid']);
     $message = t('The default drawer owner has been set.');
-  }
-  // check for clicked button in default mail capture fieldset
+  } // check for clicked button in default mail capture fieldset
   elseif ($clicked_button == $form['mail_capture']['default_mail_submit']['#value']) {
     variable_set('filecabinet_default_mail_fnid', $form_state['storage']['fnid']);
     variable_set('filecabinet_default_mail_mnid', $form_state['storage']['mnid']);
@@ -876,17 +869,18 @@ function filecabinet_admin_form_submit($form, &$form_state) {
     //orgright_debug_dump('doclink formstate',$form_state);
     $nodetype_list = array();
     foreach ($form_state['values']['doclink_nodetype_list'] as $nodetype) {
-      if ($nodetype) { $nodetype_list[] = $nodetype; }
+      if ($nodetype) {
+        $nodetype_list[] = $nodetype;
+      }
     }
-    variable_set('filecabinet_doclink_nodetypes',array_values($nodetype_list));
+    variable_set('filecabinet_doclink_nodetypes', array_values($nodetype_list));
     $message = t('The list of target node types has been saved');
-  }
-  // Process doclink linktype fieldset
+  } // Process doclink linktype fieldset
   elseif ($clicked_button == $form['doclink_linktypes']['doclink_linktype_add']['#value']) {
     //orgright_debug_msg('filecabinet','new doclink type='.$form_state['values']['doclink_linktype_new'],8);
     $doclink_linktype_list = filecabinet_get_doclink_linktypes();
     $doclink_linktype_list[] = $form_state['values']['doclink_linktype_new'];
-    variable_set('filecabinet_doclink_linktypes',array_values($doclink_linktype_list));
+    variable_set('filecabinet_doclink_linktypes', array_values($doclink_linktype_list));
     $message = t('The document link type has been added.');
   }
   elseif ($clicked_button == $form['doclink_linktypes']['doclink_linktype_edit']['#value']) {
@@ -908,77 +902,77 @@ function filecabinet_admin_form_submit($form, &$form_state) {
       $drawer_status_list = filecabinet_get_drawer_statuses();
       $this_drawer_status = $form_state['storage']['this_drawer_status'];
       $drawer_status_list[$this_drawer_status] = $form_state['values']['drawer_status'];
-      variable_set('filecabinet_drawer_statuses',array_values($drawer_status_list));
+      variable_set('filecabinet_drawer_statuses', array_values($drawer_status_list));
       $message = t('The drawer status has been saved.');
     }
     elseif ($form_state['storage']['operation'] == 'delete_drawer_status') {
       $drawer_status_list = filecabinet_get_drawer_statuses();
       $this_drawer_status = $form_state['storage']['this_drawer_status'];
       unset($drawer_status_list[$this_drawer_status]);
-      variable_set('filecabinet_drawer_statuses',array_values($drawer_status_list));
+      variable_set('filecabinet_drawer_statuses', array_values($drawer_status_list));
       $message = t('The drawer status has been deleted.');
     }
     elseif ($form_state['storage']['operation'] == 'edit_folder_status') {
       $folder_status_list = filecabinet_get_folder_statuses();
       $this_folder_status = $form_state['storage']['this_folder_status'];
       $folder_status_list[$this_folder_status] = $form_state['values']['folder_status'];
-      variable_set('filecabinet_folder_statuses',array_values($folder_status_list));
+      variable_set('filecabinet_folder_statuses', array_values($folder_status_list));
       $message = t('The folder status has been saved.');
     }
     elseif ($form_state['storage']['operation'] == 'delete_folder_status') {
       $folder_status_list = filecabinet_get_folder_statuses();
       $this_folder_status = $form_state['storage']['this_folder_status'];
       unset($folder_status_list[$this_folder_status]);
-      variable_set('filecabinet_folder_statuses',array_values($folder_status_list));
+      variable_set('filecabinet_folder_statuses', array_values($folder_status_list));
       $message = t('The folder status has been deleted.');
     }
     elseif ($form_state['storage']['operation'] == 'edit_document_status') {
       $document_status_list = filecabinet_get_document_statuses();
       $this_document_status = $form_state['storage']['this_document_status'];
       $document_status_list[$this_document_status] = $form_state['values']['document_status'];
-      variable_set('filecabinet_document_statuses',array_values($document_status_list));
+      variable_set('filecabinet_document_statuses', array_values($document_status_list));
       $message = t('The document status has been saved.');
     }
     elseif ($form_state['storage']['operation'] == 'delete_document_status') {
       $document_status_list = filecabinet_get_document_statuses();
       $this_document_status = $form_state['storage']['this_document_status'];
       unset($document_status_list[$this_document_status]);
-      variable_set('filecabinet_document_statuses',array_values($document_status_list));
+      variable_set('filecabinet_document_statuses', array_values($document_status_list));
       $message = t('The document status has been deleted.');
     }
     elseif ($form_state['storage']['operation'] == 'edit_document_type') {
       $document_type_list = filecabinet_get_document_types();
       $this_document_type = $form_state['storage']['this_document_type'];
       $document_type_list[$this_document_type] = $form_state['values']['document_type'];
-      variable_set('filecabinet_document_types',array_values($document_type_list));
+      variable_set('filecabinet_document_types', array_values($document_type_list));
       $message = t('The document type has been saved.');
     }
     elseif ($form_state['storage']['operation'] == 'delete_document_type') {
       $document_type_list = filecabinet_get_document_types();
       $this_document_type = $form_state['storage']['this_document_type'];
       unset($document_type_list[$this_document_type]);
-      variable_set('filecabinet_document_types',array_values($document_type_list));
+      variable_set('filecabinet_document_types', array_values($document_type_list));
       $message = t('The document type has been deleted.');
     }
     elseif ($form_state['storage']['operation'] == 'edit_doclink_linktype') {
       $doclink_linktype_list = filecabinet_get_doclink_linktypes();
       $this_doclink_linktype = $form_state['storage']['this_doclink_linktype'];
       $doclink_linktype_list[$this_doclink_linktype] = $form_state['values']['doclink_linktype'];
-      variable_set('filecabinet_doclink_linktypes',array_values($doclink_linktype_list));
+      variable_set('filecabinet_doclink_linktypes', array_values($doclink_linktype_list));
       $message = t('The document link type has been saved.');
     }
     elseif ($form_state['storage']['operation'] == 'delete_doclink_linktype') {
       $doclink_linktype_list = filecabinet_get_doclink_linktypes();
       $this_doclink_linktype = $form_state['storage']['this_doclink_linktype'];
       unset($doclink_linktype_list[$this_doclink_linktype]);
-      variable_set('filecabinet_doclink_linktypes',array_values($doclink_linktype_list));
+      variable_set('filecabinet_doclink_linktypes', array_values($doclink_linktype_list));
       $message = t('The document link type has been deleted.');
     }
     else {
       // unknown operation
     }
   }
-  drupal_set_message($message,'status');
+  drupal_set_message($message, 'status');
   $form_state['storage'] = array();
   $form_state['redirect'] = 'admin/orgright/filecabinet';
 }

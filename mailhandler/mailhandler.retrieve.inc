@@ -3,7 +3,7 @@
 
 /**
  * Establish IMAP stream connection to specified mailbox.
- * 
+ *
  * @param $mailbox
  *   Array of mailbox configuration
  * @return IMAP stream
@@ -11,10 +11,10 @@
 function mailhandler_open_mailbox($mailbox) {
   if ($mailbox['domain']) {
     if ($mailbox['imap'] == 1) {
-      $box = '{'. $mailbox['domain'] .':'. $mailbox['port'] . $mailbox['extraimap'] .'}'. $mailbox['folder'];
+      $box = '{' . $mailbox['domain'] . ':' . $mailbox['port'] . $mailbox['extraimap'] . '}' . $mailbox['folder'];
     }
     else {
-      $box = '{'. $mailbox['domain'] .':'. $mailbox['port'] .'/pop3'. $mailbox['extraimap'] .'}'. $mailbox['folder'];
+      $box = '{' . $mailbox['domain'] . ':' . $mailbox['port'] . '/pop3' . $mailbox['extraimap'] . '}' . $mailbox['folder'];
     }
     $result = imap_open($box, $mailbox['name'], $mailbox['pass']);
     $err = 'domain';
@@ -33,7 +33,7 @@ function mailhandler_open_mailbox($mailbox) {
  * $data = get_part($stream, $msg_number, "TEXT/PLAIN"); // get plain text
  * $data = get_part($stream, $msg_number, "TEXT/HTML"); // get HTML text
  */
-function mailhandler_get_part($stream, $msg_number, $mime_type, $structure = false, $part_number = false) {
+function mailhandler_get_part($stream, $msg_number, $mime_type, $structure = FALSE, $part_number = FALSE) {
 
   if (!$structure) {
     $structure = imap_fetchstructure($stream, $msg_number, FT_UID);
@@ -53,18 +53,20 @@ function mailhandler_get_part($stream, $msg_number, $mime_type, $structure = fal
       if ($structure->encoding == ENCBASE64) {
         return drupal_convert_to_utf8(imap_base64($text), $encoding);
       }
-      else if ($structure->encoding == ENCQUOTEDPRINTABLE) {
-        return drupal_convert_to_utf8(quoted_printable_decode($text), $encoding);
-      }
       else {
-        return drupal_convert_to_utf8($text, $encoding);
+        if ($structure->encoding == ENCQUOTEDPRINTABLE) {
+          return drupal_convert_to_utf8(quoted_printable_decode($text), $encoding);
+        }
+        else {
+          return drupal_convert_to_utf8($text, $encoding);
+        }
       }
     }
     if ($structure->type == TYPEMULTIPART) { /* multipart */
       $prefix = '';
-      while (list($index, $sub_structure) = each ($structure->parts)) {
+      while (list($index, $sub_structure) = each($structure->parts)) {
         if ($part_number) {
-          $prefix = $part_number .'.';
+          $prefix = $part_number . '.';
         }
         $data = mailhandler_get_part($stream, $msg_number, $mime_type, $sub_structure, $prefix . ($index + 1));
         if ($data) {
@@ -74,7 +76,7 @@ function mailhandler_get_part($stream, $msg_number, $mime_type, $structure = fal
     }
   }
 
-  return false;
+  return FALSE;
 }
 
 
@@ -106,17 +108,17 @@ function mailhandler_get_parts($stream, $msg_number, $max_depth = 10, $depth = 0
   if ($structure->type == TYPEMULTIPART) {
     // Restrict recursion depth.
     if ($depth >= $max_depth) {
-      watchdog('mailhandler', 'Maximum recursion depths met in mailhander_get_structure_part for message number %msg_number.',  array('%msg_number' => $msg_number), WATCHDOG_NOTICE);
+      watchdog('mailhandler', 'Maximum recursion depths met in mailhander_get_structure_part for message number %msg_number.', array('%msg_number' => $msg_number), WATCHDOG_NOTICE);
       return $parts;
     }
     $prefix = '';
-    foreach($structure->parts as $index => $sub_structure) {
+    foreach ($structure->parts as $index => $sub_structure) {
       // If a part number was passed in and we are a multitype message, prefix the
       // the part number for the recursive call to match the imap4 dot seperated part indexing.
       if ($part_number) {
-        $prefix = $part_number .'.';
+        $prefix = $part_number . '.';
       }
-      $sub_parts =  mailhandler_get_parts($stream, $msg_number, $max_depth, $depth + 1,
+      $sub_parts = mailhandler_get_parts($stream, $msg_number, $max_depth, $depth + 1,
         $sub_structure, $prefix . ($index + 1));
       $parts = array_merge($parts, $sub_parts);
     }
@@ -164,7 +166,7 @@ function mailhandler_get_parts($stream, $msg_number, $max_depth = 10, $depth = 0
   }
 
   // Retrieve part and convert MIME encoding to UTF-8
-  if(!$part->data = imap_fetchbody($stream, $msg_number, $part_number, FT_UID)) {
+  if (!$part->data = imap_fetchbody($stream, $msg_number, $part_number, FT_UID)) {
     watchdog('mailhandler', 'No Data!!', array(), WATCHDOG_ERROR);
     return $parts;
   }
@@ -175,8 +177,7 @@ function mailhandler_get_parts($stream, $msg_number, $max_depth = 10, $depth = 0
   }
   elseif ($structure->encoding == ENCQUOTEDPRINTABLE) {
     $part->data = quoted_printable_decode($part->data);
-  }
-  // Convert text attachment to UTF-8.
+  } // Convert text attachment to UTF-8.
   elseif ($structure->type == TYPETEXT) {
     $part->data = imap_utf8($part->data);
   }
@@ -194,7 +195,7 @@ function mailhandler_get_mime_type(&$structure) {
   static $primary_mime_type = array('TEXT', 'MULTIPART', 'MESSAGE', 'APPLICATION', 'AUDIO', 'IMAGE', 'VIDEO', 'OTHER');
   $type_id = (int)$structure->type;
   if (isset($primary_mime_type[$type_id]) && !empty($structure->subtype)) {
-    return $primary_mime_type[$type_id] .'/'. $structure->subtype;
+    return $primary_mime_type[$type_id] . '/' . $structure->subtype;
   }
   return 'TEXT/PLAIN';
 }
@@ -212,10 +213,12 @@ function mailhandler_commands_parse($body, $sep) {
       $commands[$i] = explode(': ', $line, 2);
     }
     else {
-      if (!isset($endcommands)) $endcommands = $i;
+      if (!isset($endcommands)) {
+        $endcommands = $i;
+      }
     }
     // Stop when we encounter the sig. we'll discard all remaining text.
-    $start = substr($lines[$i], 0, strlen($sep)+3);
+    $start = substr($lines[$i], 0, strlen($sep) + 3);
     if ($sep && strstr($start, $sep)) { // mail clients sometimes prefix replies with ' >'
       break;
     }
@@ -225,12 +228,12 @@ function mailhandler_commands_parse($body, $sep) {
 
 /**
  * Defines and executes message authentication methods
- * 
- * Message authentication methods can be defined using mailhandler_authenticate_info() which can 
+ *
+ * Message authentication methods can be defined using mailhandler_authenticate_info() which can
  * take one of two $op's:
  *   - info, which is used to define an authentication plugin
  *   - execute, which is used to execute an authentication plugin
- * 
+ *
  * @param $op
  *   String info or execute
  * @param $name
@@ -244,7 +247,7 @@ function mailhandler_mailhandler_authenticate($op, $name = NULL, $args = array()
     case 'info':
       foreach (module_list() as $module) {
         if (module_hook($module, 'mailhandler_authenticate_info')) {
-          $function = $module .'_mailhandler_authenticate_info';
+          $function = $module . '_mailhandler_authenticate_info';
           $methods[] = $function();
         }
       }
@@ -252,7 +255,7 @@ function mailhandler_mailhandler_authenticate($op, $name = NULL, $args = array()
     case 'execute':
       foreach (module_list() as $module) {
         if (module_hook($module, 'mailhandler_authenticate_info')) {
-          $function = $module .'_mailhandler_authenticate_info';
+          $function = $module . '_mailhandler_authenticate_info';
           $methods = $function('info');
           // TODO - May not be found, like if providing module is disabled.  Must fail gracefully
           foreach ($methods as $key => $method) {
@@ -293,16 +296,16 @@ function mailhandler_switch_user($uid = NULL) {
   if (isset($uid)) {
     session_save_session(FALSE);
     $user = user_load(array('uid' => $uid));
-  }
-  // retrieve the initial user, can be called multiple times
-  else if (count($orig_user)) {
-    $user = array_shift($orig_user);
-    session_save_session(TRUE);
-    array_unshift($orig_user, $user);
-  }
-  // store the initial user
+  } // retrieve the initial user, can be called multiple times
   else {
-    $orig_user[] = $user;
+    if (count($orig_user)) {
+      $user = array_shift($orig_user);
+      session_save_session(TRUE);
+      array_unshift($orig_user, $user);
+    } // store the initial user
+    else {
+      $orig_user[] = $user;
+    }
   }
 }
 
@@ -315,7 +318,7 @@ function mailhandler_batch_finished($success, $results, $operations) {
     // Return the results to any asking modules
     foreach (module_list() as $name) {
       if (module_hook($name, 'mailhandler_batch_results')) {
-        $function = $name .'_mailhandler_batch_results';
+        $function = $name . '_mailhandler_batch_results';
         if (!($messages = $function($results))) {
           // Exit if a module has handled the submitted data.
           break;
@@ -327,10 +330,10 @@ function mailhandler_batch_finished($success, $results, $operations) {
 
 /**
  * Obtain the number of unread messages for an imap stream
- * 
+ *
  * @param $result
  *   IMAP stream - as opened by imap_open
- * @return 
+ * @return
  *   Array, values contain message numbers
  */
 function mailhandler_get_unread_messages($result) {
@@ -349,7 +352,7 @@ function mailhandler_get_unread_messages($result) {
 
 /**
  * Retrieve individual messages from an IMAP result
- * 
+ *
  * @param $result
  *   IMAP stream
  * @param $mailbox
@@ -389,8 +392,8 @@ function mailhandler_retrieve_message($result, $mailbox, $i, &$context) {
   }
   //ORGRIGHT-start: save the message as a file for the filecabinet and return file object
   $filename = md5($header->message_id);
-  $filepath = file_directory_temp().'/'.$filename;
-  file_save_data(imap_fetchheader($result,$i).imap_body($result,$i), $filepath);
+  $filepath = file_directory_temp() . '/' . $filename;
+  file_save_data(imap_fetchheader($result, $i) . imap_body($result, $i), $filepath);
   $msgfile = new stdClass();
   $msgfile->filemime = 'message/rfc822';
   $msgfile->filename = $filename;
@@ -421,7 +424,7 @@ function mailhandler_retrieve_message($result, $mailbox, $i, &$context) {
 
 /**
  * Connect to mailbox and run message retrieval
- * 
+ *
  * @param $mailbox
  *   Array of mailbox configuration
  * @param $mode
@@ -431,7 +434,7 @@ function mailhandler_retrieve_message($result, $mailbox, $i, &$context) {
  */
 function mailhandler_retrieve($mailbox, $mode, $limit = 0) {
   // This is cast as string in hook_menu, otherwise the url argument would get used.
-  $limit = (int) $limit;
+  $limit = (int)$limit;
   if ($result = mailhandler_open_mailbox($mailbox)) {
     $new = mailhandler_get_unread_messages($result);
   }
@@ -440,7 +443,8 @@ function mailhandler_retrieve($mailbox, $mode, $limit = 0) {
       if ($result) {
         // Batch does not support using a single stream because it makes multiple page calls.
         // The stream will be opened within mailhandler_retrieve_message
-        imap_close($result, CL_EXPUNGE);  $result = 0;
+        imap_close($result, CL_EXPUNGE);
+        $result = 0;
         if (!empty($new)) {
           foreach ($new as $message) {
             $message_number = !$mailbox['imap'] ? 1 : $message;
@@ -452,7 +456,7 @@ function mailhandler_retrieve($mailbox, $mode, $limit = 0) {
             'finished' => 'mailhandler_batch_finished',
             'init_message' => format_plural(count($new), 'Preparing to retrieve 1 message...', 'Preparing to retrieve @count messages...'),
             'progress_message' => t('Retrieving message @current of @total.'),
-            'file' => drupal_get_path('module', 'mailhandler') .'/mailhandler.retrieve.inc',
+            'file' => drupal_get_path('module', 'mailhandler') . '/mailhandler.retrieve.inc',
           );
           batch_set($batch);
           // Make 'progressive' mode work.  Hack due to bug http://drupal.org/node/638712

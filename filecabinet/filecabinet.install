@@ -31,16 +31,16 @@ function filecabinet_uninstall() {
   // ensure that the defaults for each node type are un-configured
   $node_types = array('drawer', 'folder', 'document');
   foreach ($node_types as $type) {
-    variable_del('comment_'.$type);
-    variable_del('comment_controls_'.$type);
-    variable_del('comment_default_mode_'.$type);
-    variable_del('comment_default_order'.$type);
-    variable_del('comment_default_per_page'.$type);
-    variable_del('comment_form_location_'.$type);
-    variable_del('comment_preview'.$type);
-    variable_del('comment_subject_field_'.$type);
-    variable_del('upload_'.$type);
-    variable_del('node_options_'.$type);
+    variable_del('comment_' . $type);
+    variable_del('comment_controls_' . $type);
+    variable_del('comment_default_mode_' . $type);
+    variable_del('comment_default_order' . $type);
+    variable_del('comment_default_per_page' . $type);
+    variable_del('comment_form_location_' . $type);
+    variable_del('comment_preview' . $type);
+    variable_del('comment_subject_field_' . $type);
+    variable_del('upload_' . $type);
+    variable_del('node_options_' . $type);
   }
 }
 
@@ -54,7 +54,7 @@ function filecabinet_disable() {
 /**
  * Implementation of hook_schema()
  */
-// === "org_drawers" table === 
+// === "org_drawers" table ===
 function filecabinet_schema() {
   $schema['org_drawers'] = array(
     'description' => t('Stores details of filecabinet drawers'),
@@ -343,7 +343,7 @@ function filecabinet_schema() {
         'description' => t('The type of link'),
       ),
     ),
-    'primary key' => array('dnid','xnid'),
+    'primary key' => array('dnid', 'xnid'),
     'indexes' => array(
       'nodetype' => array('nodetype'),
       'linktype' => array('linktype'),
@@ -362,7 +362,7 @@ function filecabinet_update_6004() {
   // extract the document contents for the node body field (0=NO, 1=DONE).
   $sql = "ALTER TABLE org_documents ADD scanned INT UNSIGNED NOT NULL DEFAULT 0 AFTER afid";
   if (!db_query($sql)) {
-    return array('#abort'=>array('success'=>FALSE, 'query'=>'Add new column to table org_documents failed'));
+    return array('#abort' => array('success' => FALSE, 'query' => 'Add new column to table org_documents failed'));
   }
   return array();
 }
@@ -377,7 +377,7 @@ function filecabinet_update_6002() {
   // provide for the change to the filing cabinet to permit documents to have attachments.
   $sql = "ALTER TABLE org_documents ADD dnid INT UNSIGNED NOT NULL DEFAULT 0 AFTER fnid, ADD INDEX dnid (dnid)";
   if (!db_query($sql)) {
-    return array('#abort'=>array('success'=>FALSE, 'query'=>'Add new column to table org_documents failed'));
+    return array('#abort' => array('success' => FALSE, 'query' => 'Add new column to table org_documents failed'));
   }
   return array();
 }
@@ -386,27 +386,43 @@ function filecabinet_update_6001() {
   // Drop all default specifications for text columns
   $sql = "ALTER TABLE org_drawers ";
   $cols = array('drawer', 'drawerstatus', 'drawerperm', 'notes');
-  foreach ($cols as $col) { $sql .= " ALTER COLUMN $col DROP DEFAULT,"; }
+  foreach ($cols as $col) {
+    $sql .= " ALTER COLUMN $col DROP DEFAULT,";
+  }
   $sql = substr($sql, 0, -1);
-  if (!db_query($sql)) { return array('#abort'=>array('success'=>FALSE, 'query'=>'Alter table org_drawers failed')); }
+  if (!db_query($sql)) {
+    return array('#abort' => array('success' => FALSE, 'query' => 'Alter table org_drawers failed'));
+  }
 
   $sql = "ALTER TABLE org_folders ";
   $cols = array('folder', 'folderstatus', 'folderperm', 'notes');
-  foreach ($cols as $col) { $sql .= " ALTER COLUMN $col DROP DEFAULT,"; }
+  foreach ($cols as $col) {
+    $sql .= " ALTER COLUMN $col DROP DEFAULT,";
+  }
   $sql = substr($sql, 0, -1);
-  if (!db_query($sql)) { return array('#abort'=>array('success'=>FALSE, 'query'=>'Alter table org_folders failed')); }
+  if (!db_query($sql)) {
+    return array('#abort' => array('success' => FALSE, 'query' => 'Alter table org_folders failed'));
+  }
 
   $sql = "ALTER TABLE org_documents ";
   $cols = array('docname', 'docversion', 'docdate', 'doctype', 'docstatus', 'docdesc', 'notes');
-  foreach ($cols as $col) { $sql .= " ALTER COLUMN $col DROP DEFAULT,"; }
+  foreach ($cols as $col) {
+    $sql .= " ALTER COLUMN $col DROP DEFAULT,";
+  }
   $sql = substr($sql, 0, -1);
-  if (!db_query($sql)) { return array('#abort'=>array('success'=>FALSE, 'query'=>'Alter table org_documents failed')); }
+  if (!db_query($sql)) {
+    return array('#abort' => array('success' => FALSE, 'query' => 'Alter table org_documents failed'));
+  }
 
   $sql = "ALTER TABLE org_doclinks ";
   $cols = array('nodetype', 'linktype');
-  foreach ($cols as $col) { $sql .= " ALTER COLUMN $col DROP DEFAULT,"; }
+  foreach ($cols as $col) {
+    $sql .= " ALTER COLUMN $col DROP DEFAULT,";
+  }
   $sql = substr($sql, 0, -1);
-  if (!db_query($sql)) { return array('#abort'=>array('success'=>FALSE, 'query'=>'Alter table org_doclinks failed')); }
+  if (!db_query($sql)) {
+    return array('#abort' => array('success' => FALSE, 'query' => 'Alter table org_doclinks failed'));
+  }
 
   return array();
 }

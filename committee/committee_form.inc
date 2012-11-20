@@ -25,7 +25,7 @@ function committee_committee_form_build(&$form_state, $node) {
     '#maxlength' => 64,
     '#size' => 40,
     '#required' => TRUE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -33,16 +33,16 @@ function committee_committee_form_build(&$form_state, $node) {
   if (count($committees_list) > orgright_get_selectfield_max()) {
     // too many entries, so use an autocomplete field instead
     $form['parent'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Parent'),
-    '#description' => committee_field_description('committee', 'parent', t('Enter the name of the parent committee')),
-    '#default_value' => $node->parent,
-    '#maxlength' => 64,
-    '#size' => 40,
-    '#required' => FALSE,
-    '#attributes' => array('tabindex'=>$fix),
-    '#weight' => $fix,
-    '#autocomplete_path' => 'committee/autocomplete/committees',
+      '#type' => 'textfield',
+      '#title' => t('Parent'),
+      '#description' => committee_field_description('committee', 'parent', t('Enter the name of the parent committee')),
+      '#default_value' => $node->parent,
+      '#maxlength' => 64,
+      '#size' => 40,
+      '#required' => FALSE,
+      '#attributes' => array('tabindex' => $fix),
+      '#weight' => $fix,
+      '#autocomplete_path' => 'committee/autocomplete/committees',
     );
   }
   else {
@@ -55,7 +55,7 @@ function committee_committee_form_build(&$form_state, $node) {
       '#default_value' => $node->pnid,
       '#options' => $committees_list,
       '#required' => FALSE,
-      '#attributes' => array('tabindex'=>$fix),
+      '#attributes' => array('tabindex' => $fix),
       '#weight' => $fix,
     );
   }
@@ -68,7 +68,7 @@ function committee_committee_form_build(&$form_state, $node) {
     '#rows' => 5,
     '#required' => FALSE,
     '#resizable' => TRUE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -79,7 +79,7 @@ function committee_committee_form_build(&$form_state, $node) {
     '#default_value' => $node->notes,
     '#rows' => 3,
     '#resizable' => TRUE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   // create placeholders to be filled in during validation
@@ -100,7 +100,7 @@ function committee_committee_form_build(&$form_state, $node) {
   $form['#validate'] = array('committee_form_validate');
   $form['#submit'] = array('committee_form_submit');
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Committee')=>'committee', t('Committees')=>'committee/committees'));
+  orgright_breadcrumb(array(t('Committee') => 'committee', t('Committees') => 'committee/committees'));
   return $form;
 }
 
@@ -120,7 +120,7 @@ function committee_role_form_build(&$form_state, $node) {
     '#maxlength' => 64,
     '#size' => 40,
     '#required' => TRUE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -135,7 +135,7 @@ function committee_role_form_build(&$form_state, $node) {
       '#maxlength' => 64,
       '#size' => 40,
       '#required' => FALSE,
-      '#attributes' => array('tabindex'=>$fix),
+      '#attributes' => array('tabindex' => $fix),
       '#weight' => $fix,
       '#autocomplete_path' => 'committee/autocomplete/committees',
     );
@@ -150,7 +150,7 @@ function committee_role_form_build(&$form_state, $node) {
       '#default_value' => $node->cnid,
       '#options' => $committees_list,
       '#required' => FALSE,
-      '#attributes' => array('tabindex'=>$fix),
+      '#attributes' => array('tabindex' => $fix),
       '#weight' => $fix,
     );
   }
@@ -162,9 +162,9 @@ function committee_role_form_build(&$form_state, $node) {
     '#default_value' => $node->multiperson,
     '#options' => array(t('No'), t('Yes')),
     '#required' => TRUE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
-    
+
   );
   $fix++;
   $form['allowvacant'] = array(
@@ -174,9 +174,9 @@ function committee_role_form_build(&$form_state, $node) {
     '#default_value' => $node->allowvacant,
     '#options' => array(t('No'), t('Yes')),
     '#required' => TRUE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
-    
+
   );
   $fix++;
   $form['body'] = array(
@@ -187,7 +187,7 @@ function committee_role_form_build(&$form_state, $node) {
     '#rows' => 5,
     '#required' => FALSE,
     '#resizable' => TRUE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -198,7 +198,7 @@ function committee_role_form_build(&$form_state, $node) {
     '#default_value' => $node->notes,
     '#rows' => 3,
     '#resizable' => TRUE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   // create placeholders to be filled in during validation
@@ -219,7 +219,7 @@ function committee_role_form_build(&$form_state, $node) {
   $form['#validate'] = array('committee_form_validate');
   $form['#submit'] = array('committee_form_submit');
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Committee')=>'committee', t('Roles')=>'committee/roles'));
+  orgright_breadcrumb(array(t('Committee') => 'committee', t('Roles') => 'committee/roles'));
   return $form;
 }
 
@@ -240,7 +240,7 @@ function committee_appointment_form_build(&$form_state, $node) {
       '#maxlength' => 64,
       '#size' => 40,
       '#required' => TRUE,
-      '#attributes' => array('tabindex'=>$fix),
+      '#attributes' => array('tabindex' => $fix),
       '#weight' => $fix,
       '#autocomplete_path' => 'membership/autocomplete/members',
     );
@@ -254,7 +254,7 @@ function committee_appointment_form_build(&$form_state, $node) {
       '#default_value' => $node->mnid,
       '#options' => array('-- Select member --') + $members_list,
       '#required' => TRUE,
-      '#attributes' => array('tabindex'=>$fix),
+      '#attributes' => array('tabindex' => $fix),
       '#weight' => $fix,
     );
   }
@@ -270,7 +270,7 @@ function committee_appointment_form_build(&$form_state, $node) {
       '#maxlength' => 64,
       '#size' => 40,
       '#required' => TRUE,
-      '#attributes' => array('tabindex'=>$fix),
+      '#attributes' => array('tabindex' => $fix),
       '#weight' => $fix,
       '#autocomplete_path' => 'committee/autocomplete/committees',
     );
@@ -284,7 +284,7 @@ function committee_appointment_form_build(&$form_state, $node) {
       '#default_value' => $node->cnid,
       '#options' => array('-- select committee --') + $committees_list,
       '#required' => TRUE,
-      '#attributes' => array('tabindex'=>$fix),
+      '#attributes' => array('tabindex' => $fix),
       '#weight' => $fix,
     );
   }
@@ -296,7 +296,7 @@ function committee_appointment_form_build(&$form_state, $node) {
     '#description' => committee_field_description('appointment', 'appointtype', t('Chose appointment type from the list')),
     '#default_value' => $node->appointtype,
     '#options' => $appointtype_list,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -310,7 +310,7 @@ function committee_appointment_form_build(&$form_state, $node) {
     '#date_year_range' => '-5:+5',
     //'#date_label_position' => 'within',
     '#required' => TRUE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -323,7 +323,7 @@ function committee_appointment_form_build(&$form_state, $node) {
     '#date_year_range' => '-5:+5',
     //'#date_label_position' => 'within',
     '#required' => FALSE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -334,7 +334,7 @@ function committee_appointment_form_build(&$form_state, $node) {
     '#default_value' => $node->notes,
     '#rows' => 3,
     '#resizable' => TRUE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   // create placeholders to be filled in during validation
@@ -359,7 +359,7 @@ function committee_appointment_form_build(&$form_state, $node) {
   $form['#validate'] = array('committee_form_validate');
   $form['#submit'] = array('committee_form_submit');
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Committee')=>'committee', t('Appointments')=>'committee/appointments'));
+  orgright_breadcrumb(array(t('Committee') => 'committee', t('Appointments') => 'committee/appointments'));
   return $form;
 }
 
@@ -380,7 +380,7 @@ function committee_assignment_form_build(&$form_state, $node) {
       '#maxlength' => 64,
       '#size' => 40,
       '#required' => TRUE,
-      '#attributes' => array('tabindex'=>$fix),
+      '#attributes' => array('tabindex' => $fix),
       '#weight' => $fix,
       '#autocomplete_path' => 'membership/autocomplete/members',
     );
@@ -394,7 +394,7 @@ function committee_assignment_form_build(&$form_state, $node) {
       '#default_value' => $node->mnid,
       '#options' => array('-- Select member --') + $members_list,
       '#required' => TRUE,
-      '#attributes' => array('tabindex'=>$fix),
+      '#attributes' => array('tabindex' => $fix),
       '#weight' => $fix,
     );
   }
@@ -411,7 +411,7 @@ function committee_assignment_form_build(&$form_state, $node) {
       '#maxlength' => 64,
       '#size' => 40,
       '#required' => TRUE,
-      '#attributes' => array('tabindex'=>$fix),
+      '#attributes' => array('tabindex' => $fix),
       '#weight' => $fix,
       '#autocomplete_path' => 'committee/autocomplete/roles',
     );
@@ -427,7 +427,7 @@ function committee_assignment_form_build(&$form_state, $node) {
         '#maxlength' => 64,
         '#size' => 40,
         '#required' => TRUE,
-        '#attributes' => array('tabindex'=>$fix),
+        '#attributes' => array('tabindex' => $fix),
         '#weight' => $fix,
         '#autocomplete_path' => 'committee/autocomplete/committees',
       );
@@ -441,7 +441,7 @@ function committee_assignment_form_build(&$form_state, $node) {
         '#default_value' => $node->cnid,
         '#options' => array('-- select committee --') + $committees_list,
         '#required' => TRUE,
-        '#attributes' => array('tabindex'=>$fix),
+        '#attributes' => array('tabindex' => $fix),
         '#weight' => $fix,
       );
     }
@@ -454,7 +454,7 @@ function committee_assignment_form_build(&$form_state, $node) {
       '#default_value' => $node->rnid,
       '#options' => array('-- select role --') + $roles_list,
       '#required' => TRUE,
-      '#attributes' => array('tabindex'=>$fix),
+      '#attributes' => array('tabindex' => $fix),
       '#weight' => $fix,
     );
   }
@@ -466,7 +466,7 @@ function committee_assignment_form_build(&$form_state, $node) {
     '#description' => committee_field_description('assignment', 'assigntype', t('Chose assignment type from the list')),
     '#default_value' => $node->assigntype,
     '#options' => $assigntype_list,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -480,7 +480,7 @@ function committee_assignment_form_build(&$form_state, $node) {
     '#date_year_range' => '-5:+5',
     //'#date_label_position' => 'within',
     '#required' => TRUE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -493,7 +493,7 @@ function committee_assignment_form_build(&$form_state, $node) {
     '#date_year_range' => '-5:+5',
     //'#date_label_position' => 'within',
     '#required' => FALSE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -504,7 +504,7 @@ function committee_assignment_form_build(&$form_state, $node) {
     '#default_value' => $node->notes,
     '#rows' => 3,
     '#resizable' => TRUE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   // create placeholders to be filled in during validation
@@ -542,7 +542,7 @@ function committee_assignment_form_build(&$form_state, $node) {
   $form['#validate'] = array('committee_form_validate');
   $form['#submit'] = array('committee_form_submit');
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Committee')=>'committee', t('Assignments')=>'committee/assignments'));
+  orgright_breadcrumb(array(t('Committee') => 'committee', t('Assignments') => 'committee/assignments'));
   return $form;
 }
 
@@ -550,7 +550,7 @@ function committee_assignment_form_build(&$form_state, $node) {
  *  Function to generate a field description with popup help for each form field
  */
 function committee_field_description($type, $field, $description) {
-  return theme('helpservice_topic','committee',$type.'-details/'.$field).$description;
+  return theme('helpservice_topic', 'committee', $type . '-details/' . $field) . $description;
 }
 
 /**
@@ -563,22 +563,22 @@ function committee_form_committee_node_form_alter(&$form, &$form_state) {
     // Yes, so check and act on each
     $args = $form['#parameters'][3];
     foreach ($args as $parameter) {
-      $paraname = substr($parameter,0,strpos($parameter,'~'));
-      $parvalue = substr($parameter,strpos($parameter,'~')+1);
+      $paraname = substr($parameter, 0, strpos($parameter, '~'));
+      $parvalue = substr($parameter, strpos($parameter, '~') + 1);
       switch ($paraname) {
-      case 'parent':
-        // fill in the parent field information
-        if ($form['parent']['#type'] == 'select') {
-          // is a select type field, use nid
-          $form['parent']['#default_value'] = $parvalue;
-        }
-        else {
-          // is a text field, find name
-          $sql = "SELECT committee FROM {node} n JOIN {org_committees} c on c.nid = n.nid WHERE c.vid = n.vid AND c.nid = %d";
-          $form['parent']['#default_value'] = db_result(db_query($sql, $parvalue));
-        }
-        break;
-      default:
+        case 'parent':
+          // fill in the parent field information
+          if ($form['parent']['#type'] == 'select') {
+            // is a select type field, use nid
+            $form['parent']['#default_value'] = $parvalue;
+          }
+          else {
+            // is a text field, find name
+            $sql = "SELECT committee FROM {node} n JOIN {org_committees} c on c.nid = n.nid WHERE c.vid = n.vid AND c.nid = %d";
+            $form['parent']['#default_value'] = db_result(db_query($sql, $parvalue));
+          }
+          break;
+        default:
       }
     }
   }
@@ -590,17 +590,17 @@ function committee_form_committee_node_form_alter(&$form, &$form_state) {
   // Remove preview button and change label on submit button
   // and specify the redirect page on successful submission
   unset($form['buttons']['preview']);
-  if (empty($form['nid']['#value'])) {  
+  if (empty($form['nid']['#value'])) {
     $form['buttons']['submit']['#value'] = 'Add committee';
     $form['#goto'] = 'committee/committees/add';
   }
   else {
     $form['buttons']['submit']['#value'] = 'Save Changes';
-    $form['#goto'] = 'node/'.$form['nid']['#value'];
+    $form['#goto'] = 'node/' . $form['nid']['#value'];
   }
   // Set the weight and tab index for the submit button
   $fix = $form['fix']['#value'];
-  $form['buttons']['submit']['#attributes'] = array('tabindex'=>$fix);
+  $form['buttons']['submit']['#attributes'] = array('tabindex' => $fix);
   $form['buttons']['submit']['#weight'] = $fix;
 }
 
@@ -611,22 +611,22 @@ function committee_form_role_node_form_alter(&$form, &$form_state) {
     // Yes, so check and act on each
     $args = $form['#parameters'][3];
     foreach ($args as $parameter) {
-      $paraname = substr($parameter,0,strpos($parameter,'~'));
-      $parvalue = substr($parameter,strpos($parameter,'~')+1);
+      $paraname = substr($parameter, 0, strpos($parameter, '~'));
+      $parvalue = substr($parameter, strpos($parameter, '~') + 1);
       switch ($paraname) {
-      case 'committee':
-        // fill in the committee field information
-        if ($form['committee']['#type'] == 'select') {
-          // is a select type field, use nid
-          $form['committee']['#default_value'] = $parvalue;
-        }
-        else {
-          // is a text field, find name
-          $sql = "SELECT committee FROM {node} n JOIN {org_committees} c on c.nid = n.nid WHERE c.vid = n.vid AND c.nid = %d";
-          $form['committee']['#default_value'] = db_result(db_query($sql, $parvalue));
-        }
-        break;
-      default:
+        case 'committee':
+          // fill in the committee field information
+          if ($form['committee']['#type'] == 'select') {
+            // is a select type field, use nid
+            $form['committee']['#default_value'] = $parvalue;
+          }
+          else {
+            // is a text field, find name
+            $sql = "SELECT committee FROM {node} n JOIN {org_committees} c on c.nid = n.nid WHERE c.vid = n.vid AND c.nid = %d";
+            $form['committee']['#default_value'] = db_result(db_query($sql, $parvalue));
+          }
+          break;
+        default:
       }
     }
   }
@@ -638,17 +638,17 @@ function committee_form_role_node_form_alter(&$form, &$form_state) {
   // Remove preview button and change label on submit button
   // and specify the redirect page on successful submission
   unset($form['buttons']['preview']);
-  if (empty($form['nid']['#value'])) {  
+  if (empty($form['nid']['#value'])) {
     $form['buttons']['submit']['#value'] = 'Add role';
     $form['#goto'] = 'committee/roles/add';
   }
   else {
     $form['buttons']['submit']['#value'] = 'Save Changes';
-    $form['#goto'] = 'node/'.$form['nid']['#value'];
+    $form['#goto'] = 'node/' . $form['nid']['#value'];
   }
   // Set the weight and tab index for the submit button
   $fix = $form['fix']['#value'];
-  $form['buttons']['submit']['#attributes'] = array('tabindex'=>$fix);
+  $form['buttons']['submit']['#attributes'] = array('tabindex' => $fix);
   $form['buttons']['submit']['#weight'] = $fix;
 }
 
@@ -659,28 +659,28 @@ function committee_form_appointment_node_form_alter(&$form, &$form_state) {
     // Yes, so check and act on each
     $args = $form['#parameters'][3];
     foreach ($args as $parameter) {
-      $paraname = substr($parameter,0,strpos($parameter,'~'));
-      $parvalue = substr($parameter,strpos($parameter,'~')+1);
+      $paraname = substr($parameter, 0, strpos($parameter, '~'));
+      $parvalue = substr($parameter, strpos($parameter, '~') + 1);
       switch ($paraname) {
-      case 'committee':
-        // fill in the committee field information
-        if ($form['committee']['#type'] == 'select') {
-          // is a select type field, use nid
-          $form['committee']['#default_value'] = $parvalue;
-        }
-        else {
-          // is a text field, find name
-          $sql = "SELECT committee FROM {node} n JOIN {org_committees} c on c.nid = n.nid WHERE c.vid = n.vid AND c.nid = %d";
-          $form['committee']['#default_value'] = db_result(db_query($sql, $parvalue));
-        }
-        break;
-      case 'member':
-        // fill in the member field information
-        $sql = "SELECT member FROM {node} n JOIN {org_members} m on m.nid = n.nid WHERE m.vid = n.vid AND m.nid = %d";
-        $member = db_result(db_query($sql, $parvalue));
-        $form['member']['#default_value'] = $member;
-        break;
-      default:
+        case 'committee':
+          // fill in the committee field information
+          if ($form['committee']['#type'] == 'select') {
+            // is a select type field, use nid
+            $form['committee']['#default_value'] = $parvalue;
+          }
+          else {
+            // is a text field, find name
+            $sql = "SELECT committee FROM {node} n JOIN {org_committees} c on c.nid = n.nid WHERE c.vid = n.vid AND c.nid = %d";
+            $form['committee']['#default_value'] = db_result(db_query($sql, $parvalue));
+          }
+          break;
+        case 'member':
+          // fill in the member field information
+          $sql = "SELECT member FROM {node} n JOIN {org_members} m on m.nid = n.nid WHERE m.vid = n.vid AND m.nid = %d";
+          $member = db_result(db_query($sql, $parvalue));
+          $form['member']['#default_value'] = $member;
+          break;
+        default:
       }
     }
   }
@@ -694,17 +694,17 @@ function committee_form_appointment_node_form_alter(&$form, &$form_state) {
   // Remove preview button and change label on submit button
   // and specify the redirect page on successful submission
   unset($form['buttons']['preview']);
-  if (empty($form['nid']['#value'])) {  
+  if (empty($form['nid']['#value'])) {
     $form['buttons']['submit']['#value'] = 'Add appointment';
     $form['#goto'] = 'committee/appointments/add';
   }
   else {
     $form['buttons']['submit']['#value'] = 'Save Changes';
-    $form['#goto'] = 'node/'.$form['nid']['#value'];
+    $form['#goto'] = 'node/' . $form['nid']['#value'];
   }
   // Set the weight and tab index for the submit button
   $fix = $form['fix']['#value'];
-  $form['buttons']['submit']['#attributes'] = array('tabindex'=>$fix);
+  $form['buttons']['submit']['#attributes'] = array('tabindex' => $fix);
   $form['buttons']['submit']['#weight'] = $fix;
 }
 
@@ -715,40 +715,40 @@ function committee_form_assignment_node_form_alter(&$form, &$form_state) {
     // Yes, so check and act on each
     $args = $form['#parameters'][3];
     foreach ($args as $parameter) {
-      $paraname = substr($parameter,0,strpos($parameter,'~'));
-      $parvalue = substr($parameter,strpos($parameter,'~')+1);
+      $paraname = substr($parameter, 0, strpos($parameter, '~'));
+      $parvalue = substr($parameter, strpos($parameter, '~') + 1);
       switch ($paraname) {
-      case 'role':
-        // fill in the role field information
-        if ($form['role']['#type'] == 'select') {
-          // is a select type field, use nid
-          $form['role']['#default_value'] = $parvalue;
-        }
-        else {
-          // is a text field, find name
-          $sql = "SELECT role FROM {node} n JOIN {org_roles} r on r.nid = n.nid WHERE r.vid = n.vid AND r.nid = %d";
-          $form['role']['#default_value'] = db_result(db_query($sql, $parvalue));
-        }
-        break;
-      case 'committee':
-        // fill in the committee field information
-        if ($form['committee']['#type'] == 'select') {
-          // is a select type field, use nid
-          $form['committee']['#default_value'] = $parvalue;
-        }
-        else {
-          // is a text field, find name
-          $sql = "SELECT committee FROM {node} n JOIN {org_committees} c on c.nid = n.nid WHERE c.vid = n.vid AND c.nid = %d";
-          $form['committee']['#default_value'] = db_result(db_query($sql, $parvalue));
-        }
-        break;
-      case 'member':
-        // fill in the member field information
-        $sql = "SELECT member FROM {node} n JOIN {org_members} m on m.nid = n.nid WHERE m.vid = n.vid AND m.nid = %d";
-        $member = db_result(db_query($sql, $parvalue));
-        $form['member']['#default_value'] = $member;
-        break;
-      default:
+        case 'role':
+          // fill in the role field information
+          if ($form['role']['#type'] == 'select') {
+            // is a select type field, use nid
+            $form['role']['#default_value'] = $parvalue;
+          }
+          else {
+            // is a text field, find name
+            $sql = "SELECT role FROM {node} n JOIN {org_roles} r on r.nid = n.nid WHERE r.vid = n.vid AND r.nid = %d";
+            $form['role']['#default_value'] = db_result(db_query($sql, $parvalue));
+          }
+          break;
+        case 'committee':
+          // fill in the committee field information
+          if ($form['committee']['#type'] == 'select') {
+            // is a select type field, use nid
+            $form['committee']['#default_value'] = $parvalue;
+          }
+          else {
+            // is a text field, find name
+            $sql = "SELECT committee FROM {node} n JOIN {org_committees} c on c.nid = n.nid WHERE c.vid = n.vid AND c.nid = %d";
+            $form['committee']['#default_value'] = db_result(db_query($sql, $parvalue));
+          }
+          break;
+        case 'member':
+          // fill in the member field information
+          $sql = "SELECT member FROM {node} n JOIN {org_members} m on m.nid = n.nid WHERE m.vid = n.vid AND m.nid = %d";
+          $member = db_result(db_query($sql, $parvalue));
+          $form['member']['#default_value'] = $member;
+          break;
+        default:
       }
     }
   }
@@ -762,17 +762,17 @@ function committee_form_assignment_node_form_alter(&$form, &$form_state) {
   // Remove preview button and change label on submit button
   // and specify the redirect page on successful submission
   unset($form['buttons']['preview']);
-  if (empty($form['nid']['#value'])) {  
+  if (empty($form['nid']['#value'])) {
     $form['buttons']['submit']['#value'] = 'Add assignment';
     $form['#goto'] = 'committee/assignments/add';
   }
   else {
     $form['buttons']['submit']['#value'] = 'Save Changes';
-    $form['#goto'] = 'node/'.$form['nid']['#value'];
+    $form['#goto'] = 'node/' . $form['nid']['#value'];
   }
   // Set the weight and tab index for the submit button
   $fix = $form['fix']['#value'];
-  $form['buttons']['submit']['#attributes'] = array('tabindex'=>$fix);
+  $form['buttons']['submit']['#attributes'] = array('tabindex' => $fix);
   $form['buttons']['submit']['#weight'] = $fix;
 }
 
@@ -790,13 +790,13 @@ function committee_committee_form_validate($form, &$form_state) {
     $notes = strip_tags($form_state['values']['notes']);
     // Check that entered details are acceptable
     if ($committee != $form_state['values']['committee']) {
-        form_set_error('committee',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('committee', t('HTML or PHP tags are not permitted in this field'));
     }
     if ($parent != $form_state['values']['parent']) {
-        form_set_error('parent',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('parent', t('HTML or PHP tags are not permitted in this field'));
     }
     if ($notes != $form_state['values']['notes']) {
-        form_set_error('notes',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('notes', t('HTML or PHP tags are not permitted in this field'));
     }
     // Check that any name returned in "parent" is a valid committee
     if ($parent) {
@@ -808,7 +808,7 @@ function committee_committee_form_validate($form, &$form_state) {
           $parent = $cobj->committee;
         }
         else {
-          form_set_error('parent',t('The name specified is not a known committee'));
+          form_set_error('parent', t('The name specified is not a known committee'));
           $pnid = 0;
           $parent = '';
         }
@@ -820,7 +820,7 @@ function committee_committee_form_validate($form, &$form_state) {
         form_set_value($form['pnid'], $pnid, $form_state);
       }
       else {
-        form_set_error('parent',t('The name specified is not a known committee'));
+        form_set_error('parent', t('The name specified is not a known committee'));
       }
     }
     // Prevent duplicate records
@@ -829,30 +829,30 @@ function committee_committee_form_validate($form, &$form_state) {
     if ($nid) {
       // Already exists on the database, so flag an error unless it is same record being updated
       if ($nid != $form['nid']['#value']) {
-        form_set_error('committee',t('The committee name is already in use'));
+        form_set_error('committee', t('The committee name is already in use'));
       }
     }
     // Build a composite node title and save in $form_state
-    $form_state['values']['title'] = t('Committee: !cmtte', array('!cmtte'=>$committee));
+    $form_state['values']['title'] = t('Committee: !cmtte', array('!cmtte' => $committee));
   }
   elseif ($clicked_button == $form['buttons']['delete']['#value']) {
     // Check for attached sub-committees - delete not permitted in this case
     $sql = "SELECT COUNT(c.nid) from {node} n JOIN {org_committee} c ON c.nid = n.nid WHERE c.vid = n.vid AND c.pnid = %d";
     $count = db_result(db_query($sql, $form_state['values']['nid']));
     if ($count) {
-      form_set_error('committee',t('This committee still has @num sub-committees attached!', array('@num'=>$count)));
+      form_set_error('committee', t('This committee still has @num sub-committees attached!', array('@num' => $count)));
     }
     // Check for specified roles - delete not permitted in this case
     $sql = "SELECT COUNT(r.nid) from {node} n JOIN {org_roles} r ON r.nid = n.nid WHERE r.vid = n.vid AND r.cnid = %d";
     $count = db_result(db_query($sql, $form_state['values']['nid']));
     if ($count) {
-      form_set_error('committee',t('This committee still has @num roles specified!', array('@num'=>$count)));
+      form_set_error('committee', t('This committee still has @num roles specified!', array('@num' => $count)));
     }
     // Check for appointments - delete not permitted in this case
     $sql = "SELECT COUNT(p.nid) from {node} n JOIN {org_appointments} p ON p.nid = n.nid WHERE p.vid = n.vid AND p.cnid = %d";
     $count = db_result(db_query($sql, $form_state['values']['nid']));
     if ($count) {
-      form_set_error('scode',t('This committee still has @num people appointed!', array('@num'=>$count)));
+      form_set_error('scode', t('This committee still has @num people appointed!', array('@num' => $count)));
     }
   }
 }
@@ -867,13 +867,13 @@ function committee_role_form_validate($form, &$form_state) {
     $notes = strip_tags($form_state['values']['notes']);
     // Check that entered details are acceptable
     if ($role != $form_state['values']['role']) {
-        form_set_error('role',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('role', t('HTML or PHP tags are not permitted in this field'));
     }
     if ($committee != $form_state['values']['committee']) {
-        form_set_error('committee',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('committee', t('HTML or PHP tags are not permitted in this field'));
     }
     if ($notes != $form_state['values']['notes']) {
-        form_set_error('notes',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('notes', t('HTML or PHP tags are not permitted in this field'));
     }
     // If there is a value in "committee", then check
     if ($committee) {
@@ -886,7 +886,7 @@ function committee_role_form_validate($form, &$form_state) {
           $committee = $cobj->committee;
         }
         else {
-          form_set_error('committee',t('The name specified is not a known committee'));
+          form_set_error('committee', t('The name specified is not a known committee'));
           $cnid = 0;
           $committee = '';
         }
@@ -899,28 +899,30 @@ function committee_role_form_validate($form, &$form_state) {
         form_set_value($form['cnid'], $cnid, $form_state);
       }
       else {
-        form_set_error('committee',t('The name specified is not a known committee'));
+        form_set_error('committee', t('The name specified is not a known committee'));
       }
     }
-    else { $cnid = 0; }
+    else {
+      $cnid = 0;
+    }
     // Prevent duplicate records
     $sql = "SELECT n.nid FROM {node} n JOIN {org_roles} r ON r.nid = n.nid WHERE r.vid = n.vid AND r.role = '%s' AND r.cnid = %d";
     $nid = db_result(db_query($sql, $role, $cnid));
     if ($nid) {
       // Already exists on the database, so flag an error unless it is same record being updated
       if ($nid != $form['nid']['#value']) {
-        form_set_error('role',t('Role already specified for this committee'));
+        form_set_error('role', t('Role already specified for this committee'));
       }
     }
     // Build a composite node title and save in $form_state
-    $form_state['values']['title'] = t('Role: !role', array('!role'=>$role));
+    $form_state['values']['title'] = t('Role: !role', array('!role' => $role));
   }
   elseif ($clicked_button == $form['buttons']['delete']['#value']) {
     // Check for assignments - delete not permitted in this case
     $sql = "SELECT COUNT(s.nid) from {node} n JOIN {org_assignments} s ON s.nid = n.nid WHERE s.vid = n.vid AND s.rnid = %d";
     $count = db_result(db_query($sql, $form_state['values']['nid']));
     if ($count) {
-      form_set_error('role',t('This role still has @num people assigned!', array('@num'=>$count)));
+      form_set_error('role', t('This role still has @num people assigned!', array('@num' => $count)));
     }
   }
 }
@@ -935,26 +937,26 @@ function committee_appointment_form_validate($form, &$form_state) {
     $notes = strip_tags($form_state['values']['notes']);
     // Check that entered details are acceptable
     if ($member != $form_state['values']['member']) {
-        form_set_error('member',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('member', t('HTML or PHP tags are not permitted in this field'));
     }
     if ($committee != $form_state['values']['committee']) {
-        form_set_error('committee',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('committee', t('HTML or PHP tags are not permitted in this field'));
     }
     if ($notes != $form_state['values']['notes']) {
-        form_set_error('notes',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('notes', t('HTML or PHP tags are not permitted in this field'));
     }
     // Check date values
     if ($form_state['values']['retiredate'] && $form_state['values']['retiredate'] < $form_state['values']['appointdate']) {
-      form_set_error('retiredate',t('The retirement date must not be earlier then the appointment date'));
+      form_set_error('retiredate', t('The retirement date must not be earlier then the appointment date'));
     }
     // Check that the name returned in "member" is valid
-    module_load_include('inc', 'membership', 'membership_form'); 
+    module_load_include('inc', 'membership', 'membership_form');
     $mnid = membership_validate_member($member);
     if ($mnid) {
       form_set_value($form['mnid'], $mnid, $form_state);
     }
     else {
-      form_set_error('member',t('The name specified is not a known member'));
+      form_set_error('member', t('The name specified is not a known member'));
     }
     // If "committee" is numeric, then it should be the nid of a committee node
     if (is_numeric($committee)) {
@@ -965,7 +967,7 @@ function committee_appointment_form_validate($form, &$form_state) {
         $committee = $cobj->committee;
       }
       else {
-        form_set_error('committee',t('The name specified is not a known committee'));
+        form_set_error('committee', t('The name specified is not a known committee'));
         $cnid = 0;
         $committee = '';
       }
@@ -978,11 +980,11 @@ function committee_appointment_form_validate($form, &$form_state) {
       form_set_value($form['cnid'], $cnid, $form_state);
     }
     else {
-      form_set_error('committee',t('The name specified is not a known committee'));
+      form_set_error('committee', t('The name specified is not a known committee'));
     }
     // Build a composite node title and save in $form_state
     $adate = date_format_date(date_make_date($form_state['values']['appointdate']), 'custom', 'd M Y');
-    $form_state['values']['title'] = t('Committee appointment: !mbr to !cmtte on !date', array('!mbr'=>$member, '!cmtte'=>$committee, '!date'=>$adate));
+    $form_state['values']['title'] = t('Committee appointment: !mbr to !cmtte on !date', array('!mbr' => $member, '!cmtte' => $committee, '!date' => $adate));
   }
   elseif ($clicked_button == $form['buttons']['delete']['#value']) {
     //membership_debug_msg('--- Delete button clicked ---');
@@ -1000,29 +1002,29 @@ function committee_assignment_form_validate($form, &$form_state) {
     $notes = strip_tags($form_state['values']['notes']);
     // Check that entered details are acceptable
     if ($member != strip_tags($form_state['values']['member'])) {
-        form_set_error('member',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('member', t('HTML or PHP tags are not permitted in this field'));
     }
     /*if ($committee != strip_tags($form_state['values']['committee'])) {
         form_set_error('committee',t('HTML or PHP tags are not permitted in this field'));
     }*/
     if ($role != strip_tags($form_state['values']['role'])) {
-        form_set_error('role',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('role', t('HTML or PHP tags are not permitted in this field'));
     }
     if ($notes != strip_tags($form_state['values']['notes'])) {
-        form_set_error('notes',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('notes', t('HTML or PHP tags are not permitted in this field'));
     }
     // Check date values
     if ($form_state['values']['ceasedate'] && $form_state['values']['ceasedate'] < $form_state['values']['assigndate']) {
-      form_set_error('ceasedate',t('The cease date must not be earlier then the assignment date'));
+      form_set_error('ceasedate', t('The cease date must not be earlier then the assignment date'));
     }
     // Check that the name returned in "member" is valid
-    module_load_include('inc', 'membership', 'membership_form'); 
+    module_load_include('inc', 'membership', 'membership_form');
     $mnid = membership_validate_member($member);
     if ($mnid) {
       form_set_value($form['mnid'], $mnid, $form_state);
     }
     else {
-      form_set_error('member',t('The name specified is not a known member'));
+      form_set_error('member', t('The name specified is not a known member'));
     }
     // If the value in $role is numeric, then is should be the nid of a role node
     if (is_numeric($role)) {
@@ -1033,7 +1035,7 @@ function committee_assignment_form_validate($form, &$form_state) {
         $role = $robj->role;
       }
       else {
-        form_set_error('role',t('The name specified is not a known committee role'));
+        form_set_error('role', t('The name specified is not a known committee role'));
         $rnid = 0;
         $role = '';
       }
@@ -1048,7 +1050,7 @@ function committee_assignment_form_validate($form, &$form_state) {
           $committee = $cobj->committee;
         }
         else {
-          form_set_error('committee',t('The name specified is not a known committee'));
+          form_set_error('committee', t('The name specified is not a known committee'));
           $cnid = 0;
           $committee = '';
         }
@@ -1061,7 +1063,7 @@ function committee_assignment_form_validate($form, &$form_state) {
         form_set_value($form['cnid'], $cnid, $form_state);
       }
       else {
-        form_set_error('committee',t('The name specified is not a known committee'));
+        form_set_error('committee', t('The name specified is not a known committee'));
       }
       // Check that the name returned in "role" is valid for this committee (already have cnid)
       $sql = "SELECT r.nid FROM {node} n JOIN {org_roles} r ON r.nid = n.nid WHERE r.vid = n.vid AND r.cnid = %d AND r.role = '%s'";
@@ -1071,9 +1073,9 @@ function committee_assignment_form_validate($form, &$form_state) {
       form_set_value($form['rnid'], $rnid, $form_state);
     }
     else {
-      form_set_error('role',t('The name specified is not a known role for this committee'));
+      form_set_error('role', t('The name specified is not a known role for this committee'));
     }
-    if (!$form_state['values']['ceasedate']  && $cnid) {
+    if (!$form_state['values']['ceasedate'] && $cnid) {
       // Check that the assigned member is also currently on the committee
       $sql = "SELECT p.nid FROM {node} n JOIN {org_appointments} p ON p.nid = n.nid WHERE p.vid = n.vid AND p.cnid = %d AND p.mnid = %d AND p.retiredate = ''";
       if (!db_result(db_query($sql, $cnid, $mnid))) {
@@ -1089,23 +1091,29 @@ function committee_assignment_form_validate($form, &$form_state) {
       // adjust the number of assignments to reflect this update
       if ($form_state['values']['save_ceasedate']) {
         // assignment was previously ceased
-        if (!$form_state['values']['ceasedate']) { $numassignments += 1; }
+        if (!$form_state['values']['ceasedate']) {
+          $numassignments += 1;
+        }
       }
       else {
         if ($form_state['values']['save_assigndate']) {
           // assignment was previously active
-          if ($form_state['values']['ceasedate']) { $numassignments -= 1; }
+          if ($form_state['values']['ceasedate']) {
+            $numassignments -= 1;
+          }
         }
         else {
           // new assignment
-          if (!$form_state['values']['ceasedate']) { $numassignments += 1; }
+          if (!$form_state['values']['ceasedate']) {
+            $numassignments += 1;
+          }
         }
       }
     }
     //orgright_debug_msg('committee','number of assignments='.$numassignments);
     // If the role is already filled, but is not multiperson, then issue a warning
     if ($numassignments > 1 && !$roleobj->multiperson) {
-      drupal_set_message(t('WARNING: The role now has @num people assigned, but is not specified as permiting multiple simultaneous assignments.', array('@num'=>$numassignments)), 'warning');
+      drupal_set_message(t('WARNING: The role now has @num people assigned, but is not specified as permiting multiple simultaneous assignments.', array('@num' => $numassignments)), 'warning');
     }
     // If this assignment is ceased, then check whether the role is vacant when it is not permitted to be
     if ($numassignments < 1 && !$roleobj->allowvacant) {
@@ -1114,7 +1122,7 @@ function committee_assignment_form_validate($form, &$form_state) {
     }
     // Build a composite node title and save in $form_state
     $adate = date_format_date(date_make_date($form_state['values']['assigndate']), 'custom', 'd M Y');
-    $form_state['values']['title'] = t('Role assignment: !mbr to !role on !date', array('!mbr'=>$member, '!role'=>$role, '!date'=>$adate));
+    $form_state['values']['title'] = t('Role assignment: !mbr to !role on !date', array('!mbr' => $member, '!role' => $role, '!date' => $adate));
   }
   elseif ($clicked_button == $form['buttons']['delete']['#value']) {
     //membership_debug_msg('--- Delete button clicked ---');
@@ -1129,8 +1137,12 @@ function committee_validate_committee(&$committee) {
     $cnid = $committee;
     $sql = "SELECT n.type, c.committee FROM {node} n JOIN {org_committees} c ON c.nid = n.nid WHERE c.vid = n.vid AND c.nid = %d";
     $obj = db_fetch_object(db_query($sql, $cnid));
-    if ($obj->type == 'committee') { $committee = $obj->committee; }
-    else { $cnid = 0; }
+    if ($obj->type == 'committee') {
+      $committee = $obj->committee;
+    }
+    else {
+      $cnid = 0;
+    }
     return $cnid;
   }
   else {

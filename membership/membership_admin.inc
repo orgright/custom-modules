@@ -17,7 +17,7 @@ function membership_admin() {
  * @ingroup forms
  * @see system_settings_form()
  */
-function membership_admin_form_build (&$form_state = NULL) {
+function membership_admin_form_build(&$form_state = NULL) {
   //orgright_debug_msg('membership','Fn: membership_admin_form_build',5);
   $form = array();
   // Check to see whether this is a new form, or a rebuild
@@ -61,7 +61,7 @@ function membership_admin_form_build (&$form_state = NULL) {
       '#size' => 16,
       '#required' => FALSE,
       '#weight' => 4,
-    );  
+    );
     $form['categories']['category_add'] = array(
       '#type' => 'submit',
       '#value' => t('Add new category'),
@@ -101,7 +101,7 @@ function membership_admin_form_build (&$form_state = NULL) {
       '#size' => 16,
       '#required' => FALSE,
       '#weight' => 4,
-    );  
+    );
     $form['standings']['standing_add'] = array(
       '#type' => 'submit',
       '#value' => t('Add new status'),
@@ -125,7 +125,7 @@ function membership_admin_form_build (&$form_state = NULL) {
           '#size' => 16,
           '#required' => TRUE,
           '#weight' => 1,
-        );  
+        );
         $form['submit'] = array(
           '#type' => 'submit',
           '#value' => t('Save changes'),
@@ -139,13 +139,13 @@ function membership_admin_form_build (&$form_state = NULL) {
           '#value' => $category_value,
           '#suffix' => '</div>',
           '#weight' => 1,
-        );  
+        );
         $form['submit'] = array(
           '#type' => 'submit',
           '#value' => t('Confirm deletion'),
           '#weight' => 2,
         );
-      } 
+      }
     }
     elseif (isset($form_state['storage']['this_standing'])) {
       // Are either editing or deleting a standing
@@ -162,7 +162,7 @@ function membership_admin_form_build (&$form_state = NULL) {
           '#size' => 16,
           '#required' => TRUE,
           '#weight' => 1,
-        );  
+        );
         $form['submit'] = array(
           '#type' => 'submit',
           '#value' => t('Save changes'),
@@ -176,7 +176,7 @@ function membership_admin_form_build (&$form_state = NULL) {
           '#value' => $standing_value,
           '#suffix' => '</div>',
           '#weight' => 1,
-        );  
+        );
         $form['submit'] = array(
           '#type' => 'submit',
           '#value' => t('Confirm deletion'),
@@ -195,7 +195,7 @@ function membership_admin_form_build (&$form_state = NULL) {
 }
 
 function membership_form_membership_admin_form_alter(&$form, &$form_state) {
- //orgright_debug_msg('membership','Fn: membership_form_membership_admin_form_alter',5);
+  //orgright_debug_msg('membership','Fn: membership_form_membership_admin_form_alter',5);
   // Remove submit and reset buttons
   unset($form['buttons']['submit']);
   unset($form['buttons']['reset']);
@@ -208,10 +208,10 @@ function membership_admin_form_validate($form, &$form_state) {
   if ($clicked_button == $form['categories']['category_add']['#value']) {
     //orgright_debug_msg('membership','new category='.$form_state['values']['category_new'],8);
     if (!$form_state['values']['category_new']) {
-      form_set_error('category_new',t('A value must be specified for the new category'));
+      form_set_error('category_new', t('A value must be specified for the new category'));
     }
     if ($form_state['values']['category_new'] != strip_tags($form_state['values']['category_new'])) {
-      form_set_error('category_new',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('category_new', t('HTML or PHP tags are not permitted in this field'));
     }
   }
   elseif ($clicked_button == $form['categories']['category_edit']['#value']) {
@@ -227,10 +227,10 @@ function membership_admin_form_validate($form, &$form_state) {
   elseif ($clicked_button == $form['standings']['standing_add']['#value']) {
     //orgright_debug_msg('membership','new standing='.$form_state['values']['standing_new'],8);
     if (!$form_state['values']['standing_new']) {
-      form_set_error('standing_new',t('A value must be specified for the new status'));
+      form_set_error('standing_new', t('A value must be specified for the new status'));
     }
     if ($form_state['values']['standing_new'] != strip_tags($form_state['values']['standing_new'])) {
-      form_set_error('standing_new',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('standing_new', t('HTML or PHP tags are not permitted in this field'));
     }
   }
   elseif ($clicked_button == $form['standings']['standing_edit']['#value']) {
@@ -247,18 +247,18 @@ function membership_admin_form_validate($form, &$form_state) {
     // The save changes or confirm deletion button has been clicked
     if ($form_state['storage']['operation'] == 'edit category') {
       if (!$form_state['values']['category']) {
-        form_set_error('category',t('A value must be specified for the status'));
+        form_set_error('category', t('A value must be specified for the status'));
       }
       if ($form_state['values']['category'] != strip_tags($form_state['values']['category'])) {
-        form_set_error('category',t('HTML or PHP tags are not permitted in this field'));
+        form_set_error('category', t('HTML or PHP tags are not permitted in this field'));
       }
     }
     if ($form_state['storage']['operation'] == 'edit standing') {
       if (!$form_state['values']['standing']) {
-        form_set_error('standing',t('A value must be specified for the status'));
+        form_set_error('standing', t('A value must be specified for the status'));
       }
       if ($form_state['values']['standing'] != strip_tags($form_state['values']['standing'])) {
-        form_set_error('standing',t('HTML or PHP tags are not permitted in this field'));
+        form_set_error('standing', t('HTML or PHP tags are not permitted in this field'));
       }
     }
   }
@@ -325,7 +325,7 @@ function membership_admin_form_submit($form, &$form_state) {
       $message = t('The membership status has been deleted.');
     }
   }
-  drupal_set_message($message,'status');
+  drupal_set_message($message, 'status');
   $form_state['storage'] = array();
   $form_state['redirect'] = 'admin/orgright/membership';
 }

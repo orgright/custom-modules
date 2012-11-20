@@ -17,7 +17,7 @@ function project_admin() {
  * @ingroup forms
  * @see system_settings_form()
  */
-function project_admin_form_build (&$form_state = NULL) {
+function project_admin_form_build(&$form_state = NULL) {
   //orgright_debug_msg('project','Fn: project_admin_form_build',5);
   $form = array();
   // Check to see whether this is a new form, or a rebuild
@@ -61,7 +61,7 @@ function project_admin_form_build (&$form_state = NULL) {
       '#size' => 16,
       '#required' => FALSE,
       '#weight' => 4,
-    );  
+    );
     $form['categories']['category_add'] = array(
       '#type' => 'submit',
       '#value' => t('Add new category'),
@@ -101,7 +101,7 @@ function project_admin_form_build (&$form_state = NULL) {
       '#size' => 16,
       '#required' => FALSE,
       '#weight' => 4,
-    );  
+    );
     $form['statuses']['status_add'] = array(
       '#type' => 'submit',
       '#value' => t('Add new status'),
@@ -125,7 +125,7 @@ function project_admin_form_build (&$form_state = NULL) {
           '#size' => 16,
           '#required' => TRUE,
           '#weight' => 1,
-        );  
+        );
         $form['submit'] = array(
           '#type' => 'submit',
           '#value' => t('Save changes'),
@@ -139,13 +139,13 @@ function project_admin_form_build (&$form_state = NULL) {
           '#value' => $category_value,
           '#suffix' => '</div>',
           '#weight' => 1,
-        );  
+        );
         $form['submit'] = array(
           '#type' => 'submit',
           '#value' => t('Confirm deletion'),
           '#weight' => 2,
         );
-      } 
+      }
     }
     elseif (isset($form_state['storage']['this_status'])) {
       // Are either editing or deleting a status
@@ -162,7 +162,7 @@ function project_admin_form_build (&$form_state = NULL) {
           '#size' => 16,
           '#required' => TRUE,
           '#weight' => 1,
-        );  
+        );
         $form['submit'] = array(
           '#type' => 'submit',
           '#value' => t('Save changes'),
@@ -176,7 +176,7 @@ function project_admin_form_build (&$form_state = NULL) {
           '#value' => $status_value,
           '#suffix' => '</div>',
           '#weight' => 1,
-        );  
+        );
         $form['submit'] = array(
           '#type' => 'submit',
           '#value' => t('Confirm deletion'),
@@ -208,10 +208,10 @@ function project_admin_form_validate($form, &$form_state) {
   if ($clicked_button == $form['categories']['category_add']['#value']) {
     //orgright_debug_msg('project','new category='.$form_state['values']['category_new'],8);
     if (!$form_state['values']['category_new']) {
-      form_set_error('category_new',t('A value must be specified for the new category'));
+      form_set_error('category_new', t('A value must be specified for the new category'));
     }
     if ($form_state['values']['category_new'] != strip_tags($form_state['values']['category_new'])) {
-      form_set_error('category_new',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('category_new', t('HTML or PHP tags are not permitted in this field'));
     }
   }
   elseif ($clicked_button == $form['categories']['category_edit']['#value']) {
@@ -227,10 +227,10 @@ function project_admin_form_validate($form, &$form_state) {
   elseif ($clicked_button == $form['statuses']['status_add']['#value']) {
     //orgright_debug_msg('project','new status='.$form_state['values']['status_new'],8);
     if (!$form_state['values']['status_new']) {
-      form_set_error('status_new',t('A value must be specified for the new status'));
+      form_set_error('status_new', t('A value must be specified for the new status'));
     }
     if ($form_state['values']['status_new'] != strip_tags($form_state['values']['status_new'])) {
-      form_set_error('status_new',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('status_new', t('HTML or PHP tags are not permitted in this field'));
     }
   }
   elseif ($clicked_button == $form['statuses']['status_edit']['#value']) {
@@ -247,18 +247,18 @@ function project_admin_form_validate($form, &$form_state) {
     // The save changes or confirm deletion button has been clicked
     if ($form_state['storage']['operation'] == 'edit category') {
       if (!$form_state['values']['category']) {
-        form_set_error('category',t('A value must be specified for the status'));
+        form_set_error('category', t('A value must be specified for the status'));
       }
       if ($form_state['values']['category'] != strip_tags($form_state['values']['category'])) {
-        form_set_error('category',t('HTML or PHP tags are not permitted in this field'));
+        form_set_error('category', t('HTML or PHP tags are not permitted in this field'));
       }
     }
     if ($form_state['storage']['operation'] == 'edit status') {
       if (!$form_state['values']['status']) {
-        form_set_error('status',t('A value must be specified for the status'));
+        form_set_error('status', t('A value must be specified for the status'));
       }
       if ($form_state['values']['status'] != strip_tags($form_state['values']['status'])) {
-        form_set_error('status',t('HTML or PHP tags are not permitted in this field'));
+        form_set_error('status', t('HTML or PHP tags are not permitted in this field'));
       }
     }
   }
@@ -325,7 +325,7 @@ function project_admin_form_submit($form, &$form_state) {
       $message = t('The project status has been deleted.');
     }
   }
-  drupal_set_message($message,'status');
+  drupal_set_message($message, 'status');
   $form_state['storage'] = array();
   $form_state['redirect'] = 'admin/orgright/project';
 }

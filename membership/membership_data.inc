@@ -25,7 +25,6 @@ function membership_subpayment_load($node) {
 }
 
 
-
 /**
  * Node manipulation functions called from hook_nodeapi() in module file
  */
@@ -39,11 +38,15 @@ function membership_member_nodeapi(&$node, $op, $teaser, $page) {
       $member = db_fetch_object(db_query($sql, $node->pnid));
       $node->parent = $member->member;
       // Stop here if a teaser display is required
-      if ($teaser) { return; }
+      if ($teaser) {
+        return;
+      }
       // Specify the fields that are used for rules event triggers on change
-      $fields = array('pnid','category','standing','email','joindate', 'leavedate');
+      $fields = array('pnid', 'category', 'standing', 'email', 'joindate', 'leavedate');
       $original = array();
-      foreach ($fields as $field) { $original[$field] = $node->$field; }
+      foreach ($fields as $field) {
+        $original[$field] = $node->$field;
+      }
       $node->original = serialize($original);
       $node->rules_update = FALSE;
       // Load an array of children
@@ -90,14 +93,16 @@ function membership_member_nodeapi(&$node, $op, $teaser, $page) {
       return;
     case 'update':
       // Ignore updates caused by rules actions
-      if ($node->rules_update) { return; }
+      if ($node->rules_update) {
+        return;
+      }
       // Trigger the specified rules events
       if (module_exists('rules')) {
         rules_invoke_event('membership_event_member_update', $node);
         if ($original = unserialize($node->original)) {
           foreach ($original as $field => $value) {
             if ($node->$field != $value) {
-              rules_invoke_event('membership_event_member_'.$field.'_update', $node);
+              rules_invoke_event('membership_event_member_' . $field . '_update', $node);
             }
           }
         }
@@ -126,11 +131,15 @@ function membership_subscription_nodeapi(&$node, $op, $teaser, $page) {
       $member = db_fetch_object(db_query($sql, $node->mnid));
       $node->member = $member->member;
       // Stop here if a teaser display is required
-      if ($teaser) { return; }
+      if ($teaser) {
+        return;
+      }
       // Specify the fields that are used for rules event triggers on change
-      $fields = array('mnid','scode','datefrom'.'dateto'.'amount');
+      $fields = array('mnid', 'scode', 'datefrom' . 'dateto' . 'amount');
       $original = array();
-      foreach ($fields as $field) { $original[$field] = $node->$field; }
+      foreach ($fields as $field) {
+        $original[$field] = $node->$field;
+      }
       $node->original = serialize($original);
       $node->rules_update = FALSE;
       // Load an array of payments
@@ -151,14 +160,16 @@ function membership_subscription_nodeapi(&$node, $op, $teaser, $page) {
       return;
     case 'update':
       // Ignore updates caused by rules actions
-      if ($node->rules_update) { return; }
+      if ($node->rules_update) {
+        return;
+      }
       // Trigger the specified rules events
       if (module_exists('rules')) {
         rules_invoke_event('membership_event_subscription_update', $node);
         if ($original = unserialize($node->original)) {
           foreach ($original as $field => $value) {
             if ($node->$field != $value) {
-              rules_invoke_event('membership_event_subscription_'.$field.'_update', $node);
+              rules_invoke_event('membership_event_subscription_' . $field . '_update', $node);
             }
           }
         }
@@ -192,9 +203,11 @@ function membership_subpayment_nodeapi(&$node, $op, $teaser, $page) {
       $node->scode = $subscription->scode;
       $node->amount = $subscription->amount;
       // Specify the fields that are used for rules event triggers on change
-      $fields = array('mnid','snid','datepaid','payment');
+      $fields = array('mnid', 'snid', 'datepaid', 'payment');
       $original = array();
-      foreach ($fields as $field) { $original[$field] = $node->$field; }
+      foreach ($fields as $field) {
+        $original[$field] = $node->$field;
+      }
       $node->original = serialize($original);
       $node->rules_update = FALSE;
       return;
@@ -206,14 +219,16 @@ function membership_subpayment_nodeapi(&$node, $op, $teaser, $page) {
       return;
     case 'update':
       // Ignore updates caused by rules actions
-      if ($node->rules_update) { return; }
+      if ($node->rules_update) {
+        return;
+      }
       // Trigger the specified rules events
       if (module_exists('rules')) {
         rules_invoke_event('membership_event_subpayment_update', $node);
         if ($original = unserialize($node->original)) {
           foreach ($original as $field => $value) {
             if ($node->$field != $value) {
-              rules_invoke_event('membership_event_subpayment_'.$field.'_update', $node);
+              rules_invoke_event('membership_event_subpayment_' . $field . '_update', $node);
             }
           }
         }
@@ -321,7 +336,7 @@ function membership_subpayment_update($node) {
     $node->payment,
     $node->notes,
     $node->uid,
-    $node->vid);      
+    $node->vid);
 }
 
 
@@ -329,14 +344,14 @@ function membership_subpayment_update($node) {
  * Delete functions called from hook_delete() in module file
  */
 function membership_member_delete($node) {
-    db_query("DELETE FROM {org_members} WHERE nid = %d", $node->nid);
+  db_query("DELETE FROM {org_members} WHERE nid = %d", $node->nid);
 }
 
 function membership_subscription_delete($node) {
-    db_query("DELETE FROM {org_subscriptions} WHERE nid = %d", $node->nid);
+  db_query("DELETE FROM {org_subscriptions} WHERE nid = %d", $node->nid);
 }
 
 function membership_subpayment_delete($node) {
-    db_query("DELETE FROM {org_subpayments} WHERE nid = %d", $node->nid);
+  db_query("DELETE FROM {org_subpayments} WHERE nid = %d", $node->nid);
 }
 

@@ -46,27 +46,31 @@ function project_projects_list() {
   $mind = 0;
   while ($project = db_fetch_object($result)) {
     if ($project->mnid <> $mnid) {
-      if ($mnid) { $output .= '</ul>'; }
+      if ($mnid) {
+        $output .= '</ul>';
+      }
       // Extract the project manager's name
       $sql = "SELECT m.member FROM {node} n JOIN {org_members} m ON m.nid = n.nid WHERE m.vid = n.vid AND m.nid = %d";
       $member = db_result(db_query($sql, $project->mnid));
-      $output .= '<p>Projects managed by: ' . l($member, 'node/'.$project->mnid) . '<p><ul>';
+      $output .= '<p>Projects managed by: ' . l($member, 'node/' . $project->mnid) . '<p><ul>';
       $mnid = $project->mnid;
     }
     // Prepare the project date constraint for display
     $projdate = date_format_date(date_make_date($project->projdate), 'custom', 'd M Y');
     // Generate a line of listing for this project
     $project_output = '';
-    $project_output .= l($project->project, 'node/'.$project->nid);
-    $project_output .= ' ' . l('[edit]', 'node/'.$project->nid.'/edit');
+    $project_output .= l($project->project, 'node/' . $project->nid);
+    $project_output .= ' ' . l('[edit]', 'node/' . $project->nid . '/edit');
     $project_output .= ', category: ' . strtolower($project->projcategory);
     $project_output .= ', status: ' . strtolower($project->projstatus);
     $project_output .= ', ' . strtolower($project->projdatype) . ' on ' . $projdate;
     $output .= '<li>' . $project_output . '</li>';
   }
-  if ($mnid) { $output .= '</ul>'; }
+  if ($mnid) {
+    $output .= '</ul>';
+  }
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Project')=>'project'));
+  orgright_breadcrumb(array(t('Project') => 'project'));
   return $output;
 }
 
@@ -76,7 +80,7 @@ function project_projects_add() {
   // First get an array of any arguments passed to this function
   $args = func_get_args();
   // Create a new node data structure of the correct type
-  $node = orgright_create_node('project'); 
+  $node = orgright_create_node('project');
   // Set the page title to display
   drupal_set_title(t('Create Project'));
   // Load the required include file
@@ -85,7 +89,7 @@ function project_projects_add() {
   $output = drupal_get_form('project_node_form', $node, $args);
   // and return results
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Project')=>'project'));
+  orgright_breadcrumb(array(t('Project') => 'project'));
   return $output;
 }
 
@@ -95,7 +99,7 @@ function project_projects_schedule() {
   $args = func_get_args();
   $output = drupal_get_form('project_calculate_schedule_form', $args);
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Project')=>'project'));
+  orgright_breadcrumb(array(t('Project') => 'project'));
   return $output;
 }
 
@@ -108,11 +112,13 @@ function project_projactivities_list() {
   $pnid = 0;
   while ($activity = db_fetch_object($result)) {
     if ($activity->pnid <> $pnid) {
-      if ($pnid) { $output .= '</ul>'; }
+      if ($pnid) {
+        $output .= '</ul>';
+      }
       // Extract the project name
       $sql = "SELECT p.project FROM {node} n JOIN {org_projects} p ON p.nid = n.nid WHERE p.vid = n.vid AND p.nid = %d";
       $project = db_result(db_query($sql, $activity->pnid));
-      $output .= '<p>Activities of project: ' . l($project, 'node/'.$activity->pnid) . '<p><ul>';
+      $output .= '<p>Activities of project: ' . l($project, 'node/' . $activity->pnid) . '<p><ul>';
       $pnid = $activity->pnid;
     }
     // Extract the responsible person's name
@@ -122,18 +128,20 @@ function project_projactivities_list() {
     $actividate = date_format_date(date_make_date($activity->actividate), 'custom', 'd M Y');
     // Generate a line of listing for this activity
     $activity_output = '';
-    $activity_output .= l($activity->activity, 'node/'.$activity->nid);
-    $activity_output .= ' ' . l('[edit]', 'node/'.$activity->nid.'/edit');
-    $activity_output .= ', allocated to ' . l($member, 'node/'.$activity->mnid);
+    $activity_output .= l($activity->activity, 'node/' . $activity->nid);
+    $activity_output .= ' ' . l('[edit]', 'node/' . $activity->nid . '/edit');
+    $activity_output .= ', allocated to ' . l($member, 'node/' . $activity->mnid);
     $activity_output .= ', ' . strtolower($activity->activicategory);
     $activity_output .= ', ' . strtolower($activity->activistatus);
     $activity_output .= ', ' . $activity->duration . ' ' . strtolower($activity->duratype);
     $activity_output .= ', ' . strtolower($activity->actividatype) . ' ' . $actividate;
     $output .= '<li>' . $activity_output . '</li>';
   }
-  if ($pnid) { $output .= '</ul>'; }
+  if ($pnid) {
+    $output .= '</ul>';
+  }
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Project')=>'project'));
+  orgright_breadcrumb(array(t('Project') => 'project'));
   return $output;
 }
 
@@ -143,7 +151,7 @@ function project_projactivities_add() {
   // First get an array of any arguments passed to this function
   $args = func_get_args();
   // Create a new node data structure of the correct type
-  $node = orgright_create_node('projactivity'); 
+  $node = orgright_create_node('projactivity');
   // Set the page title to display
   drupal_set_title(t('Create Project Activity'));
   // Load the required include file
@@ -152,7 +160,7 @@ function project_projactivities_add() {
   $output = drupal_get_form('projactivity_node_form', $node, $args);
   // and return results
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Project')=>'project'));
+  orgright_breadcrumb(array(t('Project') => 'project'));
   return $output;
 }
 
@@ -162,7 +170,7 @@ function project_projactivities_link() {
   $args = func_get_args();
   $output = drupal_get_form('project_activity_links_form', $args);
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Project')=>'project'));
+  orgright_breadcrumb(array(t('Project') => 'project'));
   return $output;
 }
 
@@ -174,11 +182,13 @@ function project_projreports_list() {
   $pnid = 0;
   while ($projreport = db_fetch_object($result)) {
     if ($projreport->pnid <> $pnid) {
-      if ($pnid) { $output .= '</ul>'; }
+      if ($pnid) {
+        $output .= '</ul>';
+      }
       // Extract the project name
       $sql = "SELECT p.project FROM {node} n JOIN {org_projects} p ON p.nid = n.nid WHERE p.vid = n.vid AND p.nid = %d";
       $project = db_result(db_query($sql, $projreport->pnid));
-      $output .= '<p>Reports for project: ' . l($project, 'node/'.$projreport->pnid) . '<p><ul>';
+      $output .= '<p>Reports for project: ' . l($project, 'node/' . $projreport->pnid) . '<p><ul>';
       $pnid = $projreport->pnid;
     }
     // Extract the project activity name if required
@@ -193,18 +203,20 @@ function project_projreports_list() {
     $reportdate = date_format_date(date_make_date($projreport->projrepdate), 'custom', 'd M Y');
     // Generate a line of listing for this project report
     $projreport_output = '';
-    $projreport_output .= l($projreport->projreport, 'node/'.$projreport->nid);
-    $projreport_output .= ' ' . l('[edit]', 'node/'.$projreport->nid.'/edit');
+    $projreport_output .= l($projreport->projreport, 'node/' . $projreport->nid);
+    $projreport_output .= ' ' . l('[edit]', 'node/' . $projreport->nid . '/edit');
     if ($projreport->anid) {
-      $projreport_output .= ', activity ' . l($activity, 'node/'.$projreport->anid);
+      $projreport_output .= ', activity ' . l($activity, 'node/' . $projreport->anid);
     }
-    $projreport_output .= ' by ' . l($member, 'node/'.$projreport->mnid);
+    $projreport_output .= ' by ' . l($member, 'node/' . $projreport->mnid);
     $projreport_output .= ', ' . $reportdate;
     $output .= '<li>' . $projreport_output . '</li>';
   }
-  if ($pnid) { $output .= '</ul>'; }
+  if ($pnid) {
+    $output .= '</ul>';
+  }
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Project')=>'project'));
+  orgright_breadcrumb(array(t('Project') => 'project'));
   return $output;
 }
 
@@ -214,7 +226,7 @@ function project_projreports_add() {
   // First get an array of any arguments passed to this function
   $args = func_get_args();
   // Create a new node data structure of the correct type
-  $node = orgright_create_node('projreport'); 
+  $node = orgright_create_node('projreport');
   // Set the page title to display
   drupal_set_title(t('Create Project Report'));
   // Load the required include file
@@ -222,7 +234,7 @@ function project_projreports_add() {
   // then call the form constructor function
   $output = drupal_get_form('projreport_node_form', $node, $args);
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Project')=>'project'));
+  orgright_breadcrumb(array(t('Project') => 'project'));
   // and return results
   return $output;
 }
@@ -233,15 +245,15 @@ function project_projreports_add() {
 function project_autocomplete_projects($string = '') {
   // Generate a list of projects for the autocomplete js function
   $projects = array();
-  $qargs = array('%'.strtolower($string).'%');
+  $qargs = array('%' . strtolower($string) . '%');
   $sql = "SELECT DISTINCT project FROM {org_projects} WHERE LOWER(project) LIKE '%s'";
   //orgright_debug_msg('project','Autocomplete projects for: ' . $qargs[0]);
   //$result = db_query_range(db_rewrite_sql($sql, '{org_projects}', 'vid', $qargs), 0, 12);
   $result = db_query_range($sql, $qargs, 0, 12);
-  while($obj = db_fetch_object($result)) {
+  while ($obj = db_fetch_object($result)) {
     $projects[$obj->project] = $obj->project;
   }
-  //print drupal_to_js($projects); 
+  //print drupal_to_js($projects);
   // requires php 5.2:
   drupal_json($projects);
   exit;
@@ -250,15 +262,15 @@ function project_autocomplete_projects($string = '') {
 function project_autocomplete_activities($string = '') {
   // Generate a list of project activities for the autocomplete js function
   $activities = array();
-  $qargs = array('%'.strtolower($string).'%');
+  $qargs = array('%' . strtolower($string) . '%');
   $sql = "SELECT DISTINCT activity FROM {org_projactivities} WHERE LOWER(activity) LIKE '%s'";
   //orgright_debug_msg('project','Autocomplete activities for: ' . $qargs[0]);
   //$result = db_query_range(db_rewrite_sql($sql, '{org_projactivities}', 'vid', $qargs), 0, 12);
   $result = db_query_range($sql, $qargs, 0, 12);
-  while($obj = db_fetch_object($result)) {
+  while ($obj = db_fetch_object($result)) {
     $activities[$obj->activity] = $obj->activity;
   }
-  //print drupal_to_js($activities); 
+  //print drupal_to_js($activities);
   // requires php 5.2:
   drupal_json($activities);
   exit;

@@ -7,8 +7,8 @@
  */
 
 function committee_admin() {
- //orgright_debug_msg('committee','Fn: committee_admin',5);
- return drupal_get_form('committee_admin_form');
+  //orgright_debug_msg('committee','Fn: committee_admin',5);
+  return drupal_get_form('committee_admin_form');
 }
 
 /**
@@ -16,7 +16,7 @@ function committee_admin() {
  * @ingroup forms
  * @see system_settings_form()
  */
-function committee_admin_form_build (&$form_state = NULL) {
+function committee_admin_form_build(&$form_state = NULL) {
   //orgright_debug_msg('committee','Fn: committee_admin_form_build',5);
   $form = array();
   // Check to see whether this is a new form, or a rebuild
@@ -60,7 +60,7 @@ function committee_admin_form_build (&$form_state = NULL) {
       '#size' => 16,
       '#required' => FALSE,
       '#weight' => 4,
-    );  
+    );
     $form['appointtypes']['appointtype_add'] = array(
       '#type' => 'submit',
       '#value' => t('Add appointment type'),
@@ -100,7 +100,7 @@ function committee_admin_form_build (&$form_state = NULL) {
       '#size' => 16,
       '#required' => FALSE,
       '#weight' => 4,
-    );  
+    );
     $form['assigntypes']['assigntype_add'] = array(
       '#type' => 'submit',
       '#value' => t('Add assignment type'),
@@ -124,7 +124,7 @@ function committee_admin_form_build (&$form_state = NULL) {
           '#size' => 16,
           '#required' => TRUE,
           '#weight' => 1,
-        );  
+        );
         $form['submit'] = array(
           '#type' => 'submit',
           '#value' => t('Save changes'),
@@ -138,13 +138,13 @@ function committee_admin_form_build (&$form_state = NULL) {
           '#value' => $appointtype_value,
           '#suffix' => '</div>',
           '#weight' => 1,
-        );  
+        );
         $form['submit'] = array(
           '#type' => 'submit',
           '#value' => t('Confirm deletion'),
           '#weight' => 2,
         );
-      } 
+      }
     }
     elseif (isset($form_state['storage']['this_assigntype'])) {
       // Are either editing or deleting a role assignment type
@@ -161,7 +161,7 @@ function committee_admin_form_build (&$form_state = NULL) {
           '#size' => 16,
           '#required' => TRUE,
           '#weight' => 1,
-        );  
+        );
         $form['submit'] = array(
           '#type' => 'submit',
           '#value' => t('Save changes'),
@@ -175,7 +175,7 @@ function committee_admin_form_build (&$form_state = NULL) {
           '#value' => $assigntype_value,
           '#suffix' => '</div>',
           '#weight' => 1,
-        );  
+        );
         $form['submit'] = array(
           '#type' => 'submit',
           '#value' => t('Confirm deletion'),
@@ -194,7 +194,7 @@ function committee_admin_form_build (&$form_state = NULL) {
 }
 
 function committee_form_committee_admin_form_alter(&$form, &$form_state) {
- //orgright_debug_msg('committee','Fn: committee_form_committee_admin_form_alter',5);
+  //orgright_debug_msg('committee','Fn: committee_form_committee_admin_form_alter',5);
   // Remove submit and reset buttons
   unset($form['buttons']['submit']);
   unset($form['buttons']['reset']);
@@ -207,10 +207,10 @@ function committee_admin_form_validate($form, &$form_state) {
   if ($clicked_button == $form['appointtypes']['appointtype_add']['#value']) {
     //orgright_debug_msg('committee','new appointtype='.$form_state['values']['appointtype_new'],8);
     if (!$form_state['values']['appointtype_new']) {
-      form_set_error('appointtype_new',t('A value must be specified for the new appointment type'));
+      form_set_error('appointtype_new', t('A value must be specified for the new appointment type'));
     }
     if ($form_state['values']['appointtype_new'] != strip_tags($form_state['values']['appointtype_new'])) {
-      form_set_error('appointtype_new',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('appointtype_new', t('HTML or PHP tags are not permitted in this field'));
     }
   }
   elseif ($clicked_button == $form['appointtypes']['appointtype_edit']['#value']) {
@@ -226,10 +226,10 @@ function committee_admin_form_validate($form, &$form_state) {
   elseif ($clicked_button == $form['assigntypes']['assigntype_add']['#value']) {
     //orgright_debug_msg('committee','new assigntype='.$form_state['values']['assigntype_new'],8);
     if (!$form_state['values']['assigntype_new']) {
-      form_set_error('assigntype_new',t('A value must be specified for the new assignment type'));
+      form_set_error('assigntype_new', t('A value must be specified for the new assignment type'));
     }
     if ($form_state['values']['assigntype_new'] != strip_tags($form_state['values']['assigntype_new'])) {
-      form_set_error('assigntype_new',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('assigntype_new', t('HTML or PHP tags are not permitted in this field'));
     }
   }
   elseif ($clicked_button == $form['assigntypes']['assigntype_edit']['#value']) {
@@ -246,18 +246,18 @@ function committee_admin_form_validate($form, &$form_state) {
     // The save changes or confirm deletion button has been clicked
     if ($form_state['storage']['operation'] == 'edit appointtype') {
       if (!$form_state['values']['appointtype']) {
-        form_set_error('appointtype',t('A value must be specified for the appointment type'));
+        form_set_error('appointtype', t('A value must be specified for the appointment type'));
       }
       if ($form_state['values']['appointtype'] != strip_tags($form_state['values']['appointtype'])) {
-        form_set_error('appointtype',t('HTML or PHP tags are not permitted in this field'));
+        form_set_error('appointtype', t('HTML or PHP tags are not permitted in this field'));
       }
     }
     if ($form_state['storage']['operation'] == 'edit assigntype') {
       if (!$form_state['values']['assigntype']) {
-        form_set_error('assigntype',t('A value must be specified for the assignment type'));
+        form_set_error('assigntype', t('A value must be specified for the assignment type'));
       }
       if ($form_state['values']['assigntype'] != strip_tags($form_state['values']['assigntype'])) {
-        form_set_error('assigntype',t('HTML or PHP tags are not permitted in this field'));
+        form_set_error('assigntype', t('HTML or PHP tags are not permitted in this field'));
       }
     }
   }
@@ -324,7 +324,7 @@ function committee_admin_form_submit($form, &$form_state) {
       $message = t('The role assignment type has been deleted.');
     }
   }
-  drupal_set_message($message,'status');
+  drupal_set_message($message, 'status');
   $form_state['storage'] = array();
   $form_state['redirect'] = 'admin/orgright/committee';
 }

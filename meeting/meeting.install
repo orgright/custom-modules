@@ -29,7 +29,7 @@ function meeting_disable() {
 /**
  * Implementation of hook_schema()
  */
-// === "org_meetings" table === 
+// === "org_meetings" table ===
 function meeting_schema() {
   $schema['org_meetings'] = array(
     'description' => t('Stores details of meetings'),
@@ -177,7 +177,7 @@ function meeting_schema() {
         'default' => 0,
         'description' => t('The UID of the user who last modified this subscription'),
       ),
-	),
+    ),
     'primary key' => array('vid'),
     'indexes' => array(
       'nid' => array('nid'),
@@ -253,7 +253,7 @@ function meeting_schema() {
         'default' => 0,
         'description' => t('The UID of the user who last modified this payment'),
       ),
-	),
+    ),
     'primary key' => array('vid'),
     'indexes' => array(
       'nid' => array('nid'),
@@ -271,63 +271,75 @@ function meeting_schema() {
 /**
  * Module update functions go here
  */
-function meeting_update_6002 () {
+function meeting_update_6002() {
   // Add a mtgstatus column to the meetings table
   $sql = "ALTER TABLE org_meetings ADD mtgstatus VARCHAR(16) NOT NULL AFTER mtgtype, ADD INDEX mtgstatus (mtgstatus)";
   if (!db_query($sql)) {
-    return array('#abort'=>array('success'=>FALSE, 'query'=>'Add new column to table org_meetings failed'));
+    return array('#abort' => array('success' => FALSE, 'query' => 'Add new column to table org_meetings failed'));
   }
   // Add an agitstatus column to the agenda_items table
   $sql = "ALTER TABLE org_agenda_items ADD agitstatus VARCHAR(16) NOT NULL AFTER agendaitem, ADD INDEX agitstatus (agitstatus)";
   if (!db_query($sql)) {
-    return array('#abort'=>array('success'=>FALSE, 'query'=>'Add new column to table org_agenda_items failed'));
+    return array('#abort' => array('success' => FALSE, 'query' => 'Add new column to table org_agenda_items failed'));
   }
   // Add an itemstatus column to the mtg_items table
   $sql = "ALTER TABLE org_mtg_items ADD itemstatus VARCHAR(16) NOT NULL AFTER itemtype, ADD INDEX itemstatus (itemstatus)";
   if (!db_query($sql)) {
-    return array('#abort'=>array('success'=>FALSE, 'query'=>'Add new column to table org_mtg_items failed'));
+    return array('#abort' => array('success' => FALSE, 'query' => 'Add new column to table org_mtg_items failed'));
   }
   // Modify the meeting and mtgtype columns of the meetings table
   $sql = "ALTER TABLE org_meetings MODIFY meeting VARCHAR(64) NOT NULL, MODIFY mtgtype VARCHAR(16) NOT NULL";
   if (!db_query($sql)) {
-    return array('#abort'=>array('success'=>FALSE, 'query'=>'Modify columns in table org_meetings failed'));
+    return array('#abort' => array('success' => FALSE, 'query' => 'Modify columns in table org_meetings failed'));
   }
   // Modify the agendaitem column of the agenda_items table
   $sql = "ALTER TABLE org_agenda_items MODIFY agendaitem VARCHAR(64) NOT NULL";
   if (!db_query($sql)) {
-    return array('#abort'=>array('success'=>FALSE, 'query'=>'Modify columns in table org_agenda_items failed'));
+    return array('#abort' => array('success' => FALSE, 'query' => 'Modify columns in table org_agenda_items failed'));
   }
   // Modify the itemname column of the mtg_items table
   $sql = "ALTER TABLE org_mtg_items MODIFY itemname VARCHAR(64) NOT NULL";
   if (!db_query($sql)) {
-    return array('#abort'=>array('success'=>FALSE, 'query'=>'Modify columns in table org_mtg_items failed'));
+    return array('#abort' => array('success' => FALSE, 'query' => 'Modify columns in table org_mtg_items failed'));
   }
   return array();
 }
 
-function meeting_update_6001 () {
+function meeting_update_6001() {
   // Drop all default specifications for text columns
   $sql = "ALTER TABLE org_meetings ";
   $cols = array('meeting', 'mtgtype', 'mtgdate', 'start', 'finish', 'location', 'notes');
-  foreach ($cols as $col) { $sql .= " ALTER COLUMN $col DROP DEFAULT,"; }
+  foreach ($cols as $col) {
+    $sql .= " ALTER COLUMN $col DROP DEFAULT,";
+  }
   $sql = substr($sql, 0, -1);
-  if (!db_query($sql)) { return array('#abort'=>array('success'=>FALSE, 'query'=>'Alter table org_meetings failed')); }
+  if (!db_query($sql)) {
+    return array('#abort' => array('success' => FALSE, 'query' => 'Alter table org_meetings failed'));
+  }
 
   $sql = "ALTER TABLE org_agenda_items ";
   $cols = array('agendaitem', 'notes');
-  foreach ($cols as $col) { $sql .= " ALTER COLUMN $col DROP DEFAULT,"; }
+  foreach ($cols as $col) {
+    $sql .= " ALTER COLUMN $col DROP DEFAULT,";
+  }
   $sql = substr($sql, 0, -1);
-  if (!db_query($sql)) { return array('#abort'=>array('success'=>FALSE, 'query'=>'Alter table org_agenda_items failed')); }
+  if (!db_query($sql)) {
+    return array('#abort' => array('success' => FALSE, 'query' => 'Alter table org_agenda_items failed'));
+  }
 
   $sql = "ALTER TABLE org_mtg_items ";
   $cols = array('itemname', 'itemtype', 'itemdate', 'notes');
-  foreach ($cols as $col) { $sql .= " ALTER COLUMN $col DROP DEFAULT,"; }
+  foreach ($cols as $col) {
+    $sql .= " ALTER COLUMN $col DROP DEFAULT,";
+  }
   $sql = substr($sql, 0, -1);
-  if (!db_query($sql)) { return array('#abort'=>array('success'=>FALSE, 'query'=>'Alter table org_mtg_items failed')); }
+  if (!db_query($sql)) {
+    return array('#abort' => array('success' => FALSE, 'query' => 'Alter table org_mtg_items failed'));
+  }
 
   return array();
 }
 
-function meeting_update_6000 () {
+function meeting_update_6000() {
   return array();
 }

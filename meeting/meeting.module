@@ -32,10 +32,10 @@ function meeting_init() {
     // disable file uploads to these node types
     variable_set('upload_'.$type, '0'); // 0=disabled, 1=enabled
     // set the node options to published, but not promoted, sticky, or revision
-    variable_set('node_options_'.$type, array('status')); // status(=published), promote, sticky, revision 
+    variable_set('node_options_'.$type, array('status')); // status(=published), promote, sticky, revision
   }*/
 }
- 
+
 /**
  * Implementation of hook_node_info
  */
@@ -75,7 +75,7 @@ function meeting_node_info() {
     ),
   );
 }
-  
+
 /**
  * Implementation of hook_perm()
  */
@@ -95,8 +95,8 @@ function meeting_perm() {
     'create meeting item',
     'update meeting item',
     'delete meeting item',
-  );    
-}   
+  );
+}
 
 /**
  * Implementation of hook_menu()
@@ -325,21 +325,21 @@ function meeting_menu_alter(&$menu_entries) {
 
 /**
  * Implementation of hook_access()
- */ 
+ */
 function meeting_access($op, $node, $account) {
   //orgright_debug_msg('meeting','Fn: meeting_access',5);
   // Determine node type ($node will either be the string "type" or a node object)
   $node_type = ($op == 'create') ? $node : $node->type;
   // Limit access to the functions provided by this module
   switch ($node_type) {
-  case 'meeting':
-    return meeting_meeting_access($op, $account);
-  case 'agenda_item':
-    return meeting_agenda_item_access($op, $account);
-  case 'mtg_item':
-    return meeting_mtg_item_access($op, $account);
-  default:
-    return FALSE;
+    case 'meeting':
+      return meeting_meeting_access($op, $account);
+    case 'agenda_item':
+      return meeting_agenda_item_access($op, $account);
+    case 'mtg_item':
+      return meeting_mtg_item_access($op, $account);
+    default:
+      return FALSE;
   }
 }
 
@@ -349,8 +349,12 @@ function meeting_meeting_access($op, $account) {
     case 'view':
       return user_access('view meeting', $account);
     case 'create':
-      if (orgright_limit_reached('meetings')) { return FALSE; }
-      else { return user_access('create meeting', $account); }
+      if (orgright_limit_reached('meetings')) {
+        return FALSE;
+      }
+      else {
+        return user_access('create meeting', $account);
+      }
     case 'update':
       return user_access('update meeting', $account);
     case 'delete':
@@ -366,8 +370,12 @@ function meeting_agenda_item_access($op, $account) {
     case 'view':
       return user_access('view agenda item', $account);
     case 'create':
-      if (orgright_limit_reached('agenda_items')) { return FALSE; }
-      else { return user_access('create agenda item', $account); }
+      if (orgright_limit_reached('agenda_items')) {
+        return FALSE;
+      }
+      else {
+        return user_access('create agenda item', $account);
+      }
     case 'update':
       return user_access('update agenda item', $account);
     case 'delete':
@@ -383,8 +391,12 @@ function meeting_mtg_item_access($op, $account) {
     case 'view':
       return user_access('view meeting item', $account);
     case 'create':
-      if (orgright_limit_reached('mtg_items')) { return FALSE; }
-      else { return user_access('create meeting item', $account); }
+      if (orgright_limit_reached('mtg_items')) {
+        return FALSE;
+      }
+      else {
+        return user_access('create meeting item', $account);
+      }
     case 'update':
       return user_access('update meeting item', $account);
     case 'delete':
@@ -410,15 +422,15 @@ function meeting_forms($form_id, $args) {
     case 'meeting_selection_form':
     case 'meeting_agenda_item_form':
     case 'meeting_mtg_item_form':
-      module_load_include('inc', 'meeting', 'meeting_form'); 
+      module_load_include('inc', 'meeting', 'meeting_form');
       $forms[$form_id] = array(
-        'callback' => $form_id.'_build',
+        'callback' => $form_id . '_build',
       );
       return $forms;
     case 'meeting_admin_form':
-      module_load_include('inc', 'meeting', 'meeting_admin'); 
+      module_load_include('inc', 'meeting', 'meeting_admin');
       $forms[$form_id] = array(
-        'callback' => $form_id.'_build',
+        'callback' => $form_id . '_build',
       );
       return $forms;
     default:
@@ -436,7 +448,7 @@ function meeting_forms($form_id, $args) {
 function meeting_form($node, &$form_state) {
   //orgright_debug_msg('meeting','Fn: meeting_form, node type='.$node->type,5);
   // Load the additional file to handle form building
-  module_load_include('inc', 'meeting', 'meeting_form'); 
+  module_load_include('inc', 'meeting', 'meeting_form');
   // Call the required form function depending on node type
   if ($node->type == 'meeting') {
     $form = meeting_meeting_form_build($form_state, $node);
@@ -449,7 +461,8 @@ function meeting_form($node, &$form_state) {
   }
   else {
     $form = array();
-  };
+  }
+  ;
   return $form;
 }
 
@@ -480,7 +493,7 @@ function meeting_form_validate($form, &$form_state) {
   module_load_include('inc', 'meeting', 'meeting_form');
   // and call the function specific to each form type
   if ($form['#id'] == 'node-form') {
-    // process each node-form separately 
+    // process each node-form separately
     if ($form['#node']->type == 'meeting') {
       meeting_meeting_form_validate($form, $form_state);
     }
@@ -512,19 +525,19 @@ function meeting_form_validate($form, &$form_state) {
 function meeting_node_form_submit($form, &$form_state) {
   // Standard Drupal callback for meeting_node_form
   //orgright_debug_msg('meeting','Fn: meeting_node_form_submit',5);
-  //$form_state['#redirect'] = 'meeting/meetings'; 
+  //$form_state['#redirect'] = 'meeting/meetings';
 }
 
 function agenda_item_node_form_submit($form, &$form_state) {
   // Standard Drupal callback for agenda_item_node_form
   //orgright_debug_msg('meeting','Fn: agenda_item_node_form_submit',5);
-  //$form_state['#redirect'] = 'meeting/agenda_items'; 
+  //$form_state['#redirect'] = 'meeting/agenda_items';
 }
 
 function mtg_item_node_form_submit($form, &$form_state) {
   // Standard Drupal callback for mtg_item_node_form
   //orgright_debug_msg('Fn: mtg_item_node_form_submit');
-  //$form_state['#redirect'] = 'meeting/mtg_items'; 
+  //$form_state['#redirect'] = 'meeting/mtg_items';
 }
 */
 
@@ -538,7 +551,7 @@ function meeting_form_submit($form, &$form_state) {
   module_load_include('inc', 'meeting', 'meeting_form');
   // and call the function specific to each form type
   if ($form['#id'] == 'node-form') {
-    // process each node-form separately 
+    // process each node-form separately
     if ($form['#node']->type == 'meeting') {
       meeting_meeting_form_submit($form, $form_state);
     }
@@ -566,7 +579,7 @@ function meeting_form_submit($form, &$form_state) {
 /**
  * Implementation of hook_insert()
  *
- * This will test for the type of node being created and 
+ * This will test for the type of node being created and
  * insert the data into the appropriate table
  */
 
@@ -588,7 +601,7 @@ function meeting_insert($node) {
 /**
  * Implementation of hook_update()
  *
- * This will test for the type of node being updated and 
+ * This will test for the type of node being updated and
  * update the data into the appropriate table
  */
 function meeting_update($node) {
@@ -638,22 +651,22 @@ function meeting_delete($node) {
 function meeting_nodeapi(&$node, $op, $teaser, $page) {
   //orgright_debug_msg('meeting','Fn: meeting_nodeapi, op='.$op.', type='.$node->type);
   switch ($op) {
-  case 'load':
-  case 'insert':
-  case 'update':
-  case 'delete':
-  case 'delete revision':
-    // First, load the additional file to handle data access
-    module_load_include('inc', 'meeting', 'meeting_data');
-    if ($node->type == 'meeting') {
-      meeting_meeting_nodeapi($node, $op, $teaser, $page);
-    }
-    elseif ($node->type == 'agenda_item') {
-      meeting_agenda_item_nodeapi($node, $op, $teaser, $page);
-    }
-    elseif ($node->type == 'mtg_item') {
-      meeting_mtg_item_nodeapi($node, $op, $teaser, $page);
-    }
+    case 'load':
+    case 'insert':
+    case 'update':
+    case 'delete':
+    case 'delete revision':
+      // First, load the additional file to handle data access
+      module_load_include('inc', 'meeting', 'meeting_data');
+      if ($node->type == 'meeting') {
+        meeting_meeting_nodeapi($node, $op, $teaser, $page);
+      }
+      elseif ($node->type == 'agenda_item') {
+        meeting_agenda_item_nodeapi($node, $op, $teaser, $page);
+      }
+      elseif ($node->type == 'mtg_item') {
+        meeting_mtg_item_nodeapi($node, $op, $teaser, $page);
+      }
   }
 }
 
@@ -716,7 +729,7 @@ function meeting_views_api() {
  * Some orgRight meeting specific functions to provide data
  */
 function meeting_get_meeting_types() {
-  $meetingtypes = variable_get('meeting_meeting_types', array('Committee','General','Special'));
+  $meetingtypes = variable_get('meeting_meeting_types', array('Committee', 'General', 'Special'));
   $meetingtype_list = array();
   foreach ($meetingtypes as $mtype) {
     $meetingtype_list[$mtype] = $mtype;
@@ -725,7 +738,7 @@ function meeting_get_meeting_types() {
 }
 
 function meeting_get_meeting_statuses() {
-  $meetingstatus = variable_get('meeting_meeting_statuses', array('Open','Closed'));
+  $meetingstatus = variable_get('meeting_meeting_statuses', array('Open', 'Closed'));
   $meetingstatus_list = array();
   foreach ($meetingstatus as $status) {
     $meetingstatus_list[$status] = $status;
@@ -744,7 +757,7 @@ function meeting_get_meeting_list_statuses() {
 }
 
 function meeting_get_agenda_item_statuses() {
-  $agitstatus = variable_get('meeting_agenda_item_statuses', array('Open','Closed'));
+  $agitstatus = variable_get('meeting_agenda_item_statuses', array('Open', 'Closed'));
   $agitstatus_list = array();
   foreach ($agitstatus as $status) {
     $agitstatus_list[$status] = $status;
@@ -772,7 +785,7 @@ function meeting_get_mtg_item_types() {
 }
 
 function meeting_get_mtg_item_statuses() {
-  $mtgitemstatus = variable_get('meeting_mtg_item_statuses', array('Active','Complete'));
+  $mtgitemstatus = variable_get('meeting_mtg_item_statuses', array('Active', 'Complete'));
   $mtgitemstatus_list = array();
   foreach ($mtgitemstatus as $status) {
     $mtgitemstatus_list[$status] = $status;
@@ -790,7 +803,7 @@ function meeting_get_mtg_item_list_statuses() {
   return $liststatus_list;
 }
 
-function meeting_get_meetings($key='nid') {
+function meeting_get_meetings($key = 'nid') {
   // Return an array of future meetings, keyed as requested
   // First get an array of committees keyed by nid to enhance the description
   $committees = committee_get_committees('nid');
@@ -798,23 +811,31 @@ function meeting_get_meetings($key='nid') {
   $statuses = meeting_get_meeting_list_statuses();
   $sql = "SELECT g.nid, g.cnid, g.meeting, g.mtgdate FROM {node} n JOIN {org_meetings} g ON g.nid = n.nid WHERE g.vid = n.vid AND (g.mtgstatus = ''";
   foreach ($statuses as $status) {
-    $sql .= " OR g.mtgstatus = '".$status."'";
+    $sql .= " OR g.mtgstatus = '" . $status . "'";
   }
   $sql .= ") ORDER BY g.cnid, g.mtgdate";
   $meetings = array();
   $result = db_query($sql);
   while ($obj = db_fetch_object($result)) {
     $description = $obj->meeting;
-    if ($obj->cnid) { $description .= ' of ' . $committees[$obj->cnid] . ' committee'; }
-    else { $description .= ' [no committee]'; }
+    if ($obj->cnid) {
+      $description .= ' of ' . $committees[$obj->cnid] . ' committee';
+    }
+    else {
+      $description .= ' [no committee]';
+    }
     $description .= ' on ' . date_format_date(date_make_date($obj->mtgdate), 'custom', 'd M Y');
-    if ($key == 'name') { $meetings[$obj->meeting] = $description; }
-    elseif ($key == 'nid') { $meetings[$obj->nid] = $description; }
+    if ($key == 'name') {
+      $meetings[$obj->meeting] = $description;
+    }
+    elseif ($key == 'nid') {
+      $meetings[$obj->nid] = $description;
+    }
   }
   return $meetings;
 }
 
-function meeting_get_meeting_templates($key='nid') {
+function meeting_get_meeting_templates($key = 'nid') {
   // Return an array of meeting templates, keyed as requested
   // First get an array of committees keyed by nid to enhance the description
   $committees = committee_get_committees('nid');
@@ -824,10 +845,18 @@ function meeting_get_meeting_templates($key='nid') {
   $result = db_query($sql);
   while ($obj = db_fetch_object($result)) {
     $description = $obj->meeting;
-    if ($obj->cnid) { $description .= ' of ' . $committees[$obj->cnid] . ' committee'; }
-    else { $description .= ' [no committee]'; }
-    if ($key == 'name') { $meetings[$obj->meeting] = $description; }
-    elseif ($key == 'nid') { $meetings[$obj->nid] = $description; }
+    if ($obj->cnid) {
+      $description .= ' of ' . $committees[$obj->cnid] . ' committee';
+    }
+    else {
+      $description .= ' [no committee]';
+    }
+    if ($key == 'name') {
+      $meetings[$obj->meeting] = $description;
+    }
+    elseif ($key == 'nid') {
+      $meetings[$obj->nid] = $description;
+    }
   }
   return $meetings;
 }
@@ -844,4 +873,4 @@ function meeting_check_nodetype_and_access($node = 0, $type = '', $access = '') 
 /**
  * End of module
  */
- 
+

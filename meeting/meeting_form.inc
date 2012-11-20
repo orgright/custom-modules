@@ -25,7 +25,7 @@ function meeting_meeting_form_build(&$form_state, $node) {
     '#maxlength' => 64,
     '#size' => 40,
     '#required' => TRUE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -40,7 +40,7 @@ function meeting_meeting_form_build(&$form_state, $node) {
       '#maxlength' => 64,
       '#size' => 40,
       '#required' => FALSE,
-      '#attributes' => array('tabindex'=>$fix),
+      '#attributes' => array('tabindex' => $fix),
       '#weight' => $fix,
       '#autocomplete_path' => 'committee/autocomplete/committees',
     );
@@ -55,7 +55,7 @@ function meeting_meeting_form_build(&$form_state, $node) {
       '#default_value' => $node->cnid,
       '#options' => $committees_list,
       '#required' => FALSE,
-      '#attributes' => array('tabindex'=>$fix),
+      '#attributes' => array('tabindex' => $fix),
       '#weight' => $fix,
     );
   }
@@ -68,7 +68,7 @@ function meeting_meeting_form_build(&$form_state, $node) {
     '#maxlength' => 64,
     '#size' => 40,
     '#required' => FALSE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
     '#autocomplete_path' => 'meeting/autocomplete/locations',
   );
@@ -81,7 +81,7 @@ function meeting_meeting_form_build(&$form_state, $node) {
     '#default_value' => $node->mtgstatus,
     '#options' => $status_list,
     '#required' => FALSE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -93,28 +93,28 @@ function meeting_meeting_form_build(&$form_state, $node) {
     '#default_value' => $node->mtgtype,
     '#options' => $type_list,
     '#required' => TRUE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
   $dformat = 'd M Y'; // Specify the date format
-  $mtgdate = ($node->mtgdate) ?  $node->mtgdate : orgright_get_date_ymd();
+  $mtgdate = ($node->mtgdate) ? $node->mtgdate : orgright_get_date_ymd();
   $form['mtgdate'] = array(
     //'#type' => 'date_select',
     '#type' => 'date_popup',
     '#title' => t('Meeting date'),
     '#description' => meeting_field_description('meeting', 'mtgdate', t('Specify the meeting date')),
-    '#default_value' => $mtgdate.'T00:00:00',
+    '#default_value' => $mtgdate . 'T00:00:00',
     '#date_format' => $dformat,
     //'#date_label_position' => 'within',
     '#date_year_range' => '-2:+7',
     '#required' => TRUE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
   $tformat = 'h:i a'; // Specify the time format
-  $start = ($node->start) ? $mtgdate.'T'.$node->start: '';
+  $start = ($node->start) ? $mtgdate . 'T' . $node->start : '';
   $form['start'] = array(
     //'#type' => 'date_select',
     '#type' => 'date_popup',
@@ -127,11 +127,11 @@ function meeting_meeting_form_build(&$form_state, $node) {
     //'#maxlength' => 16,
     //'#size' => 16,
     '#required' => TRUE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
-  $finish = ($node->finish) ? $mtgdate.'T'.$node->finish: '';
+  $finish = ($node->finish) ? $mtgdate . 'T' . $node->finish : '';
   $form['finish'] = array(
     //'#type' => 'date_select',
     '#type' => 'date_popup',
@@ -144,7 +144,7 @@ function meeting_meeting_form_build(&$form_state, $node) {
     //'#maxlength' => 16,
     //'#size' => 16,
     '#required' => FALSE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -156,7 +156,7 @@ function meeting_meeting_form_build(&$form_state, $node) {
     '#rows' => 5,
     '#required' => FALSE,
     '#resizable' => TRUE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -167,7 +167,7 @@ function meeting_meeting_form_build(&$form_state, $node) {
     '#default_value' => $node->notes,
     '#rows' => 3,
     '#resizable' => TRUE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   // create placeholders to be filled in during validation
@@ -188,7 +188,7 @@ function meeting_meeting_form_build(&$form_state, $node) {
   $form['#validate'] = array('meeting_form_validate');
   $form['#submit'] = array('meeting_form_submit');
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Meeting')=>'meeting', t('Meetings')=>'meeting/meetings'));
+  orgright_breadcrumb(array(t('Meeting') => 'meeting', t('Meetings') => 'meeting/meetings'));
   return $form;
 }
 
@@ -238,7 +238,7 @@ function meeting_agenda_item_form_build(&$form_state, $node) {
       '#maxlength' => 64,
       '#size' => 40,
       '#required' => TRUE,
-      '#attributes' => array('tabindex'=>$fix),
+      '#attributes' => array('tabindex' => $fix),
       '#weight' => $fix,
       '#autocomplete_path' => 'meeting/autocomplete/meetings',
     );
@@ -252,7 +252,7 @@ function meeting_agenda_item_form_build(&$form_state, $node) {
       '#default_value' => $node->gnid,
       '#options' => array('-- select meeting --') + $meetings_list,
       '#required' => TRUE,
-      '#attributes' => array('tabindex'=>$fix),
+      '#attributes' => array('tabindex' => $fix),
       '#weight' => $fix,
     );
   }
@@ -265,7 +265,7 @@ function meeting_agenda_item_form_build(&$form_state, $node) {
     '#maxlength' => 64,
     '#size' => 40,
     '#required' => TRUE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -279,7 +279,7 @@ function meeting_agenda_item_form_build(&$form_state, $node) {
     '#maxlength' => 9,
     '#size' => 9,
     '#required' => FALSE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -292,7 +292,7 @@ function meeting_agenda_item_form_build(&$form_state, $node) {
     '#default_value' => $node->agitstatus,
     '#options' => array('-- unspecified --') + $agitstatus_list,
     '#required' => TRUE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -304,7 +304,7 @@ function meeting_agenda_item_form_build(&$form_state, $node) {
     '#rows' => 5,
     '#required' => FALSE,
     '#resizable' => TRUE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -315,7 +315,7 @@ function meeting_agenda_item_form_build(&$form_state, $node) {
     '#default_value' => $node->notes,
     '#rows' => 3,
     '#resizable' => TRUE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   // create placeholders to be filled in during validation
@@ -336,7 +336,7 @@ function meeting_agenda_item_form_build(&$form_state, $node) {
   $form['#validate'] = array('meeting_form_validate');
   $form['#submit'] = array('meeting_form_submit');
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Meeting')=>'meeting', t('Agenda items')=>'meeting/agenda_items'));
+  orgright_breadcrumb(array(t('Meeting') => 'meeting', t('Agenda items') => 'meeting/agenda_items'));
   return $form;
 }
 
@@ -359,7 +359,7 @@ function meeting_mtg_item_form_build(&$form_state, $node) {
       '#maxlength' => 64,
       '#size' => 40,
       '#required' => FALSE,
-      '#attributes' => array('tabindex'=>$fix),
+      '#attributes' => array('tabindex' => $fix),
       '#weight' => $fix,
       '#autocomplete_path' => 'meeting/autocomplete/meetings',
     );
@@ -373,7 +373,7 @@ function meeting_mtg_item_form_build(&$form_state, $node) {
       '#default_value' => $node->gnid,
       '#options' => array('[no meeting]') + $meetings_list,
       '#required' => FALSE,
-      '#attributes' => array('tabindex'=>$fix),
+      '#attributes' => array('tabindex' => $fix),
       '#weight' => $fix,
     );
   }
@@ -386,7 +386,7 @@ function meeting_mtg_item_form_build(&$form_state, $node) {
     '#maxlength' => 255,
     '#size' => 40,
     '#required' => TRUE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -401,7 +401,7 @@ function meeting_mtg_item_form_build(&$form_state, $node) {
       '#maxlength' => 64,
       '#size' => 40,
       '#required' => FALSE,
-      '#attributes' => array('tabindex'=>$fix),
+      '#attributes' => array('tabindex' => $fix),
       '#weight' => $fix,
       '#autocomplete_path' => 'membership/autocomplete/members',
     );
@@ -415,7 +415,7 @@ function meeting_mtg_item_form_build(&$form_state, $node) {
       '#default_value' => $node->mnid,
       '#options' => array('-- Select member --') + $members_list,
       '#required' => FALSE,
-      '#attributes' => array('tabindex'=>$fix),
+      '#attributes' => array('tabindex' => $fix),
       '#weight' => $fix,
     );
   }
@@ -428,7 +428,7 @@ function meeting_mtg_item_form_build(&$form_state, $node) {
     '#default_value' => $node->itemtype,
     '#options' => $type_list,
     '#required' => TRUE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -437,12 +437,12 @@ function meeting_mtg_item_form_build(&$form_state, $node) {
     '#type' => 'date_popup',
     '#title' => t('Completion date'),
     '#description' => meeting_field_description('mtg-item', 'itemdate', t('Enter date for completion or bringup')),
-    '#default_value' => ($node->itemdate) ?  $node->itemdate : orgright_get_date_ymd(),
+    '#default_value' => ($node->itemdate) ? $node->itemdate : orgright_get_date_ymd(),
     '#date_format' => $dformat,
     //'#date_label_position' => 'within',
     '#date_year_range' => '-2:+7',
     '#required' => FALSE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -454,7 +454,7 @@ function meeting_mtg_item_form_build(&$form_state, $node) {
     '#default_value' => $node->itemstatus,
     '#options' => $status_list,
     '#required' => TRUE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -466,7 +466,7 @@ function meeting_mtg_item_form_build(&$form_state, $node) {
     '#rows' => 5,
     '#required' => FALSE,
     '#resizable' => TRUE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -477,7 +477,7 @@ function meeting_mtg_item_form_build(&$form_state, $node) {
     '#default_value' => $node->notes,
     '#rows' => 3,
     '#resizable' => TRUE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   // create placeholders to be filled in during validation
@@ -502,7 +502,7 @@ function meeting_mtg_item_form_build(&$form_state, $node) {
   $form['#validate'] = array('meeting_form_validate');
   $form['#submit'] = array('meeting_form_submit');
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Meeting')=>'meeting', t('Meeting items')=>'meeting/mtg_items'));
+  orgright_breadcrumb(array(t('Meeting') => 'meeting', t('Meeting items') => 'meeting/mtg_items'));
   return $form;
 }
 
@@ -529,7 +529,7 @@ function meeting_template_use_form_build(&$form_state) {
       '#default_value' => 0,
       '#options' => array('-- select template --') + $template_list,
       '#required' => TRUE,
-      '#attributes' => array('tabindex'=>$fix),
+      '#attributes' => array('tabindex' => $fix),
       '#weight' => $fix,
     );
     $submit_label = t('Next');
@@ -552,7 +552,7 @@ function meeting_template_use_form_build(&$form_state) {
     // add a heading giving details of the template being used
     $form['template'] = array(
       '#prefix' => '<div class="form-item">',
-      '#value' => t('Using meeting template <strong>"@tpl"</strong>', array('@tpl'=>$form_state['storage']['template']['meeting'])),
+      '#value' => t('Using meeting template <strong>"@tpl"</strong>', array('@tpl' => $form_state['storage']['template']['meeting'])),
       '#suffix' => '</div>',
       '#weight' => -1,
     );
@@ -563,7 +563,7 @@ function meeting_template_use_form_build(&$form_state) {
     // add a heading giving details of the template being used
     $form['template'] = array(
       '#prefix' => '<div class="form-item">',
-      '#value' => t('Using meeting template <strong>"@tpl"</strong>', array('@tpl'=>$form_state['storage']['template']['meeting'])),
+      '#value' => t('Using meeting template <strong>"@tpl"</strong>', array('@tpl' => $form_state['storage']['template']['meeting'])),
       '#suffix' => '</div>',
       '#weight' => -1,
     );
@@ -573,39 +573,39 @@ function meeting_template_use_form_build(&$form_state) {
     $iz = 0;
     while ($agenda_item = db_fetch_object($result)) {
       $fix++;
-      $form['agitem_'.$iz] = array(
+      $form['agitem_' . $iz] = array(
         '#type' => 'fieldset',
         '#collapsible' => FALSE,
         '#weight' => $fix,
       );
       $fix++;
-      $form['agitem_'.$iz]['create_'.$iz] = array(
+      $form['agitem_' . $iz]['create_' . $iz] = array(
         '#type' => 'select',
         '#title' => t('Include agenda item?'),
         '#description' => t('Specify whether to include this agenda item in the meeting'),
         '#default_value' => $agenda_item->nid,
-        '#options' => array(0=>'No', $agenda_item->nid=>'Yes'),
+        '#options' => array(0 => 'No', $agenda_item->nid => 'Yes'),
         '#required' => TRUE,
-        '#attributes' => array('tabindex'=>$fix),
+        '#attributes' => array('tabindex' => $fix),
         '#weight' => $fix,
       );
       $fix++;
-      $form['agitem_'.$iz]['detail_'.$iz] = array(
+      $form['agitem_' . $iz]['detail_' . $iz] = array(
         '#prefix' => '<div class="form-item">',
-        '#value' => 'Agenda item: <strong>'.$agenda_item->sequence.': '.$agenda_item->agendaitem.'</strong>',
+        '#value' => 'Agenda item: <strong>' . $agenda_item->sequence . ': ' . $agenda_item->agendaitem . '</strong>',
         '#suffix' => '</div>',
       );
       $fix++;
       // Get an array of agenda_item status values
       $agitstatus_list = meeting_get_agenda_item_statuses();
-      $form['agitem_'.$iz]['status_'.$iz] = array(
+      $form['agitem_' . $iz]['status_' . $iz] = array(
         '#type' => 'select',
         '#title' => t('Agenda item status'),
         '#description' => meeting_field_description('agenda-item', 'status', t('Select agenda item status')),
         '#default_value' => 0,
         '#options' => array('-- unspecified --') + $agitstatus_list,
         '#required' => TRUE,
-        '#attributes' => array('tabindex'=>$fix),
+        '#attributes' => array('tabindex' => $fix),
         '#weight' => $fix,
       );
       $iz++;
@@ -624,7 +624,7 @@ function meeting_template_use_form_build(&$form_state) {
   $form['buttons']['submit'] = array(
     '#type' => 'submit',
     '#value' => $submit_label,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
   );
   // save form step for later use
   $form['step'] = array(
@@ -640,23 +640,23 @@ function meeting_template_use_form_build(&$form_state) {
   $form['#validate'] = array('meeting_form_validate');
   $form['#submit'] = array('meeting_form_submit');
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Meeting')=>'meeting', t('Meetings')=>'meeting/meetings'));
+  orgright_breadcrumb(array(t('Meeting') => 'meeting', t('Meetings') => 'meeting/meetings'));
   return $form;
-  
+
 }
 
 /**
  *  Function to generate a field description with popup help for each form field
  */
 function meeting_field_description($type, $field, $description) {
-  return theme('helpservice_topic','meeting',$type.'-details/'.$field).$description;
+  return theme('helpservice_topic', 'meeting', $type . '-details/' . $field) . $description;
 }
 
 /**
  * Function to return an array of mtg_item sequence nos
  */
 function meeting_get_agenda_item_seqnos($key) {
-  // 
+  //
 
 }
 
@@ -670,26 +670,26 @@ function meeting_form_meeting_node_form_alter(&$form, &$form_state) {
     // Yes, so check and act on each
     $args = $form['#parameters'][3];
     foreach ($args as $parameter) {
-      $paraname = substr($parameter,0,strpos($parameter,'~'));
-      $parvalue = substr($parameter,strpos($parameter,'~')+1);
+      $paraname = substr($parameter, 0, strpos($parameter, '~'));
+      $parvalue = substr($parameter, strpos($parameter, '~') + 1);
       switch ($paraname) {
-      case 'committee':
-        // fill in the committee field information
-        if ($form['committee']['#type'] == 'select') {
-          // is a select type field, use nid
-          $form['committee']['#default_value'] = $parvalue;
-        }
-        else {
-          // is a text field, find name
-          $sql = "SELECT committee FROM {node} n JOIN {org_committees} c on c.nid = n.nid WHERE c.vid = n.vid AND c.nid = %d";
-          $form['committee']['#default_value'] = db_result(db_query($sql, $parvalue));
-        }
-        break;
-      case 'template':
-        // Meeting status should be fixed as 'template'
-        $form['mtgstatus']['#default_value'] = 'template';
-        break;
-      default:
+        case 'committee':
+          // fill in the committee field information
+          if ($form['committee']['#type'] == 'select') {
+            // is a select type field, use nid
+            $form['committee']['#default_value'] = $parvalue;
+          }
+          else {
+            // is a text field, find name
+            $sql = "SELECT committee FROM {node} n JOIN {org_committees} c on c.nid = n.nid WHERE c.vid = n.vid AND c.nid = %d";
+            $form['committee']['#default_value'] = db_result(db_query($sql, $parvalue));
+          }
+          break;
+        case 'template':
+          // Meeting status should be fixed as 'template'
+          $form['mtgstatus']['#default_value'] = 'template';
+          break;
+        default:
       }
     }
   }
@@ -709,12 +709,12 @@ function meeting_form_meeting_node_form_alter(&$form, &$form_state) {
   }
   else {
     $form['buttons']['submit']['#value'] = 'Save Changes';
-    $form['#goto'] = 'node/'.$form['nid']['#value'];
+    $form['#goto'] = 'node/' . $form['nid']['#value'];
   }
   // Apply changes if this is a template form
   if ($form['mtgstatus']['#default_value'] == 'template') {
     // this is the form for a meeting template, so alter some fields
-    $form['mtgstatus']['#options'] = array('template'=>'Meeting Template');
+    $form['mtgstatus']['#options'] = array('template' => 'Meeting Template');
     $form['mtgstatus']['#required'] = TRUE;
     // Meeting date should be optional
     $form['mtgdate']['#required'] = FALSE;
@@ -722,43 +722,43 @@ function meeting_form_meeting_node_form_alter(&$form, &$form_state) {
     // Change submit button label if necessary
     if ($form['buttons']['submit']['#value'] == 'Add Meeting') {
       $form['buttons']['submit']['#value'] = 'Add Template';
-    } 
+    }
   }
   // Set the weight and tab index for the submit button
   $fix = $form['fix']['#value'];
-  $form['buttons']['submit']['#attributes'] = array('tabindex'=>$fix);
+  $form['buttons']['submit']['#attributes'] = array('tabindex' => $fix);
   $form['buttons']['submit']['#weight'] = $fix;
 }
 
 function meeting_form_agenda_item_node_form_alter(&$form, &$form_state) {
- //orgright_debug_dump('agenda item form alter',$form,'form-alter');
- //orgright_debug_dump('agenda item form alter',$form_state,'form-state');
+  //orgright_debug_dump('agenda item form alter',$form,'form-alter');
+  //orgright_debug_dump('agenda item form alter',$form_state,'form-state');
   //orgright_debug_msg('meeting','Fn: meeting_form_agenda_item_node_form_alter',6);
   // Check to see whether additional arguments were passed to drupal_get_form
   if (isset($form['#parameters'][3])) {
     // Yes, so check and act on each
     $args = $form['#parameters'][3];
     foreach ($args as $parameter) {
-      $paraname = substr($parameter,0,strpos($parameter,'~'));
-      $parvalue = substr($parameter,strpos($parameter,'~')+1);
+      $paraname = substr($parameter, 0, strpos($parameter, '~'));
+      $parvalue = substr($parameter, strpos($parameter, '~') + 1);
       switch ($paraname) {
-      case 'meeting':
-        // fill in the meeting field information
-        if ($form['meeting']['#type'] == 'select') {
-          // is a select type field, use nid
-          $form['meeting']['#default_value'] = $parvalue;
-        }
-        else {
-          // is a text field, find name
-          $sql = "SELECT meeting FROM {node} n JOIN {org_meetings} g on g.nid = n.nid WHERE g.vid = n.vid AND g.nid = %d";
-          $form['meeting']['#default_value'] = db_result(db_query($sql, $parvalue));
-        }
-        break;
-      case 'template':
-        // Agenda item status should be fixed as 'template'
-        $form['agitstatus']['#default_value'] = 'template';
-        break;
-      default:
+        case 'meeting':
+          // fill in the meeting field information
+          if ($form['meeting']['#type'] == 'select') {
+            // is a select type field, use nid
+            $form['meeting']['#default_value'] = $parvalue;
+          }
+          else {
+            // is a text field, find name
+            $sql = "SELECT meeting FROM {node} n JOIN {org_meetings} g on g.nid = n.nid WHERE g.vid = n.vid AND g.nid = %d";
+            $form['meeting']['#default_value'] = db_result(db_query($sql, $parvalue));
+          }
+          break;
+        case 'template':
+          // Agenda item status should be fixed as 'template'
+          $form['agitstatus']['#default_value'] = 'template';
+          break;
+        default:
       }
     }
   }
@@ -772,18 +772,18 @@ function meeting_form_agenda_item_node_form_alter(&$form, &$form_state) {
   // Remove preview button and change label on submit button
   // and specify the redirect page on successful submission
   unset($form['buttons']['preview']);
-  if (empty($form['nid']['#value'])) {  
+  if (empty($form['nid']['#value'])) {
     $form['buttons']['submit']['#value'] = 'Add Agenda Item';
     $form['#goto'] = 'meeting/agenda_items/add';
   }
   else {
     $form['buttons']['submit']['#value'] = 'Save Changes';
-    $form['#goto'] = 'node/'.$form['nid']['#value'];
+    $form['#goto'] = 'node/' . $form['nid']['#value'];
   }
   // Apply any changes if this is a template form
   if ($form['agitstatus']['#default_value'] == 'template') {
     // this is the form for an agenda item template, so alter some fields
-    $form['agitstatus']['#options'] = array('template'=>'Agenda Item Template');
+    $form['agitstatus']['#options'] = array('template' => 'Agenda Item Template');
     $form['agitstatus']['#required'] = TRUE;
     // Change the meeting field
     $template_list = meeting_get_meeting_templates('nid');
@@ -797,11 +797,11 @@ function meeting_form_agenda_item_node_form_alter(&$form, &$form_state) {
     // Change submit button label if necessary
     if ($form['buttons']['submit']['#value'] == 'Add Agenda Item') {
       $form['buttons']['submit']['#value'] = 'Add Template';
-    } 
+    }
   }
   // Set the weight and tab index for the submit button
   $fix = $form['fix']['#value'];
-  $form['buttons']['submit']['#attributes'] = array('tabindex'=>$fix);
+  $form['buttons']['submit']['#attributes'] = array('tabindex' => $fix);
   $form['buttons']['submit']['#weight'] = $fix;
 }
 
@@ -812,22 +812,22 @@ function meeting_form_mtg_item_node_form_alter(&$form, &$form_state) {
     // Yes, so check and act on each
     $args = $form['#parameters'][3];
     foreach ($args as $parameter) {
-      $paraname = substr($parameter,0,strpos($parameter,'~'));
-      $parvalue = substr($parameter,strpos($parameter,'~')+1);
+      $paraname = substr($parameter, 0, strpos($parameter, '~'));
+      $parvalue = substr($parameter, strpos($parameter, '~') + 1);
       switch ($paraname) {
-      case 'meeting':
-        // fill in the meeting field information
-        if ($form['meeting']['#type'] == 'select') {
-          // is a select type field, use nid
-          $form['meeting']['#default_value'] = $parvalue;
-        }
-        else {
-          // is a text field, find name
-          $sql = "SELECT meeting FROM {node} n JOIN {org_meetings} g on g.nid = n.nid WHERE g.vid = n.vid AND g.nid = %d";
-          $form['meeting']['#default_value'] = db_result(db_query($sql, $parvalue));
-        }
-        break;
-      default:
+        case 'meeting':
+          // fill in the meeting field information
+          if ($form['meeting']['#type'] == 'select') {
+            // is a select type field, use nid
+            $form['meeting']['#default_value'] = $parvalue;
+          }
+          else {
+            // is a text field, find name
+            $sql = "SELECT meeting FROM {node} n JOIN {org_meetings} g on g.nid = n.nid WHERE g.vid = n.vid AND g.nid = %d";
+            $form['meeting']['#default_value'] = db_result(db_query($sql, $parvalue));
+          }
+          break;
+        default:
       }
     }
   }
@@ -841,17 +841,17 @@ function meeting_form_mtg_item_node_form_alter(&$form, &$form_state) {
   // Remove preview button and change label on submit button
   // and specify the redirect page on successful submission
   unset($form['buttons']['preview']);
-  if (empty($form['nid']['#value'])) {  
+  if (empty($form['nid']['#value'])) {
     $form['buttons']['submit']['#value'] = 'Add Meeting Item';
     $form['#goto'] = 'meeting/subpayments/add';
   }
   else {
     $form['buttons']['submit']['#value'] = 'Save Changes';
-    $form['#goto'] = 'node/'.$form['nid']['#value'];
+    $form['#goto'] = 'node/' . $form['nid']['#value'];
   }
   // Set the weight and tab index for the submit button
   $fix = $form['fix']['#value'];
-  $form['buttons']['submit']['#attributes'] = array('tabindex'=>$fix);
+  $form['buttons']['submit']['#attributes'] = array('tabindex' => $fix);
   $form['buttons']['submit']['#weight'] = $fix;
 }
 
@@ -873,10 +873,10 @@ function meeting_meeting_form_validate($form, &$form_state) {
     $notes = strip_tags($form_state['values']['notes']);
     // Check that entered details are acceptable
     if ($meeting != $form_state['values']['meeting']) {
-        form_set_error('meeting',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('meeting', t('HTML or PHP tags are not permitted in this field'));
     }
     if ($committee != $form_state['values']['committee']) {
-        form_set_error('committee',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('committee', t('HTML or PHP tags are not permitted in this field'));
     }
     //if ($mtgtype != $form_state['values']['mtgtype']) {
     //    form_set_error('mtgtype',t('HTML or PHP tags are not permitted in this field'));
@@ -891,21 +891,21 @@ function meeting_meeting_form_validate($form, &$form_state) {
     //    form_set_error('finish',t('HTML or PHP tags are not permitted in this field'));
     //}
     if ($location != $form_state['values']['location']) {
-        form_set_error('location',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('location', t('HTML or PHP tags are not permitted in this field'));
     }
     if ($notes != $form_state['values']['notes']) {
-        form_set_error('notes',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('notes', t('HTML or PHP tags are not permitted in this field'));
     }
-  //$mtgdate = date_format_date(date_make_date($form_state['values']['mtgdate']), 'custom', 'd M Y');
+    //$mtgdate = date_format_date(date_make_date($form_state['values']['mtgdate']), 'custom', 'd M Y');
     // Check that any name returned in "committee" is valid
     if ($committee) {
-      module_load_include('inc', 'committee', 'committee_form'); 
+      module_load_include('inc', 'committee', 'committee_form');
       $cnid = committee_validate_committee($committee);
       if ($cnid) {
         form_set_value($form['cnid'], $cnid, $form_state);
       }
       else {
-        form_set_error('committee',t('The name specified is not a known committee'));
+        form_set_error('committee', t('The name specified is not a known committee'));
       }
     }
     else {
@@ -918,24 +918,24 @@ function meeting_meeting_form_validate($form, &$form_state) {
     if ($nid) {
       // Already exists on the database, so flag an error unless it is same record being updated
       if ($nid != $form['nid']['#value']) {
-        form_set_error('meeting',t('The meeting name is already in use'));
+        form_set_error('meeting', t('The meeting name is already in use'));
       }
     }
     // Build a composite node title and save in $form_state
-    $form_state['values']['title'] = t('Meeting: !cmtte - !mtg', array('!cmtte'=>$committee, '!mtg'=>$meeting));
+    $form_state['values']['title'] = t('Meeting: !cmtte - !mtg', array('!cmtte' => $committee, '!mtg' => $meeting));
   }
   elseif ($clicked_button == $form['buttons']['delete']['#value']) {
     // Check for attached agenda items - delete not permitted in this case
     $sql = "SELECT COUNT(a.nid) from {node} n JOIN {org_agenda_items} a ON a.nid = n.nid WHERE a.vid = n.vid AND a.gnid = %d";
     $count = db_result(db_query($sql, $form_state['values']['nid']));
     if ($count) {
-      form_set_error('meeting',t('This meeting still has @num agenda items attached!', array('@num'=>$count)));
+      form_set_error('meeting', t('This meeting still has @num agenda items attached!', array('@num' => $count)));
     }
     // Check for attached meeting items - delete not permitted in this case
     $sql = "SELECT COUNT(i.nid) from {node} n JOIN {org_mtg_items} i ON i.nid = n.nid WHERE i.vid = n.vid AND i.gnid = %d";
     $count = db_result(db_query($sql, $form_state['values']['nid']));
     if ($count) {
-      form_set_error('meeting',t('This meeting still has @num meeting items attached!', array('@num'=>$count)));
+      form_set_error('meeting', t('This meeting still has @num meeting items attached!', array('@num' => $count)));
     }
   }
 }
@@ -951,16 +951,16 @@ function meeting_agenda_item_form_validate($form, &$form_state) {
     $notes = strip_tags($form_state['values']['notes']);
     // Check that entered details are acceptable
     if ($meeting != $form_state['values']['meeting']) {
-        form_set_error('meeting',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('meeting', t('HTML or PHP tags are not permitted in this field'));
     }
     if ($agendaitem != $form_state['values']['agendaitem']) {
-        form_set_error('agendaitem',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('agendaitem', t('HTML or PHP tags are not permitted in this field'));
     }
     if ($sequence != $form_state['values']['sequence']) {
-        form_set_error('sequence',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('sequence', t('HTML or PHP tags are not permitted in this field'));
     }
     if ($notes != $form_state['values']['notes']) {
-        form_set_error('notes',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('notes', t('HTML or PHP tags are not permitted in this field'));
     }
     $gnid = meeting_validate_meeting($meeting);
     if ($gnid) {
@@ -968,7 +968,7 @@ function meeting_agenda_item_form_validate($form, &$form_state) {
       form_set_value($form['meeting'], $meeting, $form_state);
     }
     else {
-      form_set_error('meeting',t('The name specified is not a known meeting'));
+      form_set_error('meeting', t('The name specified is not a known meeting'));
     }
     // Prevent duplicate records
     $sql = "SELECT n.nid FROM {node} n JOIN {org_agenda_items} a ON a.nid = n.nid WHERE a.vid = n.vid AND a.agendaitem = '%s' AND a.gnid = %d";
@@ -976,11 +976,11 @@ function meeting_agenda_item_form_validate($form, &$form_state) {
     if ($nid) {
       // Already exists on the database, so flag an error unless it is same record being updated
       if ($nid != $form['nid']['#value']) {
-        form_set_error('agendaitem',t('Agenda item already exists for this meeting'));
+        form_set_error('agendaitem', t('Agenda item already exists for this meeting'));
       }
     }
     // Build a composite node title and save in $form_state
-    $form_state['values']['title'] = t('Agenda item: !item for !mtg', array('!item'=>$agendaitem, '!mtg'=>$meeting));
+    $form_state['values']['title'] = t('Agenda item: !item for !mtg', array('!item' => $agendaitem, '!mtg' => $meeting));
   }
   elseif ($clicked_button == $form['buttons']['delete']['#value']) {
     // Check for attached ??? - delete not permitted in this case
@@ -1001,13 +1001,13 @@ function meeting_mtg_item_form_validate($form, &$form_state) {
 
     // Check that entered details are acceptable
     if ($itemname != $form_state['values']['itemname']) {
-        form_set_error('itemname',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('itemname', t('HTML or PHP tags are not permitted in this field'));
     }
     if ($member != $form_state['values']['member']) {
-        form_set_error('member',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('member', t('HTML or PHP tags are not permitted in this field'));
     }
     if ($meeting != $form_state['values']['meeting']) {
-        form_set_error('meeting',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('meeting', t('HTML or PHP tags are not permitted in this field'));
     }
     //if ($itemtype != $form_state['values']['itemtype']) {
     //    form_set_error('itemtype',t('HTML or PHP tags are not permitted in this field'));
@@ -1016,16 +1016,16 @@ function meeting_mtg_item_form_validate($form, &$form_state) {
     //    form_set_error('itemdate',t('HTML or PHP tags are not permitted in this field'));
     //}
     if ($notes != $form_state['values']['notes']) {
-        form_set_error('notes',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('notes', t('HTML or PHP tags are not permitted in this field'));
     }
     // Check that the name returned in "member" is valid
-    module_load_include('inc', 'membership', 'membership_form'); 
+    module_load_include('inc', 'membership', 'membership_form');
     $mnid = membership_validate_member($member);
     if ($mnid) {
       form_set_value($form['mnid'], $mnid, $form_state);
     }
     else {
-      form_set_error('member',t('The name specified is not a known member'));
+      form_set_error('member', t('The name specified is not a known member'));
     }
     // Check that the name returned in "meeting" is valid
     $gnid = meeting_validate_meeting($meeting);
@@ -1033,10 +1033,10 @@ function meeting_mtg_item_form_validate($form, &$form_state) {
       form_set_value($form['gnid'], $gnid, $form_state);
     }
     else {
-      form_set_error('meeting',t('The name specified is not a known meeting'));
+      form_set_error('meeting', t('The name specified is not a known meeting'));
     }
     // Build a composite node title and save in $form_state
-    $form_state['values']['title'] = t('Meeting item: !type - !item', array('!type'=>$itemtype, '!item'=>$itemname));
+    $form_state['values']['title'] = t('Meeting item: !type - !item', array('!type' => $itemtype, '!item' => $itemname));
   }
   elseif ($clicked_button == $form['buttons']['delete']['#value']) {
     //orgright_debug_msg('meeting','--- Delete button clicked ---');
@@ -1062,7 +1062,7 @@ function meeting_template_use_form_validate($form, &$form_state) {
       $form_state['storage']['template']['body'] = db_result(db_query($sql, $template['nid']));
     }
     else {
-      form_set_error('template',t('A meeting template must be selected'));
+      form_set_error('template', t('A meeting template must be selected'));
     }
   }
   elseif ($step == 2) {
@@ -1085,8 +1085,12 @@ function meeting_validate_meeting(&$meeting) {
     $gnid = $meeting;
     $sql = "SELECT n.type, m.meeting FROM {node} n JOIN {org_meetings} m ON m.nid = n.nid WHERE m.vid = n.vid AND m.nid = %d";
     $obj = db_fetch_object(db_query($sql, $gnid));
-    if ($obj->type == 'meeting') { $meeting = $obj->meeting; }
-    else { $gnid = 0; }
+    if ($obj->type == 'meeting') {
+      $meeting = $obj->meeting;
+    }
+    else {
+      $gnid = 0;
+    }
     return $gnid;
   }
   else {
@@ -1103,11 +1107,13 @@ function meeting_meeting_form_submit($form, &$form_state) {
   // Callback specified for the "submit" button
   //orgright_debug_msg('meeting','Fn: meeting_meeting_form_submit',6);
   // set meeting status if necessary
-  if ($form_state['values']['mtgstatus'] == '0') { $form_state['values']['mtgstatus'] = ''; }
+  if ($form_state['values']['mtgstatus'] == '0') {
+    $form_state['values']['mtgstatus'] = '';
+  }
   // Massage the date and times ready for storage in the database
-  $form_state['values']['mtgdate'] = substr($form_state['values']['mtgdate'],0,10);
-  $form_state['values']['start'] = substr($form_state['values']['start'],11,8);
-  $form_state['values']['finish'] = substr($form_state['values']['finish'],11,8);
+  $form_state['values']['mtgdate'] = substr($form_state['values']['mtgdate'], 0, 10);
+  $form_state['values']['start'] = substr($form_state['values']['start'], 11, 8);
+  $form_state['values']['finish'] = substr($form_state['values']['finish'], 11, 8);
   // Make sure that this node is neither promoted nor sticky
   $form_state['values']['promote'] = 0;
   $form_state['values']['sticky'] = 0;
@@ -1129,7 +1135,7 @@ function meeting_mtg_item_form_submit($form, &$form_state) {
   // Callback specified for the "submit" button
   //orgright_debug_msg('meeting','Fn: meeting_mtg_item_form_submit',6);
   // Massage the date ready for storage in the database
-  $form_state['values']['itemdate'] = substr($form_state['values']['itemdate'],0,10);
+  $form_state['values']['itemdate'] = substr($form_state['values']['itemdate'], 0, 10);
   // Make sure that this node is neither promoted nor sticky
   $form_state['values']['promote'] = 0;
   $form_state['values']['sticky'] = 0;
@@ -1172,17 +1178,19 @@ function meeting_template_use_form_submit($form, &$form_state) {
     $gnid = meeting_validate_meeting($form_state['storage']['meeting']);
     for ($iz = 0; $iz < $form_state['values']['maxiz']; $iz++) {
       // check whether this agenda item is to be ignored
-      if (!$form_state['values']['create_'.$iz]) { continue; }
+      if (!$form_state['values']['create_' . $iz]) {
+        continue;
+      }
       // No, so create a new agenda item
       // First of all, load the template agenda item node
-      $agenda_item = node_load($form_state['values']['create_'.$iz]);
+      $agenda_item = node_load($form_state['values']['create_' . $iz]);
       // clear the nid and vid values so it can be saved as a new node
       $agenda_item->nid = 0;
       $agenda_item->vid = 0;
       // set the meeting that this is attached to
       $agenda_item->gnid = $gnid;
       // and change the status to the specified value
-      $agenda_item->agitstatus = $form_state['values']['status_'.$iz];
+      $agenda_item->agitstatus = $form_state['values']['status_' . $iz];
       // then save in the database
       node_save($agenda_item);
     }

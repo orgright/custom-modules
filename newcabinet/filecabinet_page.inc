@@ -50,7 +50,9 @@ function filecabinet_drawer_view(&$node, $teaser, $page) {
     '#weight' => 3,
   );
   // If a teaser is being generated, then we are done
-  if ($teaser) { return; }
+  if ($teaser) {
+    return;
+  }
   // else continue adding more detail
   $description = t('Notes');
   $notes = check_markup($node->notes, orgright_get_field_filter());
@@ -72,9 +74,9 @@ function filecabinet_drawer_view(&$node, $teaser, $page) {
       $subitem = $this_item['drawer'];
       $ref = $this_item['nid'];
       $attributes = array(
-        ' owned by '.$this_item['owner'],
-        ', status: '.$this_item['drawerstatus'],
-        ', permissions: '.$this_item['drawerperm'],
+        ' owned by ' . $this_item['owner'],
+        ', status: ' . $this_item['drawerstatus'],
+        ', permissions: ' . $this_item['drawerperm'],
       );
       ++$weight;
       $node->content['subdrawers'][] = array(
@@ -85,7 +87,7 @@ function filecabinet_drawer_view(&$node, $teaser, $page) {
   }
   // Include a link to add new sub-drawer
   ++$weight;
-  $linktext = l(t('Add new sub-drawer'), 'filecabinet/drawers/add/parent~'.$node->nid);
+  $linktext = l(t('Add new sub-drawer'), 'filecabinet/drawers/add/parent~' . $node->nid);
   $node->content['add-subdrawer'] = array(
     '#value' => filecabinet_theme_link('add-subdrawer', $linktext),
     '#weight' => $weight,
@@ -103,8 +105,8 @@ function filecabinet_drawer_view(&$node, $teaser, $page) {
       $subitem = $this_item['folder'];
       $ref = $this_item['nid'];
       $attributes = array(
-        ' status: '.$this_item['folderstatus'],
-        ' permissions: '.$this_item['folderperm'],
+        ' status: ' . $this_item['folderstatus'],
+        ' permissions: ' . $this_item['folderperm'],
       );
       ++$weight;
       $node->content['folders'][] = array(
@@ -115,21 +117,21 @@ function filecabinet_drawer_view(&$node, $teaser, $page) {
   }
   // Include a link to add new folder
   ++$weight;
-  $linktext = l(t('Add new folder'), 'filecabinet/folders/add/drawer~'.$node->nid);
+  $linktext = l(t('Add new folder'), 'filecabinet/folders/add/drawer~' . $node->nid);
   $node->content['add-folder'] = array(
     '#value' => filecabinet_theme_link('add-folder', $linktext),
     '#weight' => $weight,
   );
   // Include a link to add a new drawer (with same parent if any)
   ++$weight;
-  $reftext = ($node->wnid) ? '/parent~'.$node->wnid : '';
-  $linktext = l(t('Add new drawer'), 'filecabinet/drawers/add'.$reftext);
+  $reftext = ($node->wnid) ? '/parent~' . $node->wnid : '';
+  $linktext = l(t('Add new drawer'), 'filecabinet/drawers/add' . $reftext);
   $node->content['add-drawer'] = array(
     '#value' => filecabinet_theme_link('add-drawer', $linktext),
     '#weight' => $weight,
   );
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Filing cabinet')=>'filecabinet', t('Drawers')=>'filecabinet/drawers'));
+  orgright_breadcrumb(array(t('Filing cabinet') => 'filecabinet', t('Drawers') => 'filecabinet/drawers'));
 }
 
 function filecabinet_folder_view(&$node, $teaser, $page) {
@@ -168,7 +170,9 @@ function filecabinet_folder_view(&$node, $teaser, $page) {
     '#weight' => -1,
   );
   // If a teaser is being generated, then we are done
-  if ($teaser) { return; }
+  if ($teaser) {
+    return;
+  }
   // else continue adding more detail
   $description = t('Notes');
   $notes = check_markup($node->notes, orgright_get_field_filter());
@@ -190,8 +194,8 @@ function filecabinet_folder_view(&$node, $teaser, $page) {
       $subitem = $this_item['folder'];
       $ref = $this_item['nid'];
       $attributes = array(
-        ' status: '.$this_item['folderstatus'],
-        ' permissions: '.$this_item['folderperm'],
+        ' status: ' . $this_item['folderstatus'],
+        ' permissions: ' . $this_item['folderperm'],
       );
       ++$weight;
       $node->content['subfolders'][] = array(
@@ -202,7 +206,7 @@ function filecabinet_folder_view(&$node, $teaser, $page) {
   }
   // Include a link to add new folder
   ++$weight;
-  $linktext = l(t('Add new sub-folder'), 'filecabinet/folders/add/folder~'.$node->nid);
+  $linktext = l(t('Add new sub-folder'), 'filecabinet/folders/add/folder~' . $node->nid);
   $node->content['add-subfolder'] = array(
     '#value' => filecabinet_theme_link('add-subfolder', $linktext),
     '#weight' => $weight,
@@ -222,11 +226,11 @@ function filecabinet_folder_view(&$node, $teaser, $page) {
       $subitem = $this_item['docname'];
       $ref = $this_item['nid'];
       $attributes = array(
-        ' version: '.$this_item['docversion'],
-        ' dated: '.$docdate,
-        ' by ' . l($this_item['member'], 'node/'.$this_item['mnid']),
-        ' type: '.$this_item['doctype'],
-        ' status: '.$this_item['docstatus'],
+        ' version: ' . $this_item['docversion'],
+        ' dated: ' . $docdate,
+        ' by ' . l($this_item['member'], 'node/' . $this_item['mnid']),
+        ' type: ' . $this_item['doctype'],
+        ' status: ' . $this_item['docstatus'],
       );
       ++$weight;
       $node->content['documents'][] = array(
@@ -237,21 +241,21 @@ function filecabinet_folder_view(&$node, $teaser, $page) {
   }
   // Include a link to add new document
   ++$weight;
-  $linktext = l(t('Add new document'), 'filecabinet/documents/add/folder~'.$node->nid);
+  $linktext = l(t('Add new document'), 'filecabinet/documents/add/folder~' . $node->nid);
   $node->content['add-document'] = array(
     '#value' => filecabinet_theme_link('add-document', $linktext),
     '#weight' => $weight,
   );
   // Include a link to add a new folder
   ++$weight;
-  $reftext = ($node->wnid) ? '/drawer~'.$node->wnid : '/folder~'.$node->fnid;
-  $linktext = l(t('Add new folder'), 'filecabinet/folders/add'.$reftext);
+  $reftext = ($node->wnid) ? '/drawer~' . $node->wnid : '/folder~' . $node->fnid;
+  $linktext = l(t('Add new folder'), 'filecabinet/folders/add' . $reftext);
   $node->content['add-folder'] = array(
     '#value' => filecabinet_theme_link('add-folder', $linktext),
     '#weight' => $weight,
   );
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Filing cabinet')=>'filecabinet', t('Folders')=>'filecabinet/folders'));
+  orgright_breadcrumb(array(t('Filing cabinet') => 'filecabinet', t('Folders') => 'filecabinet/folders'));
 }
 
 function filecabinet_document_view(&$node, $teaser, $page) {
@@ -271,7 +275,7 @@ function filecabinet_document_view(&$node, $teaser, $page) {
     $description = t('Associated file');
     // Create details of attached file - name plus size, and indicate whether the contents have been scanned
     $file_url = file_create_url($node->filepath);
-    $filedetail = l($node->filename, $file_url, array('attributes' => array('target'=>'_blank'))); 
+    $filedetail = l($node->filename, $file_url, array('attributes' => array('target' => '_blank')));
     $filedetail .= ' (' . filecabinet_display_filesize($node->filesize) . ')';
     $filedetail .= ($node->scanned) ? '' : '<br />*** NOT YET SCANNED ***';
     $node->content['filename'] = array(
@@ -339,7 +343,9 @@ function filecabinet_document_view(&$node, $teaser, $page) {
     '#weight' => 7,
   );
   // If a teaser is being generated, then we are done
-  if ($teaser) { return; }
+  if ($teaser) {
+    return;
+  }
   // else continue adding more detail
   $description = t('Notes');
   $notes = check_markup($node->notes, orgright_get_field_filter());
@@ -350,7 +356,7 @@ function filecabinet_document_view(&$node, $teaser, $page) {
   $weight = 10;
   // Include a link to create a new version of this document
   ++$weight;
-  $linktext = l(t('Create new version'), 'filecabinet/documents/add/newversion~'.$node->nid);
+  $linktext = l(t('Create new version'), 'filecabinet/documents/add/newversion~' . $node->nid);
   $node->content['new-version'] = array(
     '#value' => filecabinet_theme_link('add-document', $linktext),
     '#weight' => $weight,
@@ -370,11 +376,11 @@ function filecabinet_document_view(&$node, $teaser, $page) {
       $subitem = $this_item['docname'];
       $ref = $this_item['nid'];
       $attributes = array(
-        ' version: '.$this_item['docversion'],
-        ' dated: '.$docdate,
-        ' by ' . l($this_item['member'], 'node/'.$this_item['mnid']),
-        ' type: '.$this_item['doctype'],
-        ' status: '.$this_item['docstatus'],
+        ' version: ' . $this_item['docversion'],
+        ' dated: ' . $docdate,
+        ' by ' . l($this_item['member'], 'node/' . $this_item['mnid']),
+        ' type: ' . $this_item['doctype'],
+        ' status: ' . $this_item['docstatus'],
       );
       ++$weight;
       $node->content['attachments'][] = array(
@@ -385,14 +391,14 @@ function filecabinet_document_view(&$node, $teaser, $page) {
   }
   // Include a link to add new attachment to this document
   ++$weight;
-  $linktext = l(t('Add new attachment'), 'filecabinet/documents/add/attachment~'.$node->nid);
+  $linktext = l(t('Add new attachment'), 'filecabinet/documents/add/attachment~' . $node->nid);
   $node->content['add-attachment'] = array(
     '#value' => filecabinet_theme_link('add-document', $linktext),
     '#weight' => $weight,
   );
   // Include a link to add new document into same folder
   ++$weight;
-  $linktext = l(t('Add new document'), 'filecabinet/documents/add/folder~'.$node->fnid);
+  $linktext = l(t('Add new document'), 'filecabinet/documents/add/folder~' . $node->fnid);
   $node->content['add-document'] = array(
     '#value' => filecabinet_theme_link('add-document', $linktext),
     '#weight' => $weight,
@@ -412,9 +418,9 @@ function filecabinet_document_view(&$node, $teaser, $page) {
       $subitem = $this_link['nodetitle'];
       $ref = $this_link['xnid'];
       $attributes = array(
-        ', Item type: '.$this_link['nodetype'],
-        ', Link type: '.$this_link['linktype'],
-        ' '.l('[edit link]','filecabinet/documents/doclink/edit/document~'.$node->nid.'/node~'.$this_link['xnid']),
+        ', Item type: ' . $this_link['nodetype'],
+        ', Link type: ' . $this_link['linktype'],
+        ' ' . l('[edit link]', 'filecabinet/documents/doclink/edit/document~' . $node->nid . '/node~' . $this_link['xnid']),
       );
       ++$weight;
       $node->content['doclinks'][] = array(
@@ -425,13 +431,13 @@ function filecabinet_document_view(&$node, $teaser, $page) {
   }
   // Include a link to add new doclink
   ++$weight;
-  $linktext = l(t('Link this document'), 'filecabinet/documents/doclink/document~'.$node->nid);
+  $linktext = l(t('Link this document'), 'filecabinet/documents/doclink/document~' . $node->nid);
   $node->content['add-doclink'] = array(
     '#value' => filecabinet_theme_link('add-doclink', $linktext),
     '#weight' => $weight,
   );
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Filing cabinet')=>'filecabinet', t('Documents')=>'filecabinet/documents'));
+  orgright_breadcrumb(array(t('Filing cabinet') => 'filecabinet', t('Documents') => 'filecabinet/documents'));
 }
 
 /**
@@ -451,7 +457,7 @@ function filecabinet_theme_subitem($subitem_class, $subitem_value, $node_ref, $a
   return theme('orgright_subitem', 'filecabinet', $subitem_class, $subitem_value, $node_ref, $attributes);
 }
 
-//Function to theme ajax calls - for now, done in line, but the potential 
+//Function to theme ajax calls - for now, done in line, but the potential
 // exists for theming if this is ever felt to be appropriate
 function filecabinet_theme_ajax_subitem($subitem_class, $subitem_value, $node_ref) {
   $output = '';
@@ -469,7 +475,7 @@ function filecabinet_theme_link($link_class, $link_value) {
 }
 
 //Same as _view above but without some of the details
-// and all contents fall under the 'nodecontents' heading so that they 
+// and all contents fall under the 'nodecontents' heading so that they
 // don't get stripped by post processing
 function filecabinet_document_ajax(&$node) {
   //orgright_debug_msg('filecabinet','Fn: filecabinet_document_view');
@@ -488,7 +494,7 @@ function filecabinet_document_ajax(&$node) {
     $description = t('Associated file');
     // Create details of attached file - name plus size, and indicate whether the contents have been scanned
     $file_url = file_create_url($node->filepath);
-    $filedetail = l($node->filename, $file_url, array('attributes' => array('target'=>'_blank'))); 
+    $filedetail = l($node->filename, $file_url, array('attributes' => array('target' => '_blank')));
     $filedetail .= ' (' . filecabinet_display_filesize($node->filesize) . ')';
     $filedetail .= ($node->scanned) ? '' : '<br />*** NOT YET SCANNED ***';
     $node->content['nodecontents'][] = array(
@@ -551,7 +557,9 @@ function filecabinet_document_ajax(&$node) {
     '#weight' => 5,
   );
   // If a teaser is being generated, then we are done
-  if ($teaser) { return; }
+  if ($teaser) {
+    return;
+  }
   // else continue adding more detail
   $description = t('Notes');
   $notes = check_markup($node->notes, orgright_get_field_filter());
@@ -562,7 +570,7 @@ function filecabinet_document_ajax(&$node) {
   $weight = 10;
   // Include a link to create a new version of this document
   ++$weight;
-  $linktext = l(t('Create new version'), 'filecabinet/documents/add/newversion~'.$node->nid);
+  $linktext = l(t('Create new version'), 'filecabinet/documents/add/newversion~' . $node->nid);
   $node->content['new-version'] = array(
     '#value' => filecabinet_theme_link('add-document', $linktext),
     '#weight' => $weight,
@@ -582,11 +590,11 @@ function filecabinet_document_ajax(&$node) {
       $subitem = $this_item['docname'];
       $ref = $this_item['nid'];
       $attributes = array(
-        ' version: '.$this_item['docversion'],
-        ' dated: '.$docdate,
-        ' by ' . l($this_item['member'], 'node/'.$this_item['mnid']),
-        ' type: '.$this_item['doctype'],
-        ' status: '.$this_item['docstatus'],
+        ' version: ' . $this_item['docversion'],
+        ' dated: ' . $docdate,
+        ' by ' . l($this_item['member'], 'node/' . $this_item['mnid']),
+        ' type: ' . $this_item['doctype'],
+        ' status: ' . $this_item['docstatus'],
       );
       ++$weight;
       $node->content['attachments'][] = array(
@@ -597,14 +605,14 @@ function filecabinet_document_ajax(&$node) {
   }
   // Include a link to add new attachment to this document
   ++$weight;
-  $linktext = l(t('Add new attachment'), 'filecabinet/documents/add/attachment~'.$node->nid);
+  $linktext = l(t('Add new attachment'), 'filecabinet/documents/add/attachment~' . $node->nid);
   $node->content['add-attachment'] = array(
     '#value' => filecabinet_theme_link('add-document', $linktext),
     '#weight' => $weight,
   );
   // Include a link to add new document into same folder
   ++$weight;
-  $linktext = l(t('Add new document'), 'filecabinet/documents/add/folder~'.$node->fnid);
+  $linktext = l(t('Add new document'), 'filecabinet/documents/add/folder~' . $node->fnid);
   $node->content['add-document'] = array(
     '#value' => filecabinet_theme_link('add-document', $linktext),
     '#weight' => $weight,
@@ -624,9 +632,9 @@ function filecabinet_document_ajax(&$node) {
       $subitem = $this_link['nodetitle'];
       $ref = $this_link['xnid'];
       $attributes = array(
-        ', Item type: '.$this_link['nodetype'],
-        ', Link type: '.$this_link['linktype'],
-        ' '.l('[edit link]','filecabinet/documents/doclink/edit/document~'.$node->nid.'/node~'.$this_link['xnid']),
+        ', Item type: ' . $this_link['nodetype'],
+        ', Link type: ' . $this_link['linktype'],
+        ' ' . l('[edit link]', 'filecabinet/documents/doclink/edit/document~' . $node->nid . '/node~' . $this_link['xnid']),
       );
       ++$weight;
       $node->content['doclinks'][] = array(
@@ -637,7 +645,7 @@ function filecabinet_document_ajax(&$node) {
   }
   // Include a link to add new doclink
   ++$weight;
-  $linktext = l(t('Link this document'), 'filecabinet/documents/doclink/document~'.$node->nid);
+  $linktext = l(t('Link this document'), 'filecabinet/documents/doclink/document~' . $node->nid);
   $node->content['add-doclink'] = array(
     '#value' => filecabinet_theme_link('add-doclink', $linktext),
     '#weight' => $weight,

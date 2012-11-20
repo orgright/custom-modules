@@ -16,9 +16,13 @@ function meeting_meeting_view(&$node, $teaser, $page) {
   $nodetype = node_get_types('type', $node);
   // Prepare the date and times for display
   $mtgdate = date_format_date(date_make_date($node->mtgdate), 'custom', 'd M Y');
-  $start = date_format_date(date_make_date($node->mtgdate.' '.$node->start), 'custom', 'g:i a');
-  if ($node->finish) { $finish = date_format_date(date_make_date($node->mtgdate.' '.$node->finish), 'custom', 'g:i a'); }
-  else { $finish = ''; }
+  $start = date_format_date(date_make_date($node->mtgdate . ' ' . $node->start), 'custom', 'g:i a');
+  if ($node->finish) {
+    $finish = date_format_date(date_make_date($node->mtgdate . ' ' . $node->finish), 'custom', 'g:i a');
+  }
+  else {
+    $finish = '';
+  }
   $description = t('Meeting');
   $node->content['meeting'] = array(
     '#value' => meeting_theme_item('meeting', $description, $node->meeting),
@@ -73,7 +77,9 @@ function meeting_meeting_view(&$node, $teaser, $page) {
     '#weight' => 7,
   );
   // If a teaser is being generated, then we are done
-  if ($teaser) { return; }
+  if ($teaser) {
+    return;
+  }
   // else continue adding more detail
   $description = t('Notes');
   $notes = check_markup($node->notes, orgright_get_field_filter());
@@ -108,10 +114,10 @@ function meeting_meeting_view(&$node, $teaser, $page) {
   // Include a link to add new agenda item
   ++$weight;
   if ($node->mtgstatus == 'template') {
-    $linktext = l(t('Add new agenda item'), 'meeting/agenda_items/add/meeting~'.$node->nid.'/template~0');
+    $linktext = l(t('Add new agenda item'), 'meeting/agenda_items/add/meeting~' . $node->nid . '/template~0');
   }
   else {
-    $linktext = l(t('Add new agenda item'), 'meeting/agenda_items/add/meeting~'.$node->nid);
+    $linktext = l(t('Add new agenda item'), 'meeting/agenda_items/add/meeting~' . $node->nid);
   }
   $node->content['add-agenda-item'] = array(
     '#value' => meeting_theme_link('add-agenda-item', $linktext),
@@ -137,7 +143,7 @@ function meeting_meeting_view(&$node, $teaser, $page) {
       $attributes = array(
         ' ' . $this_item['itemtype'],
         ' ' . $itemdate,
-        ' ' . l($this_item['member'], 'node/'.$this_item['mnid']),
+        ' ' . l($this_item['member'], 'node/' . $this_item['mnid']),
       );
       $node->content['mtg-items'][] = array(
         '#value' => meeting_theme_subitem('mtg-items', $subitem, $ref, $attributes),
@@ -147,13 +153,13 @@ function meeting_meeting_view(&$node, $teaser, $page) {
   }
   // Include a link to add new meeting item
   ++$weight;
-  $linktext = l(t('Add new meeting item'), 'meeting/mtg_items/add/meeting~'.$node->nid);
+  $linktext = l(t('Add new meeting item'), 'meeting/mtg_items/add/meeting~' . $node->nid);
   $node->content['add-mtg-item'] = array(
     '#value' => meeting_theme_link('add-mtg-item', $linktext),
     '#weight' => $weight,
   );
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Meeting')=>'meeting', t('Meetings')=>'meeting/meetings'));
+  orgright_breadcrumb(array(t('Meeting') => 'meeting', t('Meetings') => 'meeting/meetings'));
 }
 
 function meeting_agenda_item_view(&$node, $teaser, $page) {
@@ -208,7 +214,9 @@ function meeting_agenda_item_view(&$node, $teaser, $page) {
     );
   }
   // If a teaser is being generated, then we are done
-  if ($teaser) { return; }
+  if ($teaser) {
+    return;
+  }
   // else continue adding more detail
   $description = t('Notes');
   $notes = check_markup($node->notes, orgright_get_field_filter());
@@ -220,17 +228,17 @@ function meeting_agenda_item_view(&$node, $teaser, $page) {
   // Include a link to add new agenda item
   ++$weight;
   if ($node->agitstatus == 'template') {
-    $linktext = l(t('Add new agenda item'), 'meeting/agenda_items/add/meeting~'.$node->gnid.'/template~0');
+    $linktext = l(t('Add new agenda item'), 'meeting/agenda_items/add/meeting~' . $node->gnid . '/template~0');
   }
   else {
-    $linktext = l(t('Add new agenda item'), 'meeting/agenda_items/add/meeting~'.$node->gnid);
+    $linktext = l(t('Add new agenda item'), 'meeting/agenda_items/add/meeting~' . $node->gnid);
   }
   $node->content['add-agenda-item'] = array(
     '#value' => meeting_theme_link('add-agenda-item', $linktext),
     '#weight' => $weight,
   );
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Meeting')=>'meeting', t('Agenda items')=>'meeting/agenda_items'));
+  orgright_breadcrumb(array(t('Meeting') => 'meeting', t('Agenda items') => 'meeting/agenda_items'));
 }
 
 function meeting_mtg_item_view(&$node, $teaser, $page) {
@@ -298,7 +306,9 @@ function meeting_mtg_item_view(&$node, $teaser, $page) {
     );
   }
   // If a teaser is being generated, then we are done
-  if ($teaser) { return; }
+  if ($teaser) {
+    return;
+  }
   // else continue adding more detail
   $description = t('Notes');
   $notes = check_markup($node->notes, orgright_get_field_filter());
@@ -309,13 +319,13 @@ function meeting_mtg_item_view(&$node, $teaser, $page) {
   $weight = 10;
   // Include a link to add new meeting item
   ++$weight;
-  $linktext = l(t('Add new meeting item'), 'meeting/mtg_items/add/meeting~'.$node->gnid);
+  $linktext = l(t('Add new meeting item'), 'meeting/mtg_items/add/meeting~' . $node->gnid);
   $node->content['add-mtg-item'] = array(
     '#value' => meeting_theme_link('add-mtg-item', $linktext),
     '#weight' => $weight,
   );
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Meeting')=>'meeting', t('Meeting items')=>'meeting/mtg_items'));
+  orgright_breadcrumb(array(t('Meeting') => 'meeting', t('Meeting items') => 'meeting/mtg_items'));
 }
 
 /**

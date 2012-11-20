@@ -50,7 +50,7 @@ h6 {
   font-size: 110%;
 }
 
-ul, quote, code, fieldset {
+ul, /*??? quote,*/ code, fieldset {
   margin: .5em 0;
 }
 
@@ -84,7 +84,6 @@ hr {
 ol li, ul li {
   margin: 0.4em 0 0.4em .5em; /* LTR */
 }
-
 
 #content {
   margin: .5em 1em 1em 1em;

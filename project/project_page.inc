@@ -57,7 +57,9 @@ function project_project_view(&$node, $teaser, $page) {
     '#weight' => 7,
   );
   // If a teaser is being generated, then we are done
-  if ($teaser) { return; }
+  if ($teaser) {
+    return;
+  }
   // else continue adding more detail with project schedule
   $description = t('Project schedule?');
   $node->content['projsched'] = array(
@@ -65,7 +67,7 @@ function project_project_view(&$node, $teaser, $page) {
     '#weight' => 10,
   );
   // add link to re-caclulate project schedule
-  $linktext = l(t('Re-calulate project schedule'), 'project/projects/schedule/project~'.$node->nid);
+  $linktext = l(t('Re-calulate project schedule'), 'project/projects/schedule/project~' . $node->nid);
   $node->content['recalc-sched'] = array(
     '#value' => project_theme_link('recalc-sched', $linktext),
     '#weight' => 11,
@@ -93,7 +95,7 @@ function project_project_view(&$node, $teaser, $page) {
       $subitem = $node->this_activity['activity'];
       $ref = $node->this_activity['nid'];
       $attributes = array(
-        ': ' . l($node->this_activity['member'], 'node/'.$node->this_activity['mnid']),
+        ': ' . l($node->this_activity['member'], 'node/' . $node->this_activity['mnid']),
         ', ' . $node->this_activity['activistatus'],
         ', ' . $node->this_activity['duration'],
         ', ' . $node->this_activity['duratype'],
@@ -109,7 +111,7 @@ function project_project_view(&$node, $teaser, $page) {
   }
   // Include a link to add new activity
   ++$weight;
-  $linktext = l(t('Add new activity'), 'project/projactivities/add/project~'.$node->nid);
+  $linktext = l(t('Add new activity'), 'project/projactivities/add/project~' . $node->nid);
   $node->content['add-activity'] = array(
     '#value' => project_theme_link('add-activity', $linktext),
     '#weight' => $weight,
@@ -129,12 +131,12 @@ function project_project_view(&$node, $teaser, $page) {
       $subitem = $node->this_report['projreport'];
       $ref = $node->this_report['nid'];
       $attributes = array(
-        ' by ' . l($node->this_report['member'], 'node/'.$node->this_report['mnid']),
+        ' by ' . l($node->this_report['member'], 'node/' . $node->this_report['mnid']),
         ' on ' . $projrepdate,
       );
       // Add a reference to the activity to the front of the array if required
       if ($node->this_report['anid']) {
-        array_unshift($attributes, ' for '.l($node->this_report['activity'], 'node/'.$node->this_report['anid']));
+        array_unshift($attributes, ' for ' . l($node->this_report['activity'], 'node/' . $node->this_report['anid']));
       }
       ++$weight;
       $node->content['reports'][] = array(
@@ -145,13 +147,13 @@ function project_project_view(&$node, $teaser, $page) {
   }
   // Include a link to add new report
   ++$weight;
-  $linktext = l(t('Add new report'), 'project/projreports/add/project~'.$node->nid);
+  $linktext = l(t('Add new report'), 'project/projreports/add/project~' . $node->nid);
   $node->content['add-report'] = array(
     '#value' => project_theme_link('add-report', $linktext),
     '#weight' => $weight,
   );
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Project')=>'project', t('Projects')=>'project/projects'));
+  orgright_breadcrumb(array(t('Project') => 'project', t('Projects') => 'project/projects'));
 }
 
 function project_projactivity_view(&$node, $teaser, $page) {
@@ -239,7 +241,9 @@ function project_projactivity_view(&$node, $teaser, $page) {
     '#weight' => 10,
   );
   // If a teaser is being generated, then we are done
-  if ($teaser) { return; }
+  if ($teaser) {
+    return;
+  }
   // else continue adding more detail
   $description = t('Notes');
   $notes = check_markup($node->notes, orgright_get_field_filter());
@@ -250,14 +254,14 @@ function project_projactivity_view(&$node, $teaser, $page) {
   $weight = 12;
   // Include a link to link other project activities to this one
   ++$weight;
-  $linktext = l(t('Link project activities'), 'project/projactivities/links/project~'.$node->pnid.'/activity~'.$node->nid);
+  $linktext = l(t('Link project activities'), 'project/projactivities/links/project~' . $node->pnid . '/activity~' . $node->nid);
   $node->content['link-activities'] = array(
     '#value' => project_theme_link('link-activities', $linktext),
     '#weight' => $weight,
   );
   // Include a link to add new activity
   ++$weight;
-  $linktext = l(t('Add new activity'), 'project/projactivities/add/project~'.$node->pnid);
+  $linktext = l(t('Add new activity'), 'project/projactivities/add/project~' . $node->pnid);
   $node->content['add-activity'] = array(
     '#value' => project_theme_link('add-activity', $linktext),
     '#weight' => $weight,
@@ -267,7 +271,7 @@ function project_projactivity_view(&$node, $teaser, $page) {
   if (isset($node->reports)) {
     //orgright_debug_msg('project','project report details found');
     $heading = t('The following project reports are held for this activity');
-      ++$weight;
+    ++$weight;
     $node->content['reports'] = array(
       '#value' => project_theme_heading('reports', $heading),
       '#weight' => $weight,
@@ -293,13 +297,13 @@ function project_projactivity_view(&$node, $teaser, $page) {
   }
   // Include a link to add new report
   ++$weight;
-  $linktext = l(t('Add new report'), 'project/projreports/add/activity~'.$node->nid.'/project~'.$node->pnid);
+  $linktext = l(t('Add new report'), 'project/projreports/add/activity~' . $node->nid . '/project~' . $node->pnid);
   $node->content['add-report'] = array(
     '#value' => project_theme_link('add-report', $linktext),
     '#weight' => $weight,
   );
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Project')=>'project', t('Project activities')=>'project/projactivities'));
+  orgright_breadcrumb(array(t('Project') => 'project', t('Project activities') => 'project/projactivities'));
 }
 
 function project_projreport_view(&$node, $teaser, $page) {
@@ -336,7 +340,9 @@ function project_projreport_view(&$node, $teaser, $page) {
     '#weight' => 6,
   );
   // If a teaser is being generated, then we are done
-  if ($teaser) { return; }
+  if ($teaser) {
+    return;
+  }
   // else continue adding more detail
   $description = t('Notes');
   $notes = check_markup($node->notes, orgright_get_field_filter());
@@ -345,7 +351,7 @@ function project_projreport_view(&$node, $teaser, $page) {
     '#weight' => 9,
   );
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Project')=>'project', t('Project reports')=>'project/projreports'));
+  orgright_breadcrumb(array(t('Project') => 'project', t('Project reports') => 'project/projreports'));
 }
 
 /**

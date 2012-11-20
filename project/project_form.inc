@@ -23,7 +23,7 @@ function project_project_form_build(&$form_state, $node) {
     '#maxlength' => 64,
     '#size' => 40,
     '#required' => TRUE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -38,7 +38,7 @@ function project_project_form_build(&$form_state, $node) {
       '#maxlength' => 64,
       '#size' => 40,
       '#required' => TRUE,
-      '#attributes' => array('tabindex'=>$fix),
+      '#attributes' => array('tabindex' => $fix),
       '#weight' => $fix,
       '#autocomplete_path' => 'membership/autocomplete/members',
     );
@@ -52,7 +52,7 @@ function project_project_form_build(&$form_state, $node) {
       '#default_value' => $node->mnid,
       '#options' => array('-- Select member --') + $members_list,
       '#required' => TRUE,
-      '#attributes' => array('tabindex'=>$fix),
+      '#attributes' => array('tabindex' => $fix),
       '#weight' => $fix,
     );
   }
@@ -64,7 +64,7 @@ function project_project_form_build(&$form_state, $node) {
     '#description' => project_field_description('project-details', 'projcategory', t('Chose project category from the list')),
     '#default_value' => $node->projcategory,
     '#options' => $category_list,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -75,7 +75,7 @@ function project_project_form_build(&$form_state, $node) {
     '#description' => project_field_description('project-details', 'projstatus', t('Chose the project status from the list')),
     '#default_value' => $node->projstatus,
     '#options' => $status_list,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -86,7 +86,7 @@ function project_project_form_build(&$form_state, $node) {
     '#default_value' => $node->body,
     '#rows' => 5,
     '#resizable' => TRUE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -100,7 +100,7 @@ function project_project_form_build(&$form_state, $node) {
     '#date_format' => $dformat,
     //'#date_label_position' => 'within',
     '#date_year_range' => '-1:+5',
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -112,7 +112,7 @@ function project_project_form_build(&$form_state, $node) {
     '#description' => project_field_description('project-details', 'projdatype', t('Specify whether the following date is a start or finish date')),
     '#default_value' => $node->projdatype,
     '#options' => $projdatype_list,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -121,7 +121,7 @@ function project_project_form_build(&$form_state, $node) {
     '#title' => t('Project Schedule'),
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -136,7 +136,7 @@ function project_project_form_build(&$form_state, $node) {
     '#prefix' => '<div>',
     '#value' => $recalculate,
     '#suffix' => '</div>',
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -153,7 +153,7 @@ function project_project_form_build(&$form_state, $node) {
     '#default_value' => $node->notes,
     '#rows' => 3,
     '#resizable' => TRUE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   // create placeholders to be filled in during validation
@@ -187,7 +187,7 @@ function project_project_form_build(&$form_state, $node) {
   $form['#validate'] = array('project_form_validate');
   $form['#submit'] = array('project_form_submit');
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Project')=>'project', t('Projects')=>'project/projects'));
+  orgright_breadcrumb(array(t('Project') => 'project', t('Projects') => 'project/projects'));
   return $form;
 }
 
@@ -205,7 +205,7 @@ function project_projactivity_form_build(&$form_state, $node) {
     '#maxlength' => 64,
     '#size' => 40,
     '#required' => TRUE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -217,7 +217,7 @@ function project_projactivity_form_build(&$form_state, $node) {
     '#maxlength' => 64,
     '#size' => 40,
     '#required' => TRUE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
     '#autocomplete_path' => 'project/autocomplete/projects',
   );
@@ -233,7 +233,7 @@ function project_projactivity_form_build(&$form_state, $node) {
       '#maxlength' => 64,
       '#size' => 40,
       '#resizable' => TRUE,
-      '#attributes' => array('tabindex'=>$fix),
+      '#attributes' => array('tabindex' => $fix),
       '#weight' => $fix,
       '#autocomplete_path' => 'membership/autocomplete/members',
     );
@@ -247,7 +247,7 @@ function project_projactivity_form_build(&$form_state, $node) {
       '#default_value' => $node->mnid,
       '#options' => array('-- Select member --') + $members_list,
       '#required' => TRUE,
-      '#attributes' => array('tabindex'=>$fix),
+      '#attributes' => array('tabindex' => $fix),
       '#weight' => $fix,
     );
   }
@@ -260,7 +260,7 @@ function project_projactivity_form_build(&$form_state, $node) {
     '#default_value' => $node->activicategory,
     '#options' => $category_list,
     '#required' => TRUE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -272,7 +272,7 @@ function project_projactivity_form_build(&$form_state, $node) {
     '#default_value' => $node->activistatus,
     '#options' => $status_list,
     '#required' => TRUE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -283,7 +283,7 @@ function project_projactivity_form_build(&$form_state, $node) {
     '#default_value' => $node->body,
     '#rows' => 5,
     '#resizable' => TRUE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -295,7 +295,7 @@ function project_projactivity_form_build(&$form_state, $node) {
     '#maxlength' => 16,
     '#size' => 16,
     '#required' => TRUE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -307,7 +307,7 @@ function project_projactivity_form_build(&$form_state, $node) {
     '#default_value' => $node->duratype,
     '#options' => $duratype_list,
     '#required' => TRUE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -321,7 +321,7 @@ function project_projactivity_form_build(&$form_state, $node) {
     '#date_format' => $dformat,
     //'#date_label_position' => 'within',
     '#required' => FALSE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -333,7 +333,7 @@ function project_projactivity_form_build(&$form_state, $node) {
     '#default_value' => $node->actividatype,
     '#options' => $actividatypes_list,
     '#required' => FALSE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -346,7 +346,7 @@ function project_projactivity_form_build(&$form_state, $node) {
     '#date_format' => $dformat,
     //'#date_label_position' => 'within',
     '#required' => FALSE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -359,7 +359,7 @@ function project_projactivity_form_build(&$form_state, $node) {
     '#date_format' => $dformat,
     //'#date_label_position' => 'within',
     '#required' => FALSE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -370,7 +370,7 @@ function project_projactivity_form_build(&$form_state, $node) {
     '#default_value' => $node->notes,
     '#rows' => 3,
     '#resizable' => TRUE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   // create placeholders to be filled in during validation
@@ -424,7 +424,7 @@ function project_projactivity_form_build(&$form_state, $node) {
   $form['#validate'] = array('project_form_validate');
   $form['#submit'] = array('project_form_submit');
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Project')=>'project', t('Project activities')=>'project/projactivities'));
+  orgright_breadcrumb(array(t('Project') => 'project', t('Project activities') => 'project/projactivities'));
   return $form;
 }
 
@@ -442,7 +442,7 @@ function project_projreport_form_build(&$form_state, $node) {
     '#maxlength' => 64,
     '#size' => 40,
     '#required' => TRUE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -457,7 +457,7 @@ function project_projreport_form_build(&$form_state, $node) {
       '#maxlength' => 64,
       '#size' => 40,
       '#required' => TRUE,
-      '#attributes' => array('tabindex'=>$fix),
+      '#attributes' => array('tabindex' => $fix),
       '#weight' => $fix,
       '#autocomplete_path' => 'membership/autocomplete/members',
     );
@@ -471,7 +471,7 @@ function project_projreport_form_build(&$form_state, $node) {
       '#default_value' => $node->mnid,
       '#options' => array('-- Select member --') + $members_list,
       '#required' => TRUE,
-      '#attributes' => array('tabindex'=>$fix),
+      '#attributes' => array('tabindex' => $fix),
       '#weight' => $fix,
     );
   }
@@ -484,7 +484,7 @@ function project_projreport_form_build(&$form_state, $node) {
     '#maxlength' => 64,
     '#size' => 40,
     '#required' => TRUE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
     '#autocomplete_path' => 'project/autocomplete/projects',
   );
@@ -497,7 +497,7 @@ function project_projreport_form_build(&$form_state, $node) {
     '#maxlength' => 64,
     '#size' => 40,
     '#required' => FALSE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
     '#autocomplete_path' => 'project/autocomplete/activities',
   );
@@ -511,7 +511,7 @@ function project_projreport_form_build(&$form_state, $node) {
     '#default_value' => ($node->projrepdate) ? $node->projrepdate : orgright_get_date_ymd(),
     '#date_format' => $dformat,
     //'#date_label_position' => 'within',
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -522,7 +522,7 @@ function project_projreport_form_build(&$form_state, $node) {
     '#default_value' => $node->body,
     '#rows' => 5,
     '#resizable' => TRUE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -533,7 +533,7 @@ function project_projreport_form_build(&$form_state, $node) {
     '#default_value' => $node->notes,
     '#rows' => 3,
     '#resizable' => TRUE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   // create a placeholder to be filled in during validation
@@ -562,30 +562,30 @@ function project_projreport_form_build(&$form_state, $node) {
   $form['#validate'] = array('project_form_validate');
   $form['#submit'] = array('project_form_submit');
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Project')=>'project', t('Project reports')=>'project/projreports'));
+  orgright_breadcrumb(array(t('Project') => 'project', t('Project reports') => 'project/projreports'));
   return $form;
 }
 
-function project_calculate_schedule_form_build(&$form_state, $args=NULL) {
+function project_calculate_schedule_form_build(&$form_state, $args = NULL) {
   // Build the form for specifying project schedule re-caculation
   //orgright_debug_msg('project','Fn: project_calculate_schedule_form_build');
   // Check whether any additional arguments were passed
   if ($args) {
     foreach ($args as $parameter) {
-      $paraname = substr($parameter,0,strpos($parameter,'~'));
-      $parvalue = substr($parameter,strpos($parameter,'~')+1);
+      $paraname = substr($parameter, 0, strpos($parameter, '~'));
+      $parvalue = substr($parameter, strpos($parameter, '~') + 1);
       switch ($paraname) {
-      case 'project':
-        // fill in the project field information
-        $sql = "SELECT project FROM {node} n JOIN {org_projects} p on p.nid = n.nid WHERE p.vid = n.vid AND p.nid = %d";
-        $form_state['storage']['project'] = db_result(db_query($sql, $parvalue));
-        $form_state['storage']['pnid'] = $parvalue;
-        break;
-      default:
+        case 'project':
+          // fill in the project field information
+          $sql = "SELECT project FROM {node} n JOIN {org_projects} p on p.nid = n.nid WHERE p.vid = n.vid AND p.nid = %d";
+          $form_state['storage']['project'] = db_result(db_query($sql, $parvalue));
+          $form_state['storage']['pnid'] = $parvalue;
+          break;
+        default:
       }
     }
   }
-  // test whether the form is being initialised 
+  // test whether the form is being initialised
   if (!isset($form_state['values'])) {
     $form_state['storage']['initialise'] = TRUE;
   }
@@ -604,7 +604,7 @@ function project_calculate_schedule_form_build(&$form_state, $args=NULL) {
       '#maxlength' => 64,
       '#size' => 40,
       '#required' => TRUE,
-      '#attributes' => array('tabindex'=>$fix),
+      '#attributes' => array('tabindex' => $fix),
       '#weight' => $fix,
       '#autocomplete_path' => 'project/autocomplete/projects',
     );
@@ -617,7 +617,7 @@ function project_calculate_schedule_form_build(&$form_state, $args=NULL) {
     $form['submit_button'] = array(
       '#type' => 'submit',
       '#value' => t('Get project schedule'),
-      '#attributes' => array('tabindex'=>$fix),
+      '#attributes' => array('tabindex' => $fix),
       '#weight' => $fix,
     );
     $form['#validate'] = array('project_form_validate');
@@ -633,7 +633,7 @@ function project_calculate_schedule_form_build(&$form_state, $args=NULL) {
     '#type' => 'item',
     '#title' => $form_state['storage']['project'],
     '#description' => t('Selected project'),
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -641,7 +641,7 @@ function project_calculate_schedule_form_build(&$form_state, $args=NULL) {
     '#type' => 'item',
     '#title' => $node->manager,
     '#description' => t('Person resonsible for this project'),
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -652,7 +652,7 @@ function project_calculate_schedule_form_build(&$form_state, $args=NULL) {
     '#description' => project_field_description('schedule-details', 'projdatype', t('Specify whether the following date is a start or finish date')),
     '#default_value' => $node->projdatype,
     '#options' => $projdatype_list,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -666,7 +666,7 @@ function project_calculate_schedule_form_build(&$form_state, $args=NULL) {
     '#date_format' => $dformat,
     //'#date_label_position' => 'within',
     '#date_year_range' => '-1:+5',
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -675,7 +675,7 @@ function project_calculate_schedule_form_build(&$form_state, $args=NULL) {
     '#title' => t('Project Schedule'),
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -690,7 +690,7 @@ function project_calculate_schedule_form_build(&$form_state, $args=NULL) {
     '#prefix' => '<div>',
     '#value' => $recalculate,
     '#suffix' => '</div>',
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -703,42 +703,42 @@ function project_calculate_schedule_form_build(&$form_state, $args=NULL) {
   $form['submit_button'] = array(
     '#type' => 'submit',
     '#value' => t('Re-calculate schedule'),
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $form['#validate'] = array('project_form_validate');
   $form['#submit'] = array('project_form_submit');
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Project')=>'project', t('Projects')=>'project/projects'));
+  orgright_breadcrumb(array(t('Project') => 'project', t('Projects') => 'project/projects'));
   return $form;
 }
 
-function project_activity_links_form_build(&$form_state, $args=NULL) {
+function project_activity_links_form_build(&$form_state, $args = NULL) {
   // Build the form for specifying project activity links
   //orgright_debug_msg('project','Fn: project_activity_links_form_build',7);
   // Check whether any additional arguments were passed
   if ($args) {
     foreach ($args as $parameter) {
-      $paraname = substr($parameter,0,strpos($parameter,'~'));
-      $parvalue = substr($parameter,strpos($parameter,'~')+1);
+      $paraname = substr($parameter, 0, strpos($parameter, '~'));
+      $parvalue = substr($parameter, strpos($parameter, '~') + 1);
       switch ($paraname) {
-      case 'project':
-        // fill in the project field information
-        $sql = "SELECT project FROM {node} n JOIN {org_projects} p on p.nid = n.nid WHERE p.vid = n.vid AND p.nid = %d";
-        $form_state['storage']['project'] = db_result(db_query($sql, $parvalue));
-        $form_state['storage']['pnid'] = $parvalue;
-        break;
-      case 'activity':
-        // fill in the project field information
-        $sql = "SELECT activity FROM {node} n JOIN {org_projactivities} a on a.nid = n.nid WHERE a.vid = n.vid AND a.nid = %d";
-        $form_state['storage']['activity'] = db_result(db_query($sql, $parvalue));
-        $form_state['storage']['anid'] = $parvalue;
-        break;
-      default:
+        case 'project':
+          // fill in the project field information
+          $sql = "SELECT project FROM {node} n JOIN {org_projects} p on p.nid = n.nid WHERE p.vid = n.vid AND p.nid = %d";
+          $form_state['storage']['project'] = db_result(db_query($sql, $parvalue));
+          $form_state['storage']['pnid'] = $parvalue;
+          break;
+        case 'activity':
+          // fill in the project field information
+          $sql = "SELECT activity FROM {node} n JOIN {org_projactivities} a on a.nid = n.nid WHERE a.vid = n.vid AND a.nid = %d";
+          $form_state['storage']['activity'] = db_result(db_query($sql, $parvalue));
+          $form_state['storage']['anid'] = $parvalue;
+          break;
+        default:
       }
     }
   }
-  // test whether the form is being initialised 
+  // test whether the form is being initialised
   if (!isset($form_state['values'])) {
     $form_state['storage']['initialise'] = TRUE;
   }
@@ -755,7 +755,7 @@ function project_activity_links_form_build(&$form_state, $args=NULL) {
       '#maxlength' => 64,
       '#size' => 40,
       '#required' => TRUE,
-      '#attributes' => array('tabindex'=>$fix),
+      '#attributes' => array('tabindex' => $fix),
       '#weight' => $fix,
       '#autocomplete_path' => 'project/autocomplete/projects',
     );
@@ -768,7 +768,7 @@ function project_activity_links_form_build(&$form_state, $args=NULL) {
       '#maxlength' => 64,
       '#size' => 40,
       '#required' => TRUE,
-      '#attributes' => array('tabindex'=>$fix),
+      '#attributes' => array('tabindex' => $fix),
       '#weight' => $fix,
       '#autocomplete_path' => 'project/autocomplete/activities',
     );
@@ -785,7 +785,7 @@ function project_activity_links_form_build(&$form_state, $args=NULL) {
     $form['submit_button'] = array(
       '#type' => 'submit',
       '#value' => t('Get project activities'),
-      '#attributes' => array('tabindex'=>$fix),
+      '#attributes' => array('tabindex' => $fix),
       '#weight' => $fix,
     );
     $form['#validate'] = array('project_form_validate');
@@ -801,7 +801,7 @@ function project_activity_links_form_build(&$form_state, $args=NULL) {
       '#type' => 'item',
       '#title' => $form_state['storage']['project'],
       '#description' => 'Selected project',
-      '#attributes' => array('tabindex'=>$fix),
+      '#attributes' => array('tabindex' => $fix),
       '#weight' => $fix,
     );
     $fix++;
@@ -813,7 +813,7 @@ function project_activity_links_form_build(&$form_state, $args=NULL) {
       '#maxlength' => 64,
       '#size' => 40,
       '#required' => TRUE,
-      '#attributes' => array('tabindex'=>$fix),
+      '#attributes' => array('tabindex' => $fix),
       '#weight' => $fix,
       '#autocomplete_path' => 'project/autocomplete/activities',
     );
@@ -826,7 +826,7 @@ function project_activity_links_form_build(&$form_state, $args=NULL) {
     $form['submit_button'] = array(
       '#type' => 'submit',
       '#value' => t('Get project activities'),
-      '#attributes' => array('tabindex'=>$fix),
+      '#attributes' => array('tabindex' => $fix),
       '#weight' => $fix,
     );
     $form['#validate'] = array('project_form_validate');
@@ -841,7 +841,7 @@ function project_activity_links_form_build(&$form_state, $args=NULL) {
     '#type' => 'item',
     '#title' => $form_state['storage']['project'],
     '#description' => 'Selected project',
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -849,7 +849,7 @@ function project_activity_links_form_build(&$form_state, $args=NULL) {
     '#type' => 'item',
     '#title' => $form_state['storage']['activity'],
     '#description' => 'Current activity',
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -865,14 +865,14 @@ function project_activity_links_form_build(&$form_state, $args=NULL) {
   $result = db_query($sql, $form_state['storage']['pnid'], $form_state['storage']['anid']);
   // and build a field for each
   while ($activity = db_fetch_object($result)) {
-    $form['activi'.$activity->nid] = array(
+    $form['activi' . $activity->nid] = array(
       '#type' => 'select',
       '#title' => $activity->activity,
       '#description' => project_field_description('activity-links', 'linkage', t('Select type of linkage to first activity')),
       '#default_value' => $activity_links[$activity->nid],
       '#options' => $linktype_list,
       '#required' => FALSE,
-      '#attributes' => array('tabindex'=>$fix),
+      '#attributes' => array('tabindex' => $fix),
       '#weight' => $fix,
     );
     $fix++;
@@ -882,20 +882,20 @@ function project_activity_links_form_build(&$form_state, $args=NULL) {
   $form['submit_button'] = array(
     '#type' => 'submit',
     '#value' => t('Save activity links'),
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
   $form['change_button'] = array(
     '#type' => 'submit',
     '#value' => t('Select new current activity'),
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $form['#validate'] = array('project_form_validate');
   $form['#submit'] = array('project_form_submit');
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Project')=>'project', t('Project activities')=>'project/projactivities'));
+  orgright_breadcrumb(array(t('Project') => 'project', t('Project activities') => 'project/projactivities'));
   return $form;
 }
 
@@ -903,7 +903,7 @@ function project_activity_links_form_build(&$form_state, $args=NULL) {
  *  Function to generate a field description with popup help for each form field
  */
 function project_field_description($helpfile, $field, $description) {
-  return theme('helpservice_topic','project',$helpfile.'/'.$field).$description;
+  return theme('helpservice_topic', 'project', $helpfile . '/' . $field) . $description;
 }
 
 /**
@@ -916,16 +916,16 @@ function project_form_project_node_form_alter(&$form, &$form_state) {
     // Yes, so check and act on each
     $args = $form['#parameters'][3];
     foreach ($args as $parameter) {
-      $paraname = substr($parameter,0,strpos($parameter,'~'));
-      $parvalue = substr($parameter,strpos($parameter,'~')+1);
+      $paraname = substr($parameter, 0, strpos($parameter, '~'));
+      $parvalue = substr($parameter, strpos($parameter, '~') + 1);
       switch ($paraname) {
-      case 'project':
-        // fill in the project field information
-        $sql = "SELECT project FROM {node} n JOIN {org_projects} p on p.nid = n.nid WHERE p.vid = n.vid AND p.nid = %d";
-        $project = db_result(db_query($sql, $parvalue));
-        $form['project']['#default_value'] = $project;
-        break;
-      default:
+        case 'project':
+          // fill in the project field information
+          $sql = "SELECT project FROM {node} n JOIN {org_projects} p on p.nid = n.nid WHERE p.vid = n.vid AND p.nid = %d";
+          $project = db_result(db_query($sql, $parvalue));
+          $form['project']['#default_value'] = $project;
+          break;
+        default:
       }
     }
   }
@@ -939,17 +939,17 @@ function project_form_project_node_form_alter(&$form, &$form_state) {
   // Remove preview button and change label on submit button
   // and specify the redirect page on successful submission
   unset($form['buttons']['preview']);
-  if (empty($form['nid']['#value'])) {  
+  if (empty($form['nid']['#value'])) {
     $form['buttons']['submit']['#value'] = 'Add Project';
     $form['#goto'] = 'project/projects/add';
   }
   else {
     $form['buttons']['submit']['#value'] = 'Save Changes';
-    $form['#goto'] = 'node/'.$form['nid']['#value'];
+    $form['#goto'] = 'node/' . $form['nid']['#value'];
   }
   // Set the weight and tab index for the submit button
   $fix = $form['fix']['#value'];
-  $form['buttons']['submit']['#attributes'] = array('tabindex'=>$fix);
+  $form['buttons']['submit']['#attributes'] = array('tabindex' => $fix);
   $form['buttons']['submit']['#weight'] = $fix;
 }
 
@@ -960,16 +960,16 @@ function project_form_projactivity_node_form_alter(&$form, &$form_state) {
     // Yes, so check and act on each
     $args = $form['#parameters'][3];
     foreach ($args as $parameter) {
-      $paraname = substr($parameter,0,strpos($parameter,'~'));
-      $parvalue = substr($parameter,strpos($parameter,'~')+1);
+      $paraname = substr($parameter, 0, strpos($parameter, '~'));
+      $parvalue = substr($parameter, strpos($parameter, '~') + 1);
       switch ($paraname) {
-      case 'project':
-        // fill in the project field information
-        $sql = "SELECT project FROM {node} n JOIN {org_projects} p on p.nid = n.nid WHERE p.vid = n.vid AND p.nid = %d";
-        $project = db_result(db_query($sql, $parvalue));
-        $form['project']['#default_value'] = $project;
-        break;
-      default:
+        case 'project':
+          // fill in the project field information
+          $sql = "SELECT project FROM {node} n JOIN {org_projects} p on p.nid = n.nid WHERE p.vid = n.vid AND p.nid = %d";
+          $project = db_result(db_query($sql, $parvalue));
+          $form['project']['#default_value'] = $project;
+          break;
+        default:
       }
     }
   }
@@ -983,17 +983,17 @@ function project_form_projactivity_node_form_alter(&$form, &$form_state) {
   // Remove preview button and change label on submit button
   // and specify the redirect page on successful submission
   unset($form['buttons']['preview']);
-  if (empty($form['nid']['#value'])) {  
+  if (empty($form['nid']['#value'])) {
     $form['buttons']['submit']['#value'] = 'Add Project Activity';
     $form['#goto'] = 'project/projactivities/add';
   }
   else {
     $form['buttons']['submit']['#value'] = 'Save Changes';
-    $form['#goto'] = 'node/'.$form['nid']['#value'];
+    $form['#goto'] = 'node/' . $form['nid']['#value'];
   }
   // Set the weight and tab index for the submit button
   $fix = $form['fix']['#value'];
-  $form['buttons']['submit']['#attributes'] = array('tabindex'=>$fix);
+  $form['buttons']['submit']['#attributes'] = array('tabindex' => $fix);
   $form['buttons']['submit']['#weight'] = $fix;
 }
 
@@ -1004,22 +1004,22 @@ function project_form_projreport_node_form_alter(&$form, &$form_state) {
     // Yes, so check and act on each
     $args = $form['#parameters'][3];
     foreach ($args as $parameter) {
-      $paraname = substr($parameter,0,strpos($parameter,'~'));
-      $parvalue = substr($parameter,strpos($parameter,'~')+1);
+      $paraname = substr($parameter, 0, strpos($parameter, '~'));
+      $parvalue = substr($parameter, strpos($parameter, '~') + 1);
       switch ($paraname) {
-      case 'project':
-        // fill in the project field information
-        $sql = "SELECT project FROM {node} n JOIN {org_projects} p on p.nid = n.nid WHERE p.vid = n.vid AND p.nid = %d";
-        $project = db_result(db_query($sql, $parvalue));
-        $form['project']['#default_value'] = $project;
-        break;
-      case 'activity':
-        // fill in the project field information
-        $sql = "SELECT activity FROM {node} n JOIN {org_projactivities} a on a.nid = n.nid WHERE a.vid = n.vid AND a.nid = %d";
-        $activity = db_result(db_query($sql, $parvalue));
-        $form['projactivity']['#default_value'] = $activity;
-        break;
-      default:
+        case 'project':
+          // fill in the project field information
+          $sql = "SELECT project FROM {node} n JOIN {org_projects} p on p.nid = n.nid WHERE p.vid = n.vid AND p.nid = %d";
+          $project = db_result(db_query($sql, $parvalue));
+          $form['project']['#default_value'] = $project;
+          break;
+        case 'activity':
+          // fill in the project field information
+          $sql = "SELECT activity FROM {node} n JOIN {org_projactivities} a on a.nid = n.nid WHERE a.vid = n.vid AND a.nid = %d";
+          $activity = db_result(db_query($sql, $parvalue));
+          $form['projactivity']['#default_value'] = $activity;
+          break;
+        default:
       }
     }
   }
@@ -1033,17 +1033,17 @@ function project_form_projreport_node_form_alter(&$form, &$form_state) {
   // Remove preview button and change label on submit button
   // and specify the redirect page on successful submission
   unset($form['buttons']['preview']);
-  if (empty($form['nid']['#value'])) {  
+  if (empty($form['nid']['#value'])) {
     $form['buttons']['submit']['#value'] = 'Add Report';
     $form['#goto'] = 'project/projreports/add';
   }
   else {
     $form['buttons']['submit']['#value'] = 'Save Changes';
-    $form['#goto'] = 'node/'.$form['nid']['#value'];
+    $form['#goto'] = 'node/' . $form['nid']['#value'];
   }
   // Set the weight and tab index for the submit button
   $fix = $form['fix']['#value'];
-  $form['buttons']['submit']['#attributes'] = array('tabindex'=>$fix);
+  $form['buttons']['submit']['#attributes'] = array('tabindex' => $fix);
   $form['buttons']['submit']['#weight'] = $fix;
 }
 
@@ -1060,23 +1060,23 @@ function project_project_form_validate($form, &$form_state) {
     $notes = strip_tags($form_state['values']['notes']);
     // Check that entered details are acceptable
     if ($project != $form_state['values']['project']) {
-        form_set_error('project',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('project', t('HTML or PHP tags are not permitted in this field'));
     }
     if ($manager != $form_state['values']['manager']) {
-        form_set_error('address',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('address', t('HTML or PHP tags are not permitted in this field'));
     }
     if ($notes != $form_state['values']['notes']) {
-        form_set_error('notes',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('notes', t('HTML or PHP tags are not permitted in this field'));
     }
     // Check that the name returned in "manager" is a valid member
     // Load the additional file to handle member name validation
-    module_load_include('inc', 'membership', 'membership_form'); 
+    module_load_include('inc', 'membership', 'membership_form');
     $mnid = membership_validate_member($manager);
     if ($mnid) {
       form_set_value($form['mnid'], $mnid, $form_state);
     }
     else {
-      form_set_error('manager',t('The project manager specified is not a known member'));
+      form_set_error('manager', t('The project manager specified is not a known member'));
     }
     // Prevent duplicate records
     $sql = "SELECT n.nid FROM {node} n JOIN {org_projects} p ON p.nid = n.nid WHERE p.vid = n.vid AND p.project = '%s'";
@@ -1084,29 +1084,30 @@ function project_project_form_validate($form, &$form_state) {
     if ($nid) {
       // Already exists on the database, so flag an error unless it is same record being updated
       if ($nid != $form['nid']['#value']) {
-        form_set_error('project',t('The project name is already in use'));
+        form_set_error('project', t('The project name is already in use'));
       }
     }
     // If the date-type or start/finish date has changed, then flag project for schedule re-calulation
     if (($form_state['values']['projdatype'] != $form_state['values']['save_projdatype']) ||
-        (substr($form_state['values']['projdate'],0,10) != $form_state['values']['save_projdate'])) {
+      (substr($form_state['values']['projdate'], 0, 10) != $form_state['values']['save_projdate'])
+    ) {
       form_set_value($form['recalc'], TRUE, $form_state);
     }
     // Build a composite node title and save in $form_state
-    $form_state['values']['title'] = t('Project: !proj', array('!proj'=>$project));
+    $form_state['values']['title'] = t('Project: !proj', array('!proj' => $project));
   }
   elseif ($clicked_button == $form['buttons']['delete']['#value']) {
     // Check for attached activities - delete not permitted in this case
     $sql = "SELECT COUNT(a.nid) from {node} n JOIN {org_projactivities} a ON a.nid = n.nid WHERE a.vid = n.vid AND a.pnid = %d";
     $count = db_result(db_query($sql, $form_state['values']['nid']));
     if ($count) {
-      form_set_error('project',t('Cannot delete - this project has @num activities attached!', array('@num'=>$count)));
+      form_set_error('project', t('Cannot delete - this project has @num activities attached!', array('@num' => $count)));
     }
     // Check for attached project reports - delete not permitted in this case
     $sql = "SELECT COUNT(r.nid) from {node} n JOIN {org_projreports} r ON r.nid = n.nid WHERE r.vid = n.vid AND r.pnid = %d";
     $count = db_result(db_query($sql, $form_state['values']['nid']));
     if ($count) {
-      form_set_error('project',t('Cannot delete - this project has @num reports attached!', array('@num'=>$count)));
+      form_set_error('project', t('Cannot delete - this project has @num reports attached!', array('@num' => $count)));
     }
   }
   //orgright_debug_dump('form_state',$form_state);
@@ -1124,19 +1125,19 @@ function project_projactivity_form_validate($form, &$form_state) {
     $notes = strip_tags($form_state['values']['notes']);
     // Check that entered details are acceptable
     if ($activity != $form_state['values']['activity']) {
-        form_set_error('scode',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('scode', t('HTML or PHP tags are not permitted in this field'));
     }
     if ($project != $form_state['values']['project']) {
-        form_set_error('amount',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('amount', t('HTML or PHP tags are not permitted in this field'));
     }
     if ($member != $form_state['values']['member']) {
-        form_set_error('notes',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('notes', t('HTML or PHP tags are not permitted in this field'));
     }
     if ($duration != $form_state['values']['duration']) {
-        form_set_error('duration',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('duration', t('HTML or PHP tags are not permitted in this field'));
     }
     if ($notes != $form_state['values']['notes']) {
-        form_set_error('notes',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('notes', t('HTML or PHP tags are not permitted in this field'));
     }
     // Check that the name returned in "project" is valid
     $pnid = project_validate_project($project);
@@ -1144,17 +1145,17 @@ function project_projactivity_form_validate($form, &$form_state) {
       form_set_value($form['pnid'], $pnid, $form_state);
     }
     else {
-      form_set_error('project',t('The name specified is not a known project'));
+      form_set_error('project', t('The name specified is not a known project'));
     }
     // Check that the name returned in "member" is a valid member
     // Load the additional file to handle member name validation
-    module_load_include('inc', 'membership', 'membership_form'); 
+    module_load_include('inc', 'membership', 'membership_form');
     $mnid = membership_validate_member($member);
     if ($mnid) {
       form_set_value($form['mnid'], $mnid, $form_state);
     }
     else {
-      form_set_error('member',t('The responsible person specified is not a known member'));
+      form_set_error('member', t('The responsible person specified is not a known member'));
     }
     // Prevent duplicate records
     $sql = "SELECT n.nid FROM {node} n JOIN {org_projactivities} a ON a.nid = n.nid WHERE a.vid = n.vid AND a.activity = '%s' AND a.pnid = %d";
@@ -1162,27 +1163,28 @@ function project_projactivity_form_validate($form, &$form_state) {
     if ($nid) {
       // Already exists on the database, so flag an error unless it is same record being updated
       if ($nid != $form['nid']['#value']) {
-        form_set_error('activity',t('Activity already exists for this project'));
+        form_set_error('activity', t('Activity already exists for this project'));
       }
     }
     // If the duration or dates have changed, then flag project for a schedule re-calulation
     if (($form_state['values']['duration'] != $form_state['values']['save_duration']) ||
-        ($form_state['values']['duratype'] != $form_state['values']['save_duratype']) ||
-        ($form_state['values']['actividatype'] != $form_state['values']['save_actividatype']) ||
-        (substr($form_state['values']['actividate'],0,10) != $form_state['values']['save_actividate']) ||
-        (substr($form_state['values']['actualstart'],0,10) != $form_state['values']['save_actualstart']) ||
-        (substr($form_state['values']['actualfinish'],0,10) != $form_state['values']['save_actualfinish'])) {
+      ($form_state['values']['duratype'] != $form_state['values']['save_duratype']) ||
+      ($form_state['values']['actividatype'] != $form_state['values']['save_actividatype']) ||
+      (substr($form_state['values']['actividate'], 0, 10) != $form_state['values']['save_actividate']) ||
+      (substr($form_state['values']['actualstart'], 0, 10) != $form_state['values']['save_actualstart']) ||
+      (substr($form_state['values']['actualfinish'], 0, 10) != $form_state['values']['save_actualfinish'])
+    ) {
       form_set_value($form['recalc'], TRUE, $form_state);
     }
     // Build a composite node title and save in $form_state
-    $form_state['values']['title'] = t('Project activity: !proj - !act', array('!proj'=>$project, '!act'=>$activity));
+    $form_state['values']['title'] = t('Project activity: !proj - !act', array('!proj' => $project, '!act' => $activity));
   }
   elseif ($clicked_button == $form['buttons']['delete']['#value']) {
     // Check for attached reports - delete not permitted in this case
     $sql = "SELECT COUNT(r.nid) from {node} n JOIN {org_projreports} r ON r.nid = n.nid WHERE r.vid = n.vid AND r.anid = %d";
     $count = db_result(db_query($sql, $form_state['values']['nid']));
     if ($count) {
-      form_set_error('activity',t('Cannot delete - this activity still has @num reports attached!', array('@num'=>$count)));
+      form_set_error('activity', t('Cannot delete - this activity still has @num reports attached!', array('@num' => $count)));
     }
   }
 }
@@ -1199,19 +1201,19 @@ function project_projreport_form_validate($form, &$form_state) {
     $notes = strip_tags($form_state['values']['notes']);
     // Check that entered details are acceptable
     if ($projreport != $form_state['values']['projreport']) {
-        form_set_error('projreport',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('projreport', t('HTML or PHP tags are not permitted in this field'));
     }
     if ($project != $form_state['values']['project']) {
-        form_set_error('project',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('project', t('HTML or PHP tags are not permitted in this field'));
     }
     if ($activity != $form_state['values']['activity']) {
-        form_set_error('activity',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('activity', t('HTML or PHP tags are not permitted in this field'));
     }
     if ($member != $form_state['values']['member']) {
-        form_set_error('member',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('member', t('HTML or PHP tags are not permitted in this field'));
     }
     if ($notes != $form_state['values']['notes']) {
-        form_set_error('notes',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('notes', t('HTML or PHP tags are not permitted in this field'));
     }
     // Prepare date values
     $projrepdate = date_format_date(date_make_date($form_state['values']['projrepdate']), 'custom', 'd M Y');
@@ -1221,7 +1223,7 @@ function project_projreport_form_validate($form, &$form_state) {
       form_set_value($form['pnid'], $pnid, $form_state);
     }
     else {
-      form_set_error('project',t('The name specified is not a known project'));
+      form_set_error('project', t('The name specified is not a known project'));
     }
     // Check that any name returned in "activity" is valid
     if ($activity) {
@@ -1233,23 +1235,25 @@ function project_projreport_form_validate($form, &$form_state) {
           form_set_value($form['anid'], $anid, $form_state);
         }
         else {
-          form_set_error('activity',t('The activity selected does not belong to the specified project'));
+          form_set_error('activity', t('The activity selected does not belong to the specified project'));
         }
       }
       else {
-        form_set_error('activity',t('The name specified is not a known activity'));
+        form_set_error('activity', t('The name specified is not a known activity'));
       }
     }
-    else { $anid = 0; }
+    else {
+      $anid = 0;
+    }
     // Check that the name returned in "member" is a valid member
     // Load the additional file to handle member name validation
-    module_load_include('inc', 'membership', 'membership_form'); 
+    module_load_include('inc', 'membership', 'membership_form');
     $mnid = membership_validate_member($member);
     if ($mnid) {
       form_set_value($form['mnid'], $mnid, $form_state);
     }
     else {
-      form_set_error('member',t('The person specified is not a known member'));
+      form_set_error('member', t('The person specified is not a known member'));
     }
     // Prevent duplicate records
     $sql = "SELECT n.nid FROM {node} n JOIN {org_projreports} r ON r.nid = n.nid WHERE r.vid = n.vid AND r.projreport = '%s' AND r.pnid = %d AND r.anid = %d";
@@ -1257,11 +1261,11 @@ function project_projreport_form_validate($form, &$form_state) {
     if ($nid) {
       // Already exists on the database, so flag an error unless it is same record being updated
       if ($nid != $form['nid']['#value']) {
-        form_set_error('projreport',t('Report name in use for this project/activity'));
+        form_set_error('projreport', t('Report name in use for this project/activity'));
       }
     }
     // Build a composite node title and save in $form_state
-    $args = array('!rpt'=>$projreport, '@proj'=>$project, '!act'=>$activity, '@date'=>$projrepdate);
+    $args = array('!rpt' => $projreport, '@proj' => $project, '!act' => $activity, '@date' => $projrepdate);
     if ($activity) {
       $form_state['values']['title'] = t('Project activity report: !rpt for !proj - !act on !date', $args);
     }
@@ -1282,7 +1286,7 @@ function project_calculate_schedule_form_validate($form, &$form_state) {
     $project = strip_tags($form_state['values']['project']);
     // Validate the project and first activity
     if ($project != $form_state['values']['project']) {
-      form_set_error('project',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('project', t('HTML or PHP tags are not permitted in this field'));
     }
     // Check that the name returned in "project" is valid
     $pnid = project_validate_project($project);
@@ -1290,7 +1294,7 @@ function project_calculate_schedule_form_validate($form, &$form_state) {
       form_set_value($form['pnid'], $pnid, $form_state);
     }
     else {
-      form_set_error('project',t('The name specified is not a known project'));
+      form_set_error('project', t('The name specified is not a known project'));
     }
     // If there have been no errors, then rebuild form with extra fields
     if (!form_get_errors()) {
@@ -1326,10 +1330,10 @@ function project_activity_links_form_validate($form, &$form_state) {
     $activity = strip_tags($form_state['values']['activity']);
     // Validate the project and first activity
     if ($project != $form_state['values']['project']) {
-      form_set_error('project',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('project', t('HTML or PHP tags are not permitted in this field'));
     }
     if ($activity != $form_state['values']['activity']) {
-      form_set_error('activity',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('activity', t('HTML or PHP tags are not permitted in this field'));
     }
     // Check that the name returned in "project" is valid
     $pnid = project_validate_project($project);
@@ -1337,7 +1341,7 @@ function project_activity_links_form_validate($form, &$form_state) {
       form_set_value($form['pnid'], $pnid, $form_state);
     }
     else {
-      form_set_error('project',t('The name specified is not a known project'));
+      form_set_error('project', t('The name specified is not a known project'));
     }
     // Check that any name returned in "activity" is valid
     $anid = project_validate_activity($activity);
@@ -1348,11 +1352,11 @@ function project_activity_links_form_validate($form, &$form_state) {
         form_set_value($form['anid'], $anid, $form_state);
       }
       else {
-        form_set_error('activity',t('The activity selected does not belong to the specified project'));
+        form_set_error('activity', t('The activity selected does not belong to the specified project'));
       }
     }
     else {
-      form_set_error('activity',t('The name specified is not a known activity'));
+      form_set_error('activity', t('The name specified is not a known activity'));
     }
     // If there have been no errors, then rebuild form with extra fields
     if (!form_get_errors()) {
@@ -1370,7 +1374,7 @@ function project_activity_links_form_validate($form, &$form_state) {
     $activity = strip_tags($form_state['values']['activity']);
     // Validate first activity
     if ($activity != $form_state['values']['activity']) {
-      form_set_error('activity',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('activity', t('HTML or PHP tags are not permitted in this field'));
     }
     // Check that any name returned in "activity" is valid
     $anid = project_validate_activity($activity);
@@ -1381,11 +1385,11 @@ function project_activity_links_form_validate($form, &$form_state) {
         form_set_value($form['anid'], $anid, $form_state);
       }
       else {
-        form_set_error('activity',t('The activity selected does not belong to the specified project'));
+        form_set_error('activity', t('The activity selected does not belong to the specified project'));
       }
     }
     else {
-      form_set_error('activity',t('The name specified is not a known activity'));
+      form_set_error('activity', t('The name specified is not a known activity'));
     }
     // If there have been no errors, then rebuild form with extra fields
     if (!form_get_errors()) {
@@ -1463,7 +1467,7 @@ function project_calculate_schedule_form_submit($form, &$form_state) {
   // submit callback function specified for form
   //orgright_debug_msg('project','Fn: project_calculate_schedule_form_submit');
   // Load the additional file to handle project schedule re-calculation
-  module_load_include('inc', 'project', 'project_calc'); 
+  module_load_include('inc', 'project', 'project_calc');
   // recalculate the schedule, will return a graphic picture of scheule
   $pnid = $form_state['storage']['pnid'];
   $projdatype = $form_state['values']['projdatype'];
@@ -1473,7 +1477,7 @@ function project_calculate_schedule_form_submit($form, &$form_state) {
   db_query("UPDATE {node} n JOIN {org_projects} p ON p.nid = n.nid SET p.projdatype = '%s', p.projdate = '%s', p.recalc = FALSE, projsched = '%s' WHERE p.vid = n.vid AND p.nid = %d", $projdatype, $projdate, $graphic, $pnid);
   // clear form_state storage and set redirect to view the project
   $form_state['storage'] = array();
-  $form_state['redirect'] = 'node/'.$pnid;
+  $form_state['redirect'] = 'node/' . $pnid;
 }
 
 function project_activity_links_form_submit($form, &$form_state) {
@@ -1483,9 +1487,9 @@ function project_activity_links_form_submit($form, &$form_state) {
   $project = $form_state['storage']['project'];
   $activity = $form_state['storage']['activity'];
   $first = $form_state['storage']['anid'];
-  foreach($form_state['values'] as $field => $value) {
-    if (substr($field,0,6) == 'activi') {
-      $second = substr($field,6);
+  foreach ($form_state['values'] as $field => $value) {
+    if (substr($field, 0, 6) == 'activi') {
+      $second = substr($field, 6);
       if ($value == 'N/A') {
         // delete any link between these two activities
         db_query("DELETE FROM {org_projactivitylinks} WHERE (anid1 = %d AND anid2 = %d) OR (anid1 = %d AND anid2 = %d)", $first, $second, $second, $first);
@@ -1493,7 +1497,7 @@ function project_activity_links_form_submit($form, &$form_state) {
       else {
         // first normalise the link specification
         if ($first < $second) {
-          $linkarray = array('1st'=>$first, '2nd'=>$second, 'link'=>$value);
+          $linkarray = array('1st' => $first, '2nd' => $second, 'link' => $value);
         }
         else {
           $linkarray = project_invert_link($first, $second, $value);
@@ -1518,7 +1522,7 @@ function project_activity_links_form_submit($form, &$form_state) {
             $user->uid);
         }
       }
-    } 
+    }
   }
   // now flag the project for re-calulation
   db_query("UPDATE {node} n JOIN {org_projects} p ON p.nid = n.nid SET p.recalc = TRUE WHERE p.vid = n.vid AND p.nid = %d", $form_state['storage']['pnid']);

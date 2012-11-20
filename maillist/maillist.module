@@ -15,8 +15,8 @@ function maillist_init() {
   // Include the module javascript file for standard functions
   //drupal_add_js(drupal_get_path('module', 'maillist') . '/maillist.js');
 }
- 
-  
+
+
 /**
  * Implementation of hook_menu()
  *
@@ -50,7 +50,7 @@ function maillist_forms($form_id, $args) {
   switch ($form_id) {
     case 'maillist_admin_form':
       $forms[$form_id] = array(
-        'callback' => $form_id.'_build',
+        'callback' => $form_id . '_build',
       );
       return $forms;
     default:
@@ -96,7 +96,7 @@ function maillist_admin() {
  * @ingroup forms
  * @see system_settings_form()
  */
-function maillist_admin_form_build (&$form_state = NULL) {
+function maillist_admin_form_build(&$form_state = NULL) {
   //orgright_debug_msg('maillist','Fn: maillist_admin_form_build',5);
   $form = array();
   // Check to see whether this is a new form, or a rebuild
@@ -141,9 +141,9 @@ function maillist_admin_form_build (&$form_state = NULL) {
       $form['maillists']['maillist_add'] = array(
         '#type' => 'item',
         '#title' => t('Mail list'),
-        '#description' => t('Maximum number of allowed mail lists already created'),      
+        '#description' => t('Maximum number of allowed mail lists already created'),
         '#weight' => 4,
-      );  
+      );
     }
     else {
       $form['maillists']['maillist_new'] = array(
@@ -155,7 +155,7 @@ function maillist_admin_form_build (&$form_state = NULL) {
         '#size' => 16,
         '#required' => FALSE,
         '#weight' => 4,
-      );  
+      );
       $form['maillists']['maillist_add'] = array(
         '#type' => 'submit',
         '#value' => t('Add mail list'),
@@ -210,7 +210,7 @@ function maillist_admin_form_build (&$form_state = NULL) {
         '#size' => 16,
         '#required' => TRUE,
         '#weight' => 1,
-      );  
+      );
       $form['submit'] = array(
         '#type' => 'submit',
         '#value' => t('Save changes'),
@@ -224,7 +224,7 @@ function maillist_admin_form_build (&$form_state = NULL) {
         '#value' => $listname_value,
         '#suffix' => '</div>',
         '#weight' => 1,
-      );  
+      );
       $form['submit'] = array(
         '#type' => 'submit',
         '#value' => t('Confirm deletion'),
@@ -238,7 +238,7 @@ function maillist_admin_form_build (&$form_state = NULL) {
       $subscribers = maillist_find_subscriber_names($addresses);
       $form['subscribers'] = array(
         '#type' => 'fieldset',
-        '#title' => t('Mail list: @list', array('@list'=>$form_state['storage']['this_maillist'])),
+        '#title' => t('Mail list: @list', array('@list' => $form_state['storage']['this_maillist'])),
         '#collapsible' => TRUE,
         '#collapsed' => FALSE,
       );
@@ -293,7 +293,7 @@ function maillist_admin_form_build (&$form_state = NULL) {
       $form['quickadd']['address'] = array(
         '#type' => 'textfield',
         '#title' => t('Email address'),
-        '#description' => t('Email address to be subscribed. Use angle brackets around email address if a name is included eg "!addr"', array('!addr'=>'System Administrator <admin@orgright.com>')),
+        '#description' => t('Email address to be subscribed. Use angle brackets around email address if a name is included eg "!addr"', array('!addr' => 'System Administrator <admin@orgright.com>')),
         '#default_value' => '',
         '#maxlength' => 64,
         '#size' => 40,
@@ -333,7 +333,7 @@ function maillist_admin_form_build (&$form_state = NULL) {
         '#type' => 'value',
         '#value' => 0,
       );
-    } 
+    }
     elseif ($form_state['storage']['operation'] == 'select members') {
       // prepare a list of members to be displayed for subscribing
       // Find a list of members and create form elements for each
@@ -368,7 +368,7 @@ function maillist_admin_form_build (&$form_state = NULL) {
       $form = array();
       $form['instructions'] = array(
         '#title' => t('Mail list: @list - Member category: @cat',
-          array('@list'=>$form_state['storage']['this_maillist'], '@cat'=>$form_state['storage']['category'])),
+          array('@list' => $form_state['storage']['this_maillist'], '@cat' => $form_state['storage']['category'])),
         '#type' => 'item',
         '#description' => t('Select the members from the list below to be subscribed to this mail list.'),
         '#weight' => -1,
@@ -376,11 +376,11 @@ function maillist_admin_form_build (&$form_state = NULL) {
       if ($existing) {
         // there are existing subscriptions of members from this list
         asort($existing);
-        $form['existing_0'] = array('#value'=>t('Members in this category are already subscribed:<br>'), '#weight'=>0);
+        $form['existing_0'] = array('#value' => t('Members in this category are already subscribed:<br>'), '#weight' => 0);
         $idx = 0;
         foreach ($existing as $this_one) {
           $idx++;
-          $form['existing_'.$idx] = array('#value'=>'* '.$this_one.'<br>', '#weight'=>$idx);
+          $form['existing_' . $idx] = array('#value' => '* ' . $this_one . '<br>', '#weight' => $idx);
         }
       }
       $form['select_members'] = array(
@@ -407,7 +407,7 @@ function maillist_admin_form_build (&$form_state = NULL) {
 }
 
 function maillist_form_maillist_admin_form_alter(&$form, &$form_state) {
- //orgright_debug_msg('maillist','Fn: maillist_form_maillist_admin_form_alter',5);
+  //orgright_debug_msg('maillist','Fn: maillist_form_maillist_admin_form_alter',5);
   // Remove submit and reset buttons
   unset($form['buttons']['submit']);
   unset($form['buttons']['reset']);
@@ -420,19 +420,19 @@ function maillist_admin_form_validate($form, &$form_state) {
   if ($clicked_button == $form['maillists']['maillist_add']['#value']) {
     //orgright_debug_msg('maillist','new maillist='.$form_state['values']['maillist_new'],8);
     if (!$form_state['values']['maillist_new']) {
-      form_set_error('maillist_new',t('A name must be specified for the mail list'));
+      form_set_error('maillist_new', t('A name must be specified for the mail list'));
     }
     if (!maillist_check_listname($form_state['values']['maillist_new'])) {
-      form_set_error('maillist_new',t('List name contains illegal charaters'));
+      form_set_error('maillist_new', t('List name contains illegal charaters'));
     }
     $maillist_list = maillist_get_maillists();
     if (isset($maillist_list[$form_state['values']['maillist_new']])) {
-      form_set_error('maillist_new',t('List already exists - please specify a different name'));
+      form_set_error('maillist_new', t('List already exists - please specify a different name'));
     }
   }
   elseif ($clicked_button == $form['maillists']['maillist_rename']['#value']) {
     if (!$form_state['values']['maillist_list']) {
-      form_set_error('maillist_list',t('No mail list selected'));
+      form_set_error('maillist_list', t('No mail list selected'));
     }
     $form_state['storage']['this_maillist'] = $form_state['values']['maillist_list'];
     $form_state['storage']['operation'] = 'rename maillist';
@@ -440,7 +440,7 @@ function maillist_admin_form_validate($form, &$form_state) {
   }
   elseif ($clicked_button == $form['maillists']['maillist_delete']['#value']) {
     if (!$form_state['values']['maillist_list']) {
-      form_set_error('maillist_list',t('No mail list selected'));
+      form_set_error('maillist_list', t('No mail list selected'));
     }
     $form_state['storage']['this_maillist'] = $form_state['values']['maillist_list'];
     $form_state['storage']['operation'] = 'delete maillist';
@@ -448,7 +448,7 @@ function maillist_admin_form_validate($form, &$form_state) {
   }
   elseif ($clicked_button == $form['subscribers']['subscriber_list']['#value']) {
     if (!$form_state['values']['subscriber_maillist']) {
-      form_set_error('maillist_list',t('No mail list selected'));
+      form_set_error('maillist_list', t('No mail list selected'));
     }
     $form_state['storage']['this_maillist'] = $form_state['values']['subscriber_maillist'];
     $form_state['storage']['operation'] = 'list subscribers';
@@ -456,34 +456,31 @@ function maillist_admin_form_validate($form, &$form_state) {
   }
   elseif ($clicked_button == $form['subscribers']['subscriber_add']['#value']) {
     if (!$form_state['values']['subscriber_maillist']) {
-      form_set_error('maillist_list',t('No mail list selected'));
+      form_set_error('maillist_list', t('No mail list selected'));
     }
     $form_state['storage']['this_maillist'] = $form_state['values']['subscriber_maillist'];
     $form_state['storage']['operation'] = 'add subscribers';
     $form_state['rebuild'] = TRUE;
-  }
-  // done the submit buttons for first iteration of form, so now look at processing
+  } // done the submit buttons for first iteration of form, so now look at processing
   // second iteration
   elseif ($clicked_button == $form['submit']['#value']) {
     // The save changes or confirm deletion button for maillist has been clicked
     if ($form_state['storage']['operation'] == 'rename maillist') {
       if (!$form_state['values']['maillist']) {
-        form_set_error('maillist',t('A name must be specified for the mail list'));
+        form_set_error('maillist', t('A name must be specified for the mail list'));
       }
       if (!maillist_check_listname($form_state['values']['maillist'])) {
-        form_set_error('maillist',t('List name contains illegal charaters'));
+        form_set_error('maillist', t('List name contains illegal charaters'));
       }
       if ($form_state['values']['maillist'] == $form_state['storage']['this_maillist']) {
-        form_set_error('maillist',t('A different list name must be specified'));
+        form_set_error('maillist', t('A different list name must be specified'));
       }
     }
-  }
-  // validating the "list subscribers" form
+  } // validating the "list subscribers" form
   elseif ($clicked_button == $form['subscribers']['subscriber_remove']['#value']) {
     $form_state['storage']['operation'] = 'remove subscribers';
     // no validation required
-  }
-  // validating the "add subscribers" form
+  } // validating the "add subscribers" form
   elseif ($clicked_button == $form['quickadd']['quick_submit']['#value']) {
     // the quick subscribe member/address panel is being used
     $form_state['storage']['operation'] = 'quick subscribe';
@@ -491,7 +488,7 @@ function maillist_admin_form_validate($form, &$form_state) {
     module_load_include('inc', 'membership', 'membership_form');
     if ($form_state['values']['member']) {
       if (!$mnid = membership_validate_member($form_state['values']['member'])) {
-        form_set_error('member',t('The specified name is not a valid member'));
+        form_set_error('member', t('The specified name is not a valid member'));
       }
       else {
         form_set_value($form['mnid'], $mnid, $form_state);
@@ -500,7 +497,7 @@ function maillist_admin_form_validate($form, &$form_state) {
     // check the specified address (if any)
     if ($form_state['values']['address']) {
       if (!orgright_check_email_address($form_state['values']['address'])) {
-        form_set_error('address',t('The specified email address is invalid'));
+        form_set_error('address', t('The specified email address is invalid'));
       }
     }
   }
@@ -553,8 +550,7 @@ function maillist_admin_form_submit($form, &$form_state) {
       maillist_generate_action_file('delete', $form_state['storage']['this_maillist']);
       $message = t('A task to delete the maillist has been queued.');
     }
-  }
-  // processing the "list subscribers" form - subscriber removal may be required
+  } // processing the "list subscribers" form - subscriber removal may be required
   elseif ($clicked_button == $form['subscribers']['subscriber_remove']['#value']) {
     // have a list of members to unsubscribe in "subscriber_list" field
     $maillist = $form_state['storage']['this_maillist'];
@@ -563,14 +559,13 @@ function maillist_admin_form_submit($form, &$form_state) {
     foreach ($selected as $address) {
       maillist_subunsub_address('unsubscribe', $address, $maillist);
     }
-  }
-  // processing the "add subscribers" form
+  } // processing the "add subscribers" form
   elseif ($clicked_button == $form['quickadd']['quick_submit']['#value']) {
     // subscribe the email address of the specified member and/or the specified email address
     // to the selected email list
     $list = $form_state['storage']['this_maillist'];
     if ($address = $form_state['values']['address']) {
-      maillist_subunsub_address('subscribe', $address, $list); 
+      maillist_subunsub_address('subscribe', $address, $list);
     }
     if ($member = $form_state['values']['member']) {
       // find the first email address of this member
@@ -578,8 +573,8 @@ function maillist_admin_form_submit($form, &$form_state) {
       $args = array($member);
       $email = db_result(db_query($sql, $args));
       $address = ($pos = strpos($email, ';')) ? substr($email, 0, $pos) : $email;
-      maillist_subunsub_address('subscribe', $address, $list); 
-    }   
+      maillist_subunsub_address('subscribe', $address, $list);
+    }
   }
   elseif ($clicked_button == $form['memberselect']['members_submit']['#value']) {
     return;
@@ -593,18 +588,18 @@ function maillist_admin_form_submit($form, &$form_state) {
       maillist_subunsub_address('subscribe', $address, $maillist);
     }
   }
-  drupal_set_message($message,'status');
+  drupal_set_message($message, 'status');
   $form_state['storage'] = array();
   $form_state['redirect'] = 'admin/orgright/maillist';
 }
 
-function maillist_generate_action_file($action, $name, $new=NULL) {
+function maillist_generate_action_file($action, $name, $new = NULL) {
   $sitesubdir = orgright_get_sitesubdir();
   $email_domain = orgright_get_domain();
-  $list_name =  $name;
+  $list_name = $name;
   $owner_email = 'admin@' . $email_domain;
   if ($sitessubdir) {
-    $list_name =  $name . '.' . $sitesubdir;
+    $list_name = $name . '.' . $sitesubdir;
     $owner_email = 'admin' . '.' . $sitesubdir . '@' . $email_domain;
   }
   if ($action == 'rename') {
@@ -615,16 +610,16 @@ function maillist_generate_action_file($action, $name, $new=NULL) {
     }
   }
   $parameters = array(
-    $list_name,			// full list name
-    $email_domain, 		// email domain name
-    $owner_email,		// email address of list owner
-    'en',			// language code
+    $list_name, // full list name
+    $email_domain, // email domain name
+    $owner_email, // email address of list owner
+    'en', // language code
   );
   // specify the file name for the list parameters file
-  $file_name = file_directory_path() . '/orgright-'. $action . '-list_' . $list_name;
+  $file_name = file_directory_path() . '/orgright-' . $action . '-list_' . $list_name;
   // now save in a file
-  file_save_data(implode(chr(10),$parameters), $file_name, FILE_EXISTS_REPLACE);
-  // 
+  file_save_data(implode(chr(10), $parameters), $file_name, FILE_EXISTS_REPLACE);
+  //
 }
 
 function maillist_subunsub_address($action, $address, $list) {
@@ -654,7 +649,9 @@ function maillist_get_subscribers($maillist) {
   //orgright_debug_msg('maillist','cmd='.$cmd);
   $result = exec($cmd, $output, $retval);
   $subscribers = array();
-  foreach ($output as $address) { $subscribers[$address] = $address; }
+  foreach ($output as $address) {
+    $subscribers[$address] = $address;
+  }
   return $subscribers;
 }
 
@@ -663,26 +660,26 @@ function maillist_find_subscriber_names($emails) {
   $sqlm = "SELECT m.member, m.address, m.city FROM {node} n JOIN {org_members} m ON m.nid = n.nid WHERE m.vid = n.vid AND m.email LIKE '%s'";
   $sqlu = "SELECT uid, name FROM {users} WHERE mail LIKE '%s'";
   foreach ($emails as $eaddr) {
-    $mbr = db_fetch_object(db_query($sqlm, '%'.$eaddr.'%'));
+    $mbr = db_fetch_object(db_query($sqlm, '%' . $eaddr . '%'));
     if ($mbr) {
-      $subscribers[$eaddr] = $eaddr . ' ('.$mbr->member.', '.$mbr->address.', '.$mbr->city.')';
+      $subscribers[$eaddr] = $eaddr . ' (' . $mbr->member . ', ' . $mbr->address . ', ' . $mbr->city . ')';
     }
     else {
-      $usr = db_fetch_object(db_query($sqlu, '%'.$eaddr.'%'));
+      $usr = db_fetch_object(db_query($sqlu, '%' . $eaddr . '%'));
       if ($usr) {
-        $subscribers[$eaddr] = $eaddr . ' (Site user '.$usr->uid.', '.$usr->name.')';
+        $subscribers[$eaddr] = $eaddr . ' (Site user ' . $usr->uid . ', ' . $usr->name . ')';
       }
       else {
         $sitesubdir = orgright_get_sitesubdir();
         $email_domain = orgright_get_domain();
         $sitename = substr($email_domain, 0, strpos($email_domain, '.'));
-        $basedomain = substr($email_domain, strpos($email_domain, '.')+1);
+        $basedomain = substr($email_domain, strpos($email_domain, '.') + 1);
         if ($sitesubdir) {
           $sitename = $sitesubdir;
           $basedomain = $email_domain;
         }
-        if ($eaddr == $sitename.'@'.$basedomain) {
-          $subscribers[$eaddr] = $eaddr . ' (default '.$sitename.' email address)';
+        if ($eaddr == $sitename . '@' . $basedomain) {
+          $subscribers[$eaddr] = $eaddr . ' (default ' . $sitename . ' email address)';
         }
         else {
           $subscribers[$eaddr] = $eaddr . ' (not a known email address)';
@@ -690,21 +687,23 @@ function maillist_find_subscriber_names($emails) {
       }
     }
   }
-  return $subscribers;  
+  return $subscribers;
 }
 
 /**
  * Some orgRight maillist specific functions to provide data
  */
 function maillist_get_maillists() {
-  $ldir = '/var/spool/mlmmj/'.orgright_get_domain();
+  $ldir = '/var/spool/mlmmj/' . orgright_get_domain();
   $mask = '.*';
   $sitesubdir = orgright_get_sitesubdir();
-  if ($sitesubdir) { $mask = '\.'.$sitesubdir.'$'; }
+  if ($sitesubdir) {
+    $mask = '\.' . $sitesubdir . '$';
+  }
   $dirs = file_scan_directory($ldir, $mask, array(), 0, FALSE, 'basename', 0);
   $maillist_list = array();
-  foreach ($dirs as $name=>$dirobj) {
-    $maillist = substr($name, 0, strlen($name)-(strlen($mask)-2));
+  foreach ($dirs as $name => $dirobj) {
+    $maillist = substr($name, 0, strlen($name) - (strlen($mask) - 2));
     $maillist_list[$maillist] = $maillist;
   }
   asort($maillist_list);
@@ -715,10 +714,14 @@ function maillist_check_listname($name) {
   // Check whether the passed name contains illegal characters
   // First strip out all characters outside the allowed ascii range
   $check = '';
-  for ($i=0; $i<strlen($name); $i++) { if (ord($name[$i])>32 && ord($name[$i])<127) { $check .= $name[$i]; } }
+  for ($i = 0; $i < strlen($name); $i++) {
+    if (ord($name[$i]) > 32 && ord($name[$i]) < 127) {
+      $check .= $name[$i];
+    }
+  }
   // then strip out all punctuation and special characters
   // only special chars allowed are period ".", underscore "_", & hyphen "-"
-  $illegal_chars = array(' ','~','!','@','#','$','%','^','&','*','(',')','+','`','=','{','}','|','[',']','\\',':','"',';','\'','<','>','?',',','/');
+  $illegal_chars = array(' ', '~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '+', '`', '=', '{', '}', '|', '[', ']', '\\', ':', '"', ';', '\'', '<', '>', '?', ',', '/');
   $check = str_replace($illegal_chars, '', $check);
   return $name == $check;
 }
@@ -726,4 +729,4 @@ function maillist_check_listname($name) {
 /**
  * End of module
  */
- 
+

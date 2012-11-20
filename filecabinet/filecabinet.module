@@ -21,10 +21,10 @@ function filecabinet_init() {
   // Include the module css file for layout control
   drupal_add_css(drupal_get_path('module', 'filecabinet') . '/filecabinet.css');
   // and add the Tiny Scrollbar jQuery library
-  drupal_add_library('tinyscrollbar');
-  //drupal_add_js('sites/all/libraries/jquery/tinyscrollbar/jquery.tinyscrollbar.min.js');
+  //drupal_add_library('tinyscrollbar');
+  drupal_add_js(drupal_get_path('module', 'orgright') . '/jquery/tinyscrollbar/jquery.tinyscrollbar.min.js');
 }
- 
+
 /**
  * Implementation of hook_node_info
  */
@@ -64,7 +64,7 @@ function filecabinet_node_info() {
     ),
   );
 }
-  
+
 /**
  * Implementation of hook_perm()
  */
@@ -88,8 +88,8 @@ function filecabinet_perm() {
     'upload file',
     'replace file',
     'delete file',
-  );    
-}   
+  );
+}
 
 /**
  * Implementation of hook_menu()
@@ -306,21 +306,21 @@ function filecabinet_menu_alter(&$menu_entries) {
 
 /**
  * Implementation of hook_access()
- */ 
+ */
 function filecabinet_access($op, $node, $account) {
   //orgright_debug_msg('filecabinet','Fn: filecabinet_access',5);
   // Determine node type ($node will either be the string "type" or a node object)
   $node_type = ($op == 'create') ? $node : $node->type;
   // Limit access to the functions provided by this module
   switch ($node_type) {
-  case 'drawer':
-    return filecabinet_drawer_access($op, $account);
-  case 'folder':
-    return filecabinet_folder_access($op, $account);
-  case 'document':
-    return filecabinet_document_access($op, $account);
-  default:
-    return FALSE;
+    case 'drawer':
+      return filecabinet_drawer_access($op, $account);
+    case 'folder':
+      return filecabinet_folder_access($op, $account);
+    case 'document':
+      return filecabinet_document_access($op, $account);
+    default:
+      return FALSE;
   }
 }
 
@@ -330,8 +330,12 @@ function filecabinet_drawer_access($op, $account) {
     case 'view':
       return user_access('view drawer', $account);
     case 'create':
-      if (orgright_limit_reached('drawers')) { return FALSE; }
-      else { return user_access('create drawer', $account); }
+      if (orgright_limit_reached('drawers')) {
+        return FALSE;
+      }
+      else {
+        return user_access('create drawer', $account);
+      }
     case 'update':
       return user_access('update drawer', $account);
     case 'delete':
@@ -347,8 +351,12 @@ function filecabinet_folder_access($op, $account) {
     case 'view':
       return user_access('view folder', $account);
     case 'create':
-      if (orgright_limit_reached('folders')) { return FALSE; }
-      else { return user_access('create folder', $account); }
+      if (orgright_limit_reached('folders')) {
+        return FALSE;
+      }
+      else {
+        return user_access('create folder', $account);
+      }
     case 'update':
       return user_access('update folder', $account);
     case 'delete':
@@ -364,8 +372,12 @@ function filecabinet_document_access($op, $account) {
     case 'view':
       return user_access('view document', $account);
     case 'create':
-      if (orgright_limit_reached('documents')) { return FALSE; }
-      else { return user_access('create document', $account); }
+      if (orgright_limit_reached('documents')) {
+        return FALSE;
+      }
+      else {
+        return user_access('create document', $account);
+      }
     case 'update':
       return user_access('update document', $account);
     case 'delete':
@@ -389,15 +401,15 @@ function filecabinet_forms($form_id, $args) {
     case 'filecabinet_folder_form':
     case 'filecabinet_document_form':
     case 'filecabinet_doclink_form':
-      module_load_include('inc', 'filecabinet', 'filecabinet_form'); 
+      module_load_include('inc', 'filecabinet', 'filecabinet_form');
       $forms[$form_id] = array(
-        'callback' => $form_id.'_build',
+        'callback' => $form_id . '_build',
       );
       return $forms;
     case 'filecabinet_admin_form':
-      module_load_include('inc', 'filecabinet', 'filecabinet_admin'); 
+      module_load_include('inc', 'filecabinet', 'filecabinet_admin');
       $forms[$form_id] = array(
-        'callback' => $form_id.'_build',
+        'callback' => $form_id . '_build',
       );
       return $forms;
     default:
@@ -415,7 +427,7 @@ function filecabinet_forms($form_id, $args) {
 function filecabinet_form($node, &$form_state) {
   //orgright_debug_msg('filecabinet','Fn: filecabinet_form, node type='.$node->type,5);
   // Load the additional file to handle form building
-  module_load_include('inc', 'filecabinet', 'filecabinet_form'); 
+  module_load_include('inc', 'filecabinet', 'filecabinet_form');
   // Call the required form function depending on node type
   if ($node->type == 'drawer') {
     $form = filecabinet_drawer_form_build($form_state, $node);
@@ -428,7 +440,8 @@ function filecabinet_form($node, &$form_state) {
   }
   else {
     $form = array();
-  };
+  }
+  ;
   return $form;
 }
 
@@ -437,18 +450,20 @@ function filecabinet_form($node, &$form_state) {
  */
 function filecabinet_form_alter(&$form, $form_state, $form_id) {
   // Ignore any node forms that are being submitted automatically
-  if ($form['#programmed']) { return; }
+  if ($form['#programmed']) {
+    return;
+  }
   // Is this a node form that may have an attached document
   if (isset($form['type']) && isset($form['#node'])) {
-    if ($form['type']['#value'] .'_node_form' == $form_id) {
+    if ($form['type']['#value'] . '_node_form' == $form_id) {
       // is a node form, so check type
       $node = $form['#node'];
       $doclink_nodetypes_list = filecabinet_get_doclink_nodetypes();
-      $doclink_nodetypes_string = ': '.implode(' ',$doclink_nodetypes_list);
+      $doclink_nodetypes_string = ': ' . implode(' ', $doclink_nodetypes_list);
       if (strpos($doclink_nodetypes_string, $node->type)) {
         // Yes, so add attached document fieldset
         // Load the additional file to handle form building
-        module_load_include('inc', 'filecabinet', 'filecabinet_link'); 
+        module_load_include('inc', 'filecabinet', 'filecabinet_link');
         filecabinet_doclink_node_form_alter($form, $form_state, $node);
       }
     }
@@ -482,7 +497,7 @@ function filecabinet_form_validate($form, &$form_state) {
   module_load_include('inc', 'filecabinet', 'filecabinet_form');
   // and call the function specific to each form type
   if ($form['#id'] == 'node-form') {
-    // process each node-form separately 
+    // process each node-form separately
     if ($form['#node']->type == 'drawer') {
       filecabinet_drawer_form_validate($form, $form_state);
     }
@@ -515,19 +530,19 @@ function filecabinet_form_validate($form, &$form_state) {
 function filecabinet_node_form_submit($form, &$form_state) {
   // Standard Drupal callback for filecabinet_node_form
   //orgright_debug_msg('filecabinet','Fn: filecabinet_node_form_submit',5);
-  //$form_state['#redirect'] = 'filecabinet/filecabinets'; 
+  //$form_state['#redirect'] = 'filecabinet/filecabinets';
 }
 
 function folder_node_form_submit($form, &$form_state) {
   // Standard Drupal callback for folder_node_form
   //orgright_debug_msg('filecabinet','Fn: folder_node_form_submit',5);
-  //$form_state['#redirect'] = 'filecabinet/folders'; 
+  //$form_state['#redirect'] = 'filecabinet/folders';
 }
 
 function document_node_form_submit($form, &$form_state) {
   // Standard Drupal callback for document_node_form
   //orgright_debug_msg('Fn: document_node_form_submit');
-  //$form_state['#redirect'] = 'filecabinet/documents'; 
+  //$form_state['#redirect'] = 'filecabinet/documents';
 }
 */
 
@@ -541,7 +556,7 @@ function filecabinet_form_submit($form, &$form_state) {
   module_load_include('inc', 'filecabinet', 'filecabinet_form');
   // and call the function specific to each form type
   if ($form['#id'] == 'node-form') {
-    // process each node-form separately 
+    // process each node-form separately
     if ($form['#node']->type == 'drawer') {
       filecabinet_drawer_form_submit($form, $form_state);
     }
@@ -570,7 +585,7 @@ function filecabinet_form_submit($form, &$form_state) {
 /**
  * Implementation of hook_insert()
  *
- * This will test for the type of node being created and 
+ * This will test for the type of node being created and
  * insert the data into the appropriate table
  */
 
@@ -592,7 +607,7 @@ function filecabinet_insert($node) {
 /**
  * Implementation of hook_update()
  *
- * This will test for the type of node being updated and 
+ * This will test for the type of node being updated and
  * update the data into the appropriate table
  */
 function filecabinet_update($node) {
@@ -642,50 +657,52 @@ function filecabinet_delete($node) {
 function filecabinet_nodeapi(&$node, $op, $teaser, $page) {
   //orgright_debug_msg('filecabinet','Fn: filecabinet_nodeapi, op='.$op.', type='.$node->type);
   switch ($op) {
-  case 'load':
-  case 'insert':
-  case 'update':
-  case 'delete':
-  case 'delete revision':
-    // First, load the additional file to handle data access
-    module_load_include('inc', 'filecabinet', 'filecabinet_data');
-    if ($node->type == 'drawer') {
-      filecabinet_drawer_nodeapi($node, $op, $teaser, $page);
-    }
-    elseif ($node->type == 'folder') {
-      filecabinet_folder_nodeapi($node, $op, $teaser, $page);
-    }
-    elseif ($node->type == 'document') {
-      filecabinet_document_nodeapi($node, $op, $teaser, $page);
-    }
-  //=IAM= updates follow
-  case 'view':
-    if (orgright_ajax_call()) {
-      //Remove stuff that drupal puts in content that we don't want
-      orgright_debug_dump("AJAX Node",$node,"ajax-node");
-      foreach ($node->content as $key => $value) {
-        switch ($key) {
-        case 'nodecontents':
-          continue;
-        default:
-          unset($node->content[$key]);
-        break;
-        }
+    case 'load':
+    case 'insert':
+    case 'update':
+    case 'delete':
+    case 'delete revision':
+      // First, load the additional file to handle data access
+      module_load_include('inc', 'filecabinet', 'filecabinet_data');
+      if ($node->type == 'drawer') {
+        filecabinet_drawer_nodeapi($node, $op, $teaser, $page);
       }
-      return;
-    }
-  case 'alter':
-    if (orgright_ajax_call()) {
-      //OK this is again, very hacky, but seems to be the 'drupal way'
-      echo $node->body;
-      die();
-      return;
-    }
+      elseif ($node->type == 'folder') {
+        filecabinet_folder_nodeapi($node, $op, $teaser, $page);
+      }
+      elseif ($node->type == 'document') {
+        filecabinet_document_nodeapi($node, $op, $teaser, $page);
+      }
+      break;
+    //=IAM= updates follow
+    case 'view':
+      if (orgright_ajax_call() && isset($node->content)) {
+        //Remove stuff that drupal puts in content that we don't want
+        orgright_debug_dump("AJAX Node", $node, "ajax-node");
+        foreach ($node->content as $key => $value) {
+          switch ($key) {
+            case 'nodecontents':
+              continue;
+            default:
+              unset($node->content[$key]);
+              break;
+          }
+        }
+        return;
+      }
+      break;
+    case 'alter':
+      if (orgright_ajax_call()) {
+        //OK this is again, very hacky, but seems to be the 'drupal way'
+        echo $node->body;
+        die();
+        return;
+      }
   }
-  // check if this is a node that is a possible target of a document link 
+  // check if this is a node that is a possible target of a document link
   $doclink_nodetypes_list = filecabinet_get_doclink_nodetypes();
-  $doclink_nodetypes_string = ': '.implode(' ',$doclink_nodetypes_list);
-  if (strpos($doclink_nodetypes_string,$node->type)) {
+  $doclink_nodetypes_string = ': ' . implode(' ', $doclink_nodetypes_list);
+  if (strpos($doclink_nodetypes_string, $node->type)) {
     // Yes, so what operation is required?
     // First, load the additional file to handle data access
     module_load_include('inc', 'filecabinet', 'filecabinet_link');
@@ -701,7 +718,9 @@ function filecabinet_nodeapi(&$node, $op, $teaser, $page) {
       // Node form is available for validation, so check document link field
       // unless this form was submitted automatically (ignore such forms)
       // NB $teaser is actually the $form array
-      if ($teaser['#programmed']) { return; }
+      if ($teaser['#programmed']) {
+        return;
+      }
       filecabinet_doclink_node_validate($node, $teaser);
     }
     elseif ($op == 'insert') {
@@ -832,7 +851,9 @@ function filecabinet_user($op, &$edit, &$userobj, $category = NULL) {
 function filecabinet_mailhandler($node, $result, $index, $header, $mailbox) {
   //orgright_debug_msg('filecabinet','Fn: filecabinet_mailhandler, node='.$node->nid.', type='.$node->type);
   // Only need to deal with own types
-  if ($node->type != 'document') { return $node; }
+  if ($node->type != 'document') {
+    return $node;
+  }
   // Find the member id for the person who sent this email
   $from = $header->from[0]->mailbox . '@' . $header->from[0]->host;
   $sql = "SELECT m.nid FROM {node} n JOIN {org_members} m ON m.nid = n.nid WHERE m.vid = n.vid AND m.email LIKE '%%%s%%'";
@@ -840,7 +861,7 @@ function filecabinet_mailhandler($node, $result, $index, $header, $mailbox) {
   // The original email has been saved as an uploaded file so it can be attached to this
   // document, so now move the saved file into the filecabinet and make permanent.
   // also change the filname fo something a bit more meaningful (ie "message-<file_id>").
-  $node->msgfile->newname = 'message-'.$node->msgfile->fid;
+  $node->msgfile->newname = 'message-' . $node->msgfile->fid;
   $msgfile = filecabinet_save_file($node->msgfile);
   if ($msgfile) {
     $fromaddress = check_plain(preg_replace('|<(.*)>|', '($1)', $header->fromaddress));
@@ -857,14 +878,14 @@ function filecabinet_mailhandler($node, $result, $index, $header, $mailbox) {
     $node->scanned = 1;
     $node->docname = $subject;
     $node->docversion = 1;
-    $node->docdate = substr($msgdate,0,10);
+    $node->docdate = substr($msgdate, 0, 10);
     $node->doctype = filecabinet_get_default_mail_doctype();
     $node->docstatus = filecabinet_get_default_mail_docstatus();
     $node->docdesc = 'Email from ' . $fromaddress . ' to ' . $toaddress . ' on ' . $msgdate . ' with subject ' . $subject;
   }
   // done with the node, but here may be attachments to deal with
   filecabinet_mail_attachments($node);
-  // all done at last  
+  // all done at last
   return $node;
 }
 
@@ -887,14 +908,14 @@ function filecabinet_mail_attachments($node) {
   // In the first case, save attachment details (in a static variable),
   // and create document nodes in the second.
   static $attachments = array();
- //orgright_debug_dump('static attachments array',$attachments,'attarray');
+  //orgright_debug_dump('static attachments array',$attachments,'attarray');
   if (is_object($node)) {
     // a mail message node, so save attachment details
     foreach ($node->mimeparts as $mimepart) {
       if ($mimepart->filename != 'unnamed_attachment') {
         // First, save attachment file from mimepart
         $filename = filecabinet_check_filename($mimepart->filename);
-        $filepath = file_directory_temp().'/'.$filename;
+        $filepath = file_directory_temp() . '/' . $filename;
         file_save_data($mimepart->data, $filepath);
         // and build a file object
         $attachedfile = new stdClass();
@@ -942,7 +963,7 @@ function filecabinet_mail_attachments($node) {
       $attnode->docdate = $attachment['date'];
       $attnode->doctype = filecabinet_get_default_mail_doctype();
       $attnode->docstatus = filecabinet_get_default_mail_docstatus();
-      $attnode->docdesc = t('Email file attachment - name = @name, type = @type', array('@name'=>$attachedfile->filename, '@type'=>$attachedfile->filemime));
+      $attnode->docdesc = t('Email file attachment - name = @name, type = @type', array('@name' => $attachedfile->filename, '@type' => $attachedfile->filemime));
       // and save in the database
       node_validate($attnode);
       if (!$error_messages = form_set_error()) {
@@ -973,7 +994,7 @@ function filecabinet_save_file($file) {
   $filepath = file_create_path($subpath);
   file_check_directory($filepath, FILE_CREATE_DIRECTORY);
   // check that the month portion exists, create if not
-  $subpath .= '/' . substr(strtolower($today['month']),0,3);
+  $subpath .= '/' . substr(strtolower($today['month']), 0, 3);
   $filepath = file_create_path($subpath);
   file_check_directory($filepath, FILE_CREATE_DIRECTORY);
   // make filepath the full path to the file by adding filename
@@ -982,7 +1003,9 @@ function filecabinet_save_file($file) {
   $source = $file->filepath;
   file_move($source, $filepath);
   // update and return a file object
-  if (isset($file->newname)) { unset($file->newname); }
+  if (isset($file->newname)) {
+    unset($file->newname);
+  }
   $file->filename = $filename;
   $file->filepath = $filepath;
   $file->status = FILE_STATUS_PERMANENT;
@@ -1007,18 +1030,22 @@ function filecabinet_cron() {
   // And select up to this many documents that need to be scanned
   $sql = "SELECT nid, vid, afid  FROM {org_documents} WHERE afid > 0 AND scanned = 0";
   $querydocs = db_query_range($sql, 0, $scanmax);
-  if (!$querydocs) { return NULL; }
+  if (!$querydocs) {
+    return NULL;
+  }
   // now prepare a batch to do the actual scanning
   $operations = array();
   while ($document = db_fetch_object($querydocs)) {
     // First step is to load the file object and find the file path
     $queryfile = db_query("SELECT * FROM {files} f WHERE fid = %d", $document->afid);
-    if (!$queryfile) { watchdog('filecabinet', t("Error retrieving file details for embedded file (fid=%d)",array($document->afid))); }
+    if (!$queryfile) {
+      watchdog('filecabinet', t("Error retrieving file details for embedded file (fid=%d)", array($document->afid)));
+    }
     $file = db_fetch_object($queryfile);
     // now the command to scan and extract the contents
-    $from = array( ' ', '"', "'", '*', '(', ')', '[', ']', ':', '|', '?', '#', '+', '&');
-    $toch = array('\ ','\"',"\'",'\*','\(','\)','\[','\]','\:','\|','\?','\#','\+','\&');
-    $command = filecabinet_get_docscan_command() . ' '. str_replace($from, $toch, $file->filepath);
+    $from = array(' ', '"', "'", '*', '(', ')', '[', ']', ':', '|', '?', '#', '+', '&');
+    $toch = array('\ ', '\"', "\'", '\*', '\(', '\)', '\[', '\]', '\:', '\|', '\?', '\#', '\+', '\&');
+    $command = filecabinet_get_docscan_command() . ' ' . str_replace($from, $toch, $file->filepath);
     // and scan the file, with the results returned in $xmlarray
     //orgright_debug_msg('filecabinet','scan cmd = '.$command);
     $xmlarray = array();
@@ -1036,7 +1063,7 @@ function filecabinet_cron() {
       }
       $bodylen = strlen($node->body);
       $teaserlen = variable_get('teaser_length', 600);
-      if (strlen($bodylen > $teaserlen+24)) {
+      if (strlen($bodylen > $teaserlen + 24)) {
         $node->teaser = substr($node->body, 0, strpos($node->body, "\n", $teaserlen));
       }
       else {
@@ -1044,73 +1071,91 @@ function filecabinet_cron() {
       }
       $node->scanned = 1;
       node_save($node);
-      watchdog('filecabinet', t('Embedded document scanned for node @node', array('@node'=>$node->nid)));
+      watchdog('filecabinet', t('Embedded document scanned for node @node', array('@node' => $node->nid)));
     }
-    else {  
-      watchdog('filecabinet', t('Command exec error (retval=@rval)', array('@rval'=>$retval)));
+    else {
+      watchdog('filecabinet', t('Command exec error (retval=@rval)', array('@rval' => $retval)));
     }
   }
 }
 
 /**** following is the batch API implementation - does not work
-    $operations[] = array('filecabinet_document_scan', array($document));
-  }
-  $batch = array(
-    'file' => drupal_get_path('module', 'filecabinet') .'/filecabinet_cron.inc',
-    'operations' => $operations,
-    'finished' => 'filecabinet_document_finished_scan',
-  );
-  batch_set($batch);
-  // Make 'progressive' mode work.  Hack due to bug http://drupal.org/node/638712
-  $batch =& batch_get();
-  $batch['progressive'] = FALSE;
-  //orgright_debug_dump('filecabinet-batch-run',$batch,'batch');
-  //orgright_debug_msg('filecabinet', 'Fn: filecabinet_cron #7');
-  batch_process('');
-  //orgright_debug_msg('filecabinet', 'Fn: filecabinet_cron #8');
+$operations[] = array('filecabinet_document_scan', array($document));
+}
+$batch = array(
+'file' => drupal_get_path('module', 'filecabinet') .'/filecabinet_cron.inc',
+'operations' => $operations,
+'finished' => 'filecabinet_document_finished_scan',
+);
+batch_set($batch);
+// Make 'progressive' mode work.  Hack due to bug http://drupal.org/node/638712
+$batch =& batch_get();
+$batch['progressive'] = FALSE;
+//orgright_debug_dump('filecabinet-batch-run',$batch,'batch');
+//orgright_debug_msg('filecabinet', 'Fn: filecabinet_cron #7');
+batch_process('');
+//orgright_debug_msg('filecabinet', 'Fn: filecabinet_cron #8');
 }******/
 
 /**
  * Some orgRight filecabinet specific functions to provide data
  */
-function filecabinet_get_drawers($key='nid') {
+function filecabinet_get_drawers($key = 'nid') {
   // return an array of drawers keyed by $key
   $sql = "SELECT w.nid, w.drawer FROM {node} n JOIN {org_drawers} w ON w.nid = n.nid WHERE w.vid = n.vid";
   $drawers = array();
   $result = db_query($sql);
   while ($obj = db_fetch_object($result)) {
     $description = $obj->drawer;
-    if ($key == 'name') { $drawers[$obj->drawer] = $description; }
-    elseif ($key == 'nid') { $drawers[$obj->nid] = $description; }
-    else { $drawers[] = $description; }
+    if ($key == 'name') {
+      $drawers[$obj->drawer] = $description;
+    }
+    elseif ($key == 'nid') {
+      $drawers[$obj->nid] = $description;
+    }
+    else {
+      $drawers[] = $description;
+    }
   }
   return $drawers;
 }
 
-function filecabinet_get_folders($key='nid') {
+function filecabinet_get_folders($key = 'nid') {
   // return an array of folders keyed by $key
   $sql = "SELECT f.nid, f.folder FROM {node} n JOIN {org_folders} f ON f.nid = n.nid WHERE f.vid = n.vid";
   $folders = array();
   $result = db_query($sql);
   while ($obj = db_fetch_object($result)) {
     $description = $obj->folder;
-    if ($key == 'name') { $folders[$obj->folder] = $description; }
-    elseif ($key == 'nid') { $folders[$obj->nid] = $description; }
-    else { $folders[] = $description; }
+    if ($key == 'name') {
+      $folders[$obj->folder] = $description;
+    }
+    elseif ($key == 'nid') {
+      $folders[$obj->nid] = $description;
+    }
+    else {
+      $folders[] = $description;
+    }
   }
   return $folders;
 }
 
-function filecabinet_get_documents($key='nid') {
+function filecabinet_get_documents($key = 'nid') {
   // return an array of documents keyed by $key
   $sql = "SELECT d.nid, d.docname FROM {node} n JOIN {org_documents} d ON d.nid = n.nid WHERE d.vid = n.vid";
   $documents = array();
   $result = db_query($sql);
   while ($obj = db_fetch_object($result)) {
     $description = $obj->docname;
-    if ($key == 'name') { $documents[$obj->docname] = $description; }
-    elseif ($key == 'nid') { $documents[$obj->nid] = $description; }
-    else { $documents[] = $description; }
+    if ($key == 'name') {
+      $documents[$obj->docname] = $description;
+    }
+    elseif ($key == 'nid') {
+      $documents[$obj->nid] = $description;
+    }
+    else {
+      $documents[] = $description;
+    }
   }
   return $documents;
 
@@ -1120,20 +1165,20 @@ function filecabinet_get_folder_drawer($fnid) {
   // return the nid of the drawer that the passed folder is within
   $sql = "SELECT f.fnid, f.wnid FROM {node} n JOIN {org_folders} f ON f.nid = n.nid WHERE f.vid = n.vid AND f.nid = %d";
   do {
-   $obj = db_fetch_object(db_query($sql, $fnid));
-   $fnid = $obj->fnid;
+    $obj = db_fetch_object(db_query($sql, $fnid));
+    $fnid = $obj->fnid;
   } while (!$obj->wnid);
-  return $obj->wnid;    
+  return $obj->wnid;
 }
 
 function filecabinet_get_document_folder($dnid) {
   // return the nid of the folder that the passed document is within
   $sql = "SELECT d.dnid, d.fnid FROM {node} n JOIN {org_documents} d ON d.nid = n.nid WHERE d.vid = n.vid AND d.nid = %d";
   do {
-   $obj = db_fetch_object(db_query($sql, $dnid));
-   $dnid = $obj->dnid;
+    $obj = db_fetch_object(db_query($sql, $dnid));
+    $dnid = $obj->dnid;
   } while (!$obj->fnid);
-  return $obj->fnid;    
+  return $obj->fnid;
 }
 
 /*function filecabinet_get_drawer_types() {
@@ -1157,7 +1202,7 @@ function filecabinet_get_default_mail_mnid() {
   return variable_get('filecabinet_default_mail_mnid', 0);
 }
 
-function filecabinet_get_default_owner_name () {
+function filecabinet_get_default_owner_name() {
   $ouid = filecabinet_get_default_owner_uid();
   if ($ouid && $ouid > O_MAX_PROTECTED_USER) {
     $sql = "SELECT name FROM {users} WHERE uid = %d";
@@ -1237,7 +1282,7 @@ function filecabinet_get_document_types() {
 }
 
 function filecabinet_get_doclink_nodetypes() {
-  $types = variable_get('filecabinet_doclink_nodetypes',array());
+  $types = variable_get('filecabinet_doclink_nodetypes', array());
   $type_list = array();
   foreach ($types as $val) {
     $type_list[$val] = $val;
@@ -1246,7 +1291,7 @@ function filecabinet_get_doclink_nodetypes() {
 }
 
 function filecabinet_get_doclink_linktypes() {
-  $types = variable_get('filecabinet_doclink_linktypes',array('Normal'));
+  $types = variable_get('filecabinet_doclink_linktypes', array('Normal'));
   $type_list = array();
   foreach ($types as $val) {
     $type_list[$val] = $val;
@@ -1276,9 +1321,15 @@ function filecabinet_get_upload_resolution() {
 
 function filecabinet_display_filesize($filesize) {
   // Convert a filesize in bytes to a display string (could use "format_size")
-  if ($filesize < 1000) { return sprintf('%d',$filesize).' bytes'; }
-  elseif ($filesize < 1000000) { return sprintf('%.2f',$filesize/1000) . 'KB'; }
-  else { return sprintf('%.2f',$filesize/1000000) . 'MB'; }
+  if ($filesize < 1000) {
+    return sprintf('%d', $filesize) . ' bytes';
+  }
+  elseif ($filesize < 1000000) {
+    return sprintf('%.2f', $filesize / 1000) . 'KB';
+  }
+  else {
+    return sprintf('%.2f', $filesize / 1000000) . 'MB';
+  }
 }
 
 function filecabinet_get_docscan_max() {

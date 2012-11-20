@@ -16,7 +16,7 @@ function publicpage_init() {
   //publicpage_debug_msg('publicpage','Fn: publicpage_init',5);
   // Temp - until the taxonomy issues are sorted out
 }
- 
+
 /**
  * Implementation of hook_node_info
  */
@@ -36,7 +36,7 @@ function publicpage_node_info() {
     ),
   );
 }
-  
+
 /**
  * Implementation of hook_perm()
  */
@@ -48,21 +48,21 @@ function publicpage_perm() {
     'update public page',
     'delete public page',
   );
-}   
+}
 
 /**
  * Implementation of hook_access()
- */ 
+ */
 function publicpage_access($op, $node, $account) {
   //publicpage_debug_msg('publicpage','Fn: publicpage_access',5);
   // Determine node type ($node will either be the string "type" or a node object)
   $node_type = ($op == 'create') ? $node : $node->type;
   // Limit access to the functions provided by this module
   switch ($node_type) {
-  case 'public':
-    return publicpage_public_access($op, $account);
-  default:
-    return FALSE;
+    case 'public':
+      return publicpage_public_access($op, $account);
+    default:
+      return FALSE;
   }
 }
 
@@ -96,7 +96,7 @@ function publicpage_db_rewrite_sql($query, $table = 'n', $field = 'nid', $args =
       if ($table == 'n' || $table == 'node') {
         // node table is the primary table for query
         //if (!user_access('view public page', $user)) {
-          $qalter['where'] = "$table.type != 'public'";
+        $qalter['where'] = "$table.type != 'public'";
         //}
       }
       elseif (preg_match('|{node} ([A-Za-z_]+)|', $query, $match)) {
@@ -126,7 +126,7 @@ function publicpage_db_rewrite_sql($query, $table = 'n', $field = 'nid', $args =
 /**
  * Implementation of hook_node_grants
  */
-function publicpage_node_grants ($account, $op) {
+function publicpage_node_grants($account, $op) {
   //publicpage_debug_msg('Fn: publicpage_node_grants, op='.$op);
   // Declare that this user belongs to either group #1 or #2 for realm "publicpage"
   // depending on whether user is anonymous or authenticated respectively
@@ -145,34 +145,34 @@ function publicpage_node_grants ($account, $op) {
 /**
  * Implementation of hook_node_access_records
  */
-function publicpage_node_access_records ($node) {
+function publicpage_node_access_records($node) {
   //publicpage_debug_msg('Fn: publicpage_node_grants, op='.$node->type);
   // Specify grant access records for groups #1, and #2 in realm "publicpage"
   $grants = array();
   switch ($node->type) {
-  case 'public': 
-    $grants[] = array(
-      'realm' => 'publicpage',
-      'gid' => 1,
-      'grant_view' => TRUE,
-      'grant_update' => FALSE,
-      'grant_delete' => FALSE,
-      'priority' => 0,
-     );
-    break;
-  case 'page':
-  case 'story':
-  case 'forum':
-    $grants[] = array(
-      'realm' => 'publicpage',
-      'gid' => 2,
-      'grant_view' => TRUE,
-      'grant_update' => FALSE,
-      'grant_delete' => FALSE,
-      'priority' => 0,
-    );
-    break;
-  default:
+    case 'public':
+      $grants[] = array(
+        'realm' => 'publicpage',
+        'gid' => 1,
+        'grant_view' => TRUE,
+        'grant_update' => FALSE,
+        'grant_delete' => FALSE,
+        'priority' => 0,
+      );
+      break;
+    case 'page':
+    case 'story':
+    case 'forum':
+      $grants[] = array(
+        'realm' => 'publicpage',
+        'gid' => 2,
+        'grant_view' => TRUE,
+        'grant_update' => FALSE,
+        'grant_delete' => FALSE,
+        'priority' => 0,
+      );
+      break;
+    default:
   }
   return $grants;
 }
@@ -240,10 +240,14 @@ function publicpage_publicpages() {
   while ($public = db_fetch_object($result)) {
     // Generate a line of listing for this public page
     $output .= '<li>';
-    $output .= l($public->title, 'node/'.$public->nid) . ' ';
-    $output .= l('[edit]', 'node/'.$public->nid.'/edit');
-    if ($public->promote) { $output .= ', promoted to front page'; }
-    if ($public->sticky) { $output .= ', sticky at top of list'; }
+    $output .= l($public->title, 'node/' . $public->nid) . ' ';
+    $output .= l('[edit]', 'node/' . $public->nid . '/edit');
+    if ($public->promote) {
+      $output .= ', promoted to front page';
+    }
+    if ($public->sticky) {
+      $output .= ', sticky at top of list';
+    }
     $output .= '</li>';
   }
   $output .= '</ul></div>';

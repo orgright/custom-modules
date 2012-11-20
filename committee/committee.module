@@ -33,10 +33,10 @@ function committee_init() {
     // disable file uploads to these node types
     variable_set('upload_'.$type, '0'); // 0=disabled, 1=enabled
     // set the node options to published, but not promoted, sticky, or revision
-    variable_set('node_options_'.$type, array('status')); // status(=published), promote, sticky, revision 
+    variable_set('node_options_'.$type, array('status')); // status(=published), promote, sticky, revision
   }*/
 }
- 
+
 /**
  * Implementation of hook_node_info
  */
@@ -84,7 +84,7 @@ function committee_node_info() {
     ),
   );
 }
-  
+
 /**
  * Implementation of hook_perm()
  */
@@ -108,8 +108,8 @@ function committee_perm() {
     'create assignment',
     'update assignment',
     'delete assignment',
-  );    
-}   
+  );
+}
 
 /**
  * Implementation of hook_menu()
@@ -296,23 +296,23 @@ function committee_menu_alter(&$menu_entries) {
 
 /**
  * Implementation of hook_access()
- */ 
+ */
 function committee_access($op, $node, $account) {
   //orgright_debug_msg('committee','Fn: committee_access');
   // Determine node type ($node will either be the string "type" or a node object)
   $node_type = ($op == 'create') ? $node : $node->type;
   // Limit access to the functions provided by this module
   switch ($node_type) {
-  case 'committee':
-    return committee_committee_access($op, $account);
-  case 'role':
-    return committee_role_access($op, $account);
-  case 'appointment':
-    return committee_appointment_access($op, $account);
-  case 'assignment':
-    return committee_assignment_access($op, $account);
-  default:
-    return FALSE;
+    case 'committee':
+      return committee_committee_access($op, $account);
+    case 'role':
+      return committee_role_access($op, $account);
+    case 'appointment':
+      return committee_appointment_access($op, $account);
+    case 'assignment':
+      return committee_assignment_access($op, $account);
+    default:
+      return FALSE;
   }
 }
 
@@ -322,8 +322,12 @@ function committee_committee_access($op, $account) {
     case 'view':
       return user_access('view committee', $account);
     case 'create':
-      if (orgright_limit_reached('committees')) { return FALSE; }
-      else { return user_access('create committee', $account); }
+      if (orgright_limit_reached('committees')) {
+        return FALSE;
+      }
+      else {
+        return user_access('create committee', $account);
+      }
     case 'update':
       return user_access('update committee', $account);
     case 'delete':
@@ -339,8 +343,12 @@ function committee_role_access($op, $account) {
     case 'view':
       return user_access('view role', $account);
     case 'create':
-      if (orgright_limit_reached('roles')) { return FALSE; }
-      else { return user_access('create role', $account); }
+      if (orgright_limit_reached('roles')) {
+        return FALSE;
+      }
+      else {
+        return user_access('create role', $account);
+      }
     case 'update':
       return user_access('update role', $account);
     case 'delete':
@@ -356,8 +364,12 @@ function committee_appointment_access($op, $account) {
     case 'view':
       return user_access('view appointment', $account);
     case 'create':
-      if (orgright_limit_reached('appointments')) { return FALSE; }
-      else { return user_access('create appointment', $account); }
+      if (orgright_limit_reached('appointments')) {
+        return FALSE;
+      }
+      else {
+        return user_access('create appointment', $account);
+      }
     case 'update':
       return user_access('update appointment', $account);
     case 'delete':
@@ -373,8 +385,12 @@ function committee_assignment_access($op, $account) {
     case 'view':
       return user_access('view assignment', $account);
     case 'create':
-      if (orgright_limit_reached('assignments')) { return FALSE; }
-      else { return user_access('create assignment', $account); }
+      if (orgright_limit_reached('assignments')) {
+        return FALSE;
+      }
+      else {
+        return user_access('create assignment', $account);
+      }
     case 'update':
       return user_access('update assignment', $account);
     case 'delete':
@@ -398,15 +414,15 @@ function committee_forms($form_id, $args) {
     case 'committee_role_form':
     case 'committee_appointment_form':
     case 'committee_assignment_form':
-      module_load_include('inc', 'committee', 'committee_form'); 
+      module_load_include('inc', 'committee', 'committee_form');
       $forms[$form_id] = array(
-        'callback' => $form_id.'_build',
+        'callback' => $form_id . '_build',
       );
       return $forms;
     case 'committee_admin_form':
-      module_load_include('inc', 'committee', 'committee_admin'); 
+      module_load_include('inc', 'committee', 'committee_admin');
       $forms[$form_id] = array(
-        'callback' => $form_id.'_build',
+        'callback' => $form_id . '_build',
       );
       return $forms;
     default:
@@ -424,7 +440,7 @@ function committee_forms($form_id, $args) {
 function committee_form($node, &$form_state) {
   //orgright_debug_msg('committee','Fn: committee_form, node type='$node->type);
   // Load the additional file to handle form building
-  module_load_include('inc', 'committee', 'committee_form'); 
+  module_load_include('inc', 'committee', 'committee_form');
   // Call the required form function depending on node type
   if ($node->type == 'committee') {
     $form = committee_committee_form_build($form_state, $node);
@@ -440,7 +456,8 @@ function committee_form($node, &$form_state) {
   }
   else {
     $form = array();
-  };
+  }
+  ;
   return $form;
 }
 
@@ -474,7 +491,7 @@ function committee_form_validate($form, &$form_state) {
   module_load_include('inc', 'committee', 'committee_form');
   // and call the function specific to each form type
   if ($form['#id'] == 'node-form') {
-    // proecess each node-form separately 
+    // proecess each node-form separately
     if ($form['#node']->type == 'committee') {
       committee_committee_form_validate($form, $form_state);
     }
@@ -506,28 +523,28 @@ function committee_node_form_submit($form, &$form_state) {
   // Standard Drupal callback for committee_node_form
   //orgright_debug_msg('committee','Fn: committee_node_form_submit');
   committee_debug_dump($form);
-  $form_state['redirect'] = 'committee/committees'; 
+  $form_state['redirect'] = 'committee/committees';
 }
 
 function role_node_form_submit($form, &$form_state) {
   // Standard Drupal callback for committee_node_form
   //orgright_debug_msg('committee','Fn: role_node_form_submit');
   committee_debug_dump($form);
-  $form_state['redirect'] = 'committee/roles'; 
+  $form_state['redirect'] = 'committee/roles';
 }
 
 function appointment_node_form_submit($form, &$form_state) {
   // Standard Drupal callback for committee_node_form
   //orgright_debug_msg('committee','Fn: appointment_node_form_submit');
   committee_debug_dump($form);
-  $form_state['redirect'] = 'committee/appointments'; 
+  $form_state['redirect'] = 'committee/appointments';
 }
 
 function assignment_node_form_submit($form, &$form_state) {
   // Standard Drupal callback for committee_node_form
   //orgright_debug_msg('committee','Fn: assignment_node_form_submit');
   committee_debug_dump($form);
-  $form_state['redirect'] = 'committee/assignments'; 
+  $form_state['redirect'] = 'committee/assignments';
 }
 */
 
@@ -542,7 +559,7 @@ function committee_form_submit($form, &$form_state) {
   module_load_include('inc', 'committee', 'committee_form');
   // and call the function specific to each form type
   if ($form['#id'] == 'node-form') {
-    // proecess each node-form separately 
+    // proecess each node-form separately
     if ($form['#node']->type == 'committee') {
       committee_committee_form_submit($form, $form_state);
     }
@@ -569,7 +586,7 @@ function committee_form_submit($form, &$form_state) {
 /**
  * Implementation of hook_insert()
  *
- * This will test for the type of node being created and 
+ * This will test for the type of node being created and
  * insert the data into the appropriate table
  */
 
@@ -594,7 +611,7 @@ function committee_insert($node) {
 /**
  * Implementation of hook_update()
  *
- * This will test for the type of node being updated and 
+ * This will test for the type of node being updated and
  * update the data into the appropriate table
  */
 function committee_update($node) {
@@ -649,25 +666,25 @@ function committee_delete($node) {
 function committee_nodeapi(&$node, $op, $teaser, $page) {
   //orgright_debug_msg('committee','Fn: committee_nodeapi, op='.$op.', type='.$node->type);
   switch ($op) {
-  case 'load':
-  case 'insert':
-  case 'update':
-  case 'delete':
-  case 'delete revision':
-    // First, load the additional file to handle data access
-    module_load_include('inc', 'committee', 'committee_data');
-    if ($node->type == 'committee') {
-      committee_committee_nodeapi($node, $op, $teaser, $page);
-    }
-    elseif ($node->type == 'role') {
-      committee_role_nodeapi($node, $op, $teaser, $page);
-    }
-    elseif ($node->type == 'appointment') {
-      committee_appointment_nodeapi($node, $op, $teaser, $page);
-    }
-    elseif ($node->type == 'assignment') {
-      committee_assignment_nodeapi($node, $op, $teaser, $page);
-    }
+    case 'load':
+    case 'insert':
+    case 'update':
+    case 'delete':
+    case 'delete revision':
+      // First, load the additional file to handle data access
+      module_load_include('inc', 'committee', 'committee_data');
+      if ($node->type == 'committee') {
+        committee_committee_nodeapi($node, $op, $teaser, $page);
+      }
+      elseif ($node->type == 'role') {
+        committee_role_nodeapi($node, $op, $teaser, $page);
+      }
+      elseif ($node->type == 'appointment') {
+        committee_appointment_nodeapi($node, $op, $teaser, $page);
+      }
+      elseif ($node->type == 'assignment') {
+        committee_assignment_nodeapi($node, $op, $teaser, $page);
+      }
   }
 }
 
@@ -759,8 +776,12 @@ function committee_get_committees($key) {
   $committees = array();
   $result = db_query($sql);
   while ($obj = db_fetch_object($result)) {
-    if ($key == 'name') { $committees[$obj->committee] = $obj->committee; }
-    elseif ($key == 'nid') { $committees[$obj->nid] = $obj->committee; }
+    if ($key == 'name') {
+      $committees[$obj->committee] = $obj->committee;
+    }
+    elseif ($key == 'nid') {
+      $committees[$obj->nid] = $obj->committee;
+    }
   }
   asort($committees);
   return $committees;
@@ -775,10 +796,18 @@ function committee_get_roles($key) {
   $result = db_query($sql);
   while ($obj = db_fetch_object($result)) {
     $description = $obj->role;
-    if ($obj->cnid) { $description .= ' of ' . $committees[$obj->cnid] . ' committee'; }
-    else { $description .= ' [no committee]'; }
-    if ($key == 'name') { $roles[$obj->committee] = $description; }
-    elseif ($key == 'nid') { $roles[$obj->nid] = $description; }
+    if ($obj->cnid) {
+      $description .= ' of ' . $committees[$obj->cnid] . ' committee';
+    }
+    else {
+      $description .= ' [no committee]';
+    }
+    if ($key == 'name') {
+      $roles[$obj->committee] = $description;
+    }
+    elseif ($key == 'nid') {
+      $roles[$obj->nid] = $description;
+    }
   }
   asort($roles);
   return $roles;
@@ -787,4 +816,4 @@ function committee_get_roles($key) {
 /**
  * End of module
  */
- 
+

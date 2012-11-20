@@ -29,7 +29,7 @@ function membership_disable() {
 /**
  * Implementation of hook_schema()
  */
-// === "org_members" table === 
+// === "org_members" table ===
 function membership_schema() {
   $schema['org_members'] = array(
     'description' => t('Stores details for members that are not held in the node tables'),
@@ -189,7 +189,7 @@ function membership_schema() {
         'not null' => TRUE,
         'default' => 0,
         'description' => t('The amount of this subscription'),
-	  ),
+      ),
       'notes' => array(
         'type' => 'varchar',
         'length' => 255,
@@ -203,7 +203,7 @@ function membership_schema() {
         'default' => 0,
         'description' => t('The UID of the user who last modified this subscription'),
       ),
-	),
+    ),
     'primary key' => array('vid'),
     'indexes' => array(
       'nid' => array('nid'),
@@ -255,7 +255,7 @@ function membership_schema() {
         'not null' => TRUE,
         'default' => 0,
         'description' => t('The amount of this subscription payment'),
-	  ),
+      ),
       'notes' => array(
         'type' => 'varchar',
         'length' => 255,
@@ -269,7 +269,7 @@ function membership_schema() {
         'default' => 0,
         'description' => t('The UID of the user who last modified this payment'),
       ),
-	),
+    ),
     'primary key' => array('vid'),
     'indexes' => array(
       'nid' => array('nid'),
@@ -301,29 +301,42 @@ function membership_update_6002() {
   // Add new column "leavedate" to org_members table
   $sql = "ALTER TABLE org_members ADD leavedate CHAR(10) NOT NULL AFTER joindate";
   if (!db_query($sql)) {
-    return array('#abort'=>array('success'=>FALSE, 'query'=>'Add new column to table org_members failed'));
+    return array('#abort' => array('success' => FALSE, 'query' => 'Add new column to table org_members failed'));
   }
   return array();
 }
+
 function membership_update_6001() {
   // Drop all default specifications for text columns
   $sql = "ALTER TABLE org_members ";
   $cols = array('member', 'category', 'standing', 'address', 'city', 'postcode', 'email', 'phone', 'joindate', 'notes');
-  foreach ($cols as $col) { $sql .= " ALTER COLUMN $col DROP DEFAULT,"; }
+  foreach ($cols as $col) {
+    $sql .= " ALTER COLUMN $col DROP DEFAULT,";
+  }
   $sql = substr($sql, 0, -1);
-  if (!db_query($sql)) { return array('#abort'=>array('success'=>FALSE, 'query'=>'Alter table org_members failed')); }
+  if (!db_query($sql)) {
+    return array('#abort' => array('success' => FALSE, 'query' => 'Alter table org_members failed'));
+  }
 
   $sql = "ALTER TABLE org_subscriptions ";
   $cols = array('scode', 'datefrom', 'dateto', 'notes');
-  foreach ($cols as $col) { $sql .= " ALTER COLUMN $col DROP DEFAULT,"; }
+  foreach ($cols as $col) {
+    $sql .= " ALTER COLUMN $col DROP DEFAULT,";
+  }
   $sql = substr($sql, 0, -1);
-  if (!db_query($sql)) { return array('#abort'=>array('success'=>FALSE, 'query'=>'Alter table org_subscriptions failed')); }
+  if (!db_query($sql)) {
+    return array('#abort' => array('success' => FALSE, 'query' => 'Alter table org_subscriptions failed'));
+  }
 
   $sql = "ALTER TABLE org_subpayments ";
   $cols = array('datepaid', 'notes');
-  foreach ($cols as $col) { $sql .= " ALTER COLUMN $col DROP DEFAULT,"; }
+  foreach ($cols as $col) {
+    $sql .= " ALTER COLUMN $col DROP DEFAULT,";
+  }
   $sql = substr($sql, 0, -1);
-  if (!db_query($sql)) { return array('#abort'=>array('success'=>FALSE, 'query'=>'Alter table org_subpayments failed')); }
+  if (!db_query($sql)) {
+    return array('#abort' => array('success' => FALSE, 'query' => 'Alter table org_subpayments failed'));
+  }
 
   return array();
 }

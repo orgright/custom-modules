@@ -20,7 +20,7 @@ function orgright_init() {
   //orgright_debug_msg('orgright','Fn: orgright_init',5);
   // Temp - until the taxonomy issues are sorted out
 }
- 
+
 /**
  * Implementation of hook_node_info
  */
@@ -40,7 +40,7 @@ function orgright_node_info() {
     ),
   );
 }
-  
+
 /**
  * Implementation of hook_perm()
  */
@@ -54,22 +54,23 @@ function orgright_perm() {
     'use orgRight helpdesk',
     'administer orgRight modules',
     'configure orgRight modules',
+    'access forums',
   );
-}   
+}
 
 /**
  * Implementation of hook_access()
- */ 
+ */
 function orgright_access($op, $node, $account) {
   //orgright_debug_msg('orgright','Fn: orgright_access',5);
   // Determine node type ($node will either be the string "type" or a node object)
   $node_type = ($op == 'create') ? $node : $node->type;
   // Limit access to the functions provided by this module
   switch ($node_type) {
-  case 'public':
-    return orgright_public_access($op, $account);
-  default:
-    return FALSE;
+    case 'public':
+      return orgright_public_access($op, $account);
+    default:
+      return FALSE;
   }
 }
 
@@ -103,7 +104,7 @@ function orgright_db_rewrite_sql($query, $table = 'n', $field = 'nid', $args = a
       if ($table == 'n' || $table == 'node') {
         // node table is the primary table for query
         //if (!user_access('view public page', $user)) {
-          $qalter['where'] = "$table.type != 'public'";
+        $qalter['where'] = "$table.type != 'public'";
         //}
       }
       elseif (preg_match('|{node} ([A-Za-z_]+)|', $query, $match)) {
@@ -133,7 +134,7 @@ function orgright_db_rewrite_sql($query, $table = 'n', $field = 'nid', $args = a
 /**
  * Implementation of hook_node_grants
  */
-function orgright_node_grants ($account, $op) {
+function orgright_node_grants($account, $op) {
   //orgright_debug_msg('Fn: orgright_node_grants, op='.$op);
   // Declare that this user belongs to either group #1 or #2 for realm "orgright"
   // depending on whether user is anonymous or authenticated respectively
@@ -152,34 +153,34 @@ function orgright_node_grants ($account, $op) {
 /**
  * Implementation of hook_node_access_records
  */
-function orgright_node_access_records ($node) {
+function orgright_node_access_records($node) {
   //orgright_debug_msg('Fn: orgright_node_grants, op='.$node->type);
   // Specify grant access records for groups #1, and #2 in realm "orgright"
   $grants = array();
   switch ($node->type) {
-  case 'public': 
-    $grants[] = array(
-      'realm' => 'orgright',
-      'gid' => 1,
-      'grant_view' => TRUE,
-      'grant_update' => FALSE,
-      'grant_delete' => FALSE,
-      'priority' => 0,
-     );
-    break;
-  case 'page':
-  case 'story':
-  case 'forum':
-    $grants[] = array(
-      'realm' => 'orgright',
-      'gid' => 2,
-      'grant_view' => TRUE,
-      'grant_update' => FALSE,
-      'grant_delete' => FALSE,
-      'priority' => 0,
-    );
-    break;
-  default:
+    case 'public':
+      $grants[] = array(
+        'realm' => 'orgright',
+        'gid' => 1,
+        'grant_view' => TRUE,
+        'grant_update' => FALSE,
+        'grant_delete' => FALSE,
+        'priority' => 0,
+      );
+      break;
+    case 'page':
+    case 'story':
+    case 'forum':
+      $grants[] = array(
+        'realm' => 'orgright',
+        'gid' => 2,
+        'grant_view' => TRUE,
+        'grant_update' => FALSE,
+        'grant_delete' => FALSE,
+        'priority' => 0,
+      );
+      break;
+    default:
   }
   return $grants;
 }
@@ -196,7 +197,7 @@ function orgright_menu() {
     'description' => t('Provide access to public pages for editing'),
     'page callback' => 'orgright_publicpage',
     'access callback' => 'user_access',
-    'access arguments' => array('view public page'),
+    'access arguments' => array('update public page'),
     'type' => MENU_NORMAL_ITEM,
     'weight' => 12,
 
@@ -261,11 +262,11 @@ function orgright_menu_alter(&$menu_entries) {
   $menu_entries['admin/build/menu/add']['access callback'] = 'orgright_menu_admin_access';
   $menu_entries['admin/build/menu/add']['access arguments'] = array('_new_');
   $restricted_path = array(
-  'admin/build/menu-customize/%menu',
-  'admin/build/menu-customize/%menu/list',
-  'admin/build/menu-customize/%menu/add',
-  'admin/build/menu-customize/%menu/edit',
-  'admin/build/menu-customize/%menu/delete',
+    'admin/build/menu-customize/%menu',
+    'admin/build/menu-customize/%menu/list',
+    'admin/build/menu-customize/%menu/add',
+    'admin/build/menu-customize/%menu/edit',
+    'admin/build/menu-customize/%menu/delete',
   );
   foreach ($restricted_path as $path) {
     if (isset($menu_entries[$path])) {
@@ -293,6 +294,9 @@ function orgright_menu_alter(&$menu_entries) {
   // 4) views tools tab
   $menu_entries['admin/build/views/tools']['access arguments'] = array('configure_orgright_modules');
   $menu_entries['admin/build/views/tools/convert']['access arguments'] = array('configure_orgright_modules');
+
+  // Restrict access to the forums to users with the "access forums" permission
+  $menu_entries['forum']['access arguments'] = array('access forums');
 }
 
 function orgright_menu_admin_access($menuinfo = array()) {
@@ -301,26 +305,32 @@ function orgright_menu_admin_access($menuinfo = array()) {
   //orgright_debug_msg('orgright','Fn: orgright_menu_admin_access, menu='.$menu);
   // restrict access to specific menus
   switch ($menu) {
-  case 'orgright':
-  case 'devel':
-  case '_new_':
-    global $user;
-    if ($user->uid > O_MAX_PROTECTED_USER) { return FALSE; }
+    case 'orgright':
+    case 'devel':
+    case '_new_':
+      global $user;
+      if ($user->uid > O_MAX_PROTECTED_USER) {
+        return FALSE;
+      }
   }
-  return user_access('administer menu');   
+  return user_access('administer menu');
 }
 
 function orgright_user_admin_access($permission = 'administer users') {
   //orgright_debug_msg('orgright','Fn: orgright_user_admin_access, permission='.$permission);
   global $user;
-  if ($user->uid > O_MAX_PROTECTED_USER) { return FALSE; }
+  if ($user->uid > O_MAX_PROTECTED_USER) {
+    return FALSE;
+  }
   return user_access($permission);
 }
 
 function orgright_user_view_access($account) {
   // protected accounts can only be processed by a protected user
   global $user;
-  if ($account && $account->uid <= O_MAX_PROTECTED_USER && $user->uid > O_MAX_PROTECTED_USER) { return FALSE; }
+  if ($account && $account->uid <= O_MAX_PROTECTED_USER && $user->uid > O_MAX_PROTECTED_USER) {
+    return FALSE;
+  }
   // use normal permission checking if the account is not protected or user is protected
   return user_view_access($account);
 }
@@ -328,7 +338,9 @@ function orgright_user_view_access($account) {
 function orgright_user_edit_access($account) {
   // protected accounts can only be processed by a protected user
   global $user;
-  if ($account && $account->uid <= O_MAX_PROTECTED_USER && $user->uid > O_MAX_PROTECTED_USER) { return FALSE; }
+  if ($account && $account->uid <= O_MAX_PROTECTED_USER && $user->uid > O_MAX_PROTECTED_USER) {
+    return FALSE;
+  }
   // use normal permission checking if the account is not protected or user is protected
   return user_edit_access($account);
 }
@@ -338,7 +350,7 @@ function orgright_user_edit_access($account) {
  */
 function orgright_form_user_profile_form_alter(&$form, &$form_state) {
   global $user;
-  if ($form['#uid'] == O_MAX_PROTECTED_USER+1 && $user->uid > O_MAX_PROTECTED_USER) {
+  if ($form['#uid'] == O_MAX_PROTECTED_USER + 1 && $user->uid > O_MAX_PROTECTED_USER) {
     // remove the "blocked" status option
     unset($form['account']['status']['#options'][0]);
     // lock the administrator role
@@ -366,7 +378,9 @@ function orgright_form_user_admin_perm_alter(&$form, &$form_state) {
   // Remove the ability to administer permissions for system functions
   // except for super-user
   global $user;
-  if ($user->uid == 1) { return; }
+  if ($user->uid == 1) {
+    return;
+  }
   // remove the column for anonymous users (role=1) to prevent changes
   unset($form['role_names'][1]);
   unset($form['checkboxes'][1]);
@@ -378,9 +392,11 @@ function orgright_form_user_admin_perm_alter(&$form, &$form_state) {
   // generate a dummy account object for administrator
   $admin = new stdClass;
   $admin->uid = O_MAX_PROTECTED_USER + 1;
-  $admin->roles = array(2=>'authenticated user', 3=>'administrator');
-  foreach ($form['permission'] as $permission=>$value) {
-    if (is_numeric($permission) || user_access($permission, $admin)) { continue; }
+  $admin->roles = array(2 => 'authenticated user', 3 => 'administrator');
+  foreach ($form['permission'] as $permission => $value) {
+    if (is_numeric($permission) || user_access($permission, $admin)) {
+      continue;
+    }
     // need to remove this permission from the list
     unset($form['permission'][$permission]);
     foreach ($form['checkboxes'] as &$checkboxes) {
@@ -394,14 +410,18 @@ function orgright_form_user_filter_form_alter(&$form, &$form_state) {
   //orgright_debug_dump('user filter form',$form);
   // allow superuser full access
   global $user;
-  if ($user->uid == 1) { return; }
+  if ($user->uid == 1) {
+    return;
+  }
   // generate a dummy account object for administrator
   $admin = new stdClass;
   $admin->uid = O_MAX_PROTECTED_USER + 1;
-  $admin->roles = array(2=>'authenticated user', 3=>'administrator');
+  $admin->roles = array(2 => 'authenticated user', 3 => 'administrator');
   foreach ($form['filters']['status']['permission']['#options'] as &$module) {
     foreach ($module as $pkey => $permission) {
-      if (is_numeric($permission) || user_access($permission, $admin)) { continue; }
+      if (is_numeric($permission) || user_access($permission, $admin)) {
+        continue;
+      }
       unset($module[$pkey]);
     }
   }
@@ -411,7 +431,9 @@ function orgright_form_user_admin_account_alter(&$form, &$form_state) {
   // Remove protected orgright users from the list
   // allow superuser full access
   global $user;
-  if ($user->uid == 1) { return; }
+  if ($user->uid == 1) {
+    return;
+  }
   // Specify an array of users to be hidden
   $uid = 0;
   while ($uid < O_MAX_PROTECTED_USER) {
@@ -485,7 +507,7 @@ function orgright_form_user_register_alter(&$form, &$form_state) {
 }*/
 
 /*
- * Function to create a new $node data structure.  This is a copy of the code in 
+ * Function to create a new $node data structure.  This is a copy of the code in
  * the "node_add" function defined in node.pages.inc.
  */
 function orgright_create_node($type) {
@@ -499,7 +521,7 @@ function orgright_create_node($type) {
     $node = array(
       'uid' => $user->uid,
       'name' => (isset($user->name) ? $user->name : ''),
-      'type' => $type, 
+      'type' => $type,
       'language' => '',
     );
   }
@@ -521,10 +543,14 @@ function orgright_publicpage() {
   while ($public = db_fetch_object($result)) {
     // Generate a line of listing for this public page
     $output .= '<li>';
-    $output .= l($public->title, 'node/'.$public->nid) . ' ';
-    $output .= l('[edit]', 'node/'.$public->nid.'/edit');
-    if ($public->promote) { $output .= ', promoted to front page'; }
-    if ($public->sticky) { $output .= ', sticky at top of list'; }
+    $output .= l($public->title, 'node/' . $public->nid) . ' ';
+    $output .= l('[edit]', 'node/' . $public->nid . '/edit');
+    if ($public->promote) {
+      $output .= ', promoted to front page';
+    }
+    if ($public->sticky) {
+      $output .= ', sticky at top of list';
+    }
     $output .= '</li>';
   }
   $output .= '</ul></div>';
@@ -538,12 +564,14 @@ function orgright_helpdesk() {
   global $user;
   $username = $user->name;
   $thissite = orgright_get_domain();
-  if ($sitesubdir = orgright_get_sitesubdir()) { $thissite .= '+'.$sitesubdir; }
+  if ($sitesubdir = orgright_get_sitesubdir()) {
+    $thissite .= '+' . $sitesubdir;
+  }
   $helpdeskurl = orgright_get_helpdeskurl();
-  $helpdesk_link = $helpdeskurl.'/helpdesk/'.$thissite.'/'.$username;
-  $knowledge_link = $helpdeskurl.'/documentation/'.$thissite.'/'.$username;
-  $forums_link = $helpdeskurl.'/forums/'.$thissite.'/'.$username;
-  $link_options = array('attributes'=>array('target'=>'_blank'));
+  $helpdesk_link = $helpdeskurl . '/helpdesk/' . $thissite . '/' . $username;
+  $knowledge_link = $helpdeskurl . '/documentation/' . $thissite . '/' . $username;
+  $forums_link = $helpdeskurl . '/forums/' . $thissite . '/' . $username;
+  $link_options = array('attributes' => array('target' => '_blank'));
 
   drupal_set_title('orgRight Helpdesk');
   $output = '<h2>Connect to the orgRight Helpdesk</h2>';
@@ -563,7 +591,7 @@ function orgright_xmlrpc() {
   $methods['orgright.confirmUser'] = 'xmls_orgright_confirm_user';
   $methods['orgright.getUserEmail'] = 'xmls_orgright_get_user_email';
   $methods['orgright.getUserPasswd'] = 'xmls_orgright_get_user_passwd';
- return $methods;
+  return $methods;
 }
 
 function xmls_orgright_confirm_user($name) {
@@ -572,10 +600,14 @@ function xmls_orgright_confirm_user($name) {
   // and is currently logged in and has permission to access the orgRight Helpdesk
   $name = check_plain($name);
   //orgright_debug_msg('orgright', 'User name='.$name);
-  if (!$name) { return NULL; }
+  if (!$name) {
+    return NULL;
+  }
   $sql = "SELECT * FROM {users} WHERE name = '%s'";
   $account = db_fetch_object(db_query($sql, $name));
-  if (!$account->uid) { return NULL; }
+  if (!$account->uid) {
+    return NULL;
+  }
   // assume the user is logged-in for now
   $account = drupal_unpack($account);
   $account->roles = array();
@@ -594,10 +626,14 @@ function xmls_orgright_get_user_email($name) {
   // This function will take an RPC call, returning the email address of the named user
   $name = check_plain($name);
   //orgright_debug_msg('orgright', 'User name='.$name);
-  if (!$name) { return ''; }
+  if (!$name) {
+    return '';
+  }
   $sql = "SELECT uid, mail FROM {users} WHERE name = '%s'";
   $account = db_fetch_object(db_query($sql, $name));
-  if (!$account->uid) { return 'deny'; }
+  if (!$account->uid) {
+    return 'deny';
+  }
   return $account->mail;
 }
 
@@ -607,11 +643,15 @@ function xmls_orgright_get_user_passwd($name) {
   // password for the user name on this site
   $name = check_plain($name);
   //orgright_debug_msg('orgright', 'User name='.$name);
-  if (!$name) { return ''; }
+  if (!$name) {
+    return '';
+  }
   $sql = "SELECT uid, mail FROM {users} WHERE name = '%s'";
   $account = db_fetch_object(db_query($sql, $name));
   //orgright_debug_msg('orgright', t('User account: uid=@uid, mail=@mail', array('@uid'=>$account->uid,'@mail'=>$account->mail)));
-  if (!$account->uid) { return 'deny'; }
+  if (!$account->uid) {
+    return 'deny';
+  }
   $uname = $name . '.' . orgright_get_sitename();
   $passwd = md5(strtr(strtolower($uname . $account->mail), 'aeiou @', 'zyxwvba'));
   //orgright_debug_msg('orgright', 'User passwd='.$passwd);
@@ -619,13 +659,12 @@ function xmls_orgright_get_user_passwd($name) {
 }
 
 
-
 function orgright_admin() {
   //orgright_debug_msg('orgright','Fn: orgright_admin',5);
   return drupal_get_form('orgright_admin_form');
 }
 
-function orgright_admin_form (&$form_state = NULL) {
+function orgright_admin_form(&$form_state = NULL) {
   //orgright_debug_msg('orgright','Fn: orgright_admin_form',5);
   $form = array();
   // Check to see whether this is a new form, or a rebuild
@@ -661,7 +700,9 @@ function orgright_admin_form (&$form_state = NULL) {
       // Specify a fieldset to configure the field filters
       $filters = filter_formats();
       $filterlist = array();
-      foreach ($filters as $filter) { $filterlist[$filter->format] = $filter->name; }
+      foreach ($filters as $filter) {
+        $filterlist[$filter->format] = $filter->name;
+      }
       $form['configure_filters'] = array(
         '#type' => 'fieldset',
         '#title' => t('Specify orgRight filters'),
@@ -703,24 +744,24 @@ function orgright_admin_form (&$form_state = NULL) {
     }
     // Specify a fieldset to allow entry of the site specific information
     $form['site_info'] = array(
-        '#type' => 'fieldset',
-        '#title' => t('Specify Site Information'),
-        '#collapsible' => TRUE,
-        '#collapsed' => FALSE,
+      '#type' => 'fieldset',
+      '#title' => t('Specify Site Information'),
+      '#collapsible' => TRUE,
+      '#collapsed' => FALSE,
     );
     $form['site_info']['site_name'] = array(
-        '#type' => 'textfield',
-        '#title' => t('Site name'),
-        '#description' => t('Specify the name for this site.  It will display in the header bar, aligned with the right margin'),
-        '#default_value' => variable_get('site_name',''),
-        '#weight' => 3,
+      '#type' => 'textfield',
+      '#title' => t('Site name'),
+      '#description' => t('Specify the name for this site.  It will display in the header bar, aligned with the right margin'),
+      '#default_value' => variable_get('site_name', ''),
+      '#weight' => 3,
     );
     $form['site_info']['site_slogan'] = array(
-        '#type' => 'textfield',
-        '#title' => t('Site slogan'),
-        '#description' => t('Specify the slogan or by-line for this site.  It will display in the header bar beneath the "orgRight" logo.'),
-        '#default_value' => variable_get('site_slogan',''),
-        '#weight' => 5,
+      '#type' => 'textfield',
+      '#title' => t('Site slogan'),
+      '#description' => t('Specify the slogan or by-line for this site.  It will display in the header bar beneath the "orgRight" logo.'),
+      '#default_value' => variable_get('site_slogan', ''),
+      '#weight' => 5,
     );
     $form['site_info']['confirm'] = array(
       '#type' => 'submit',
@@ -756,8 +797,10 @@ function orgright_admin_form (&$form_state = NULL) {
     $content_types = node_get_types('names');
     // node types with comments
     $comments_enabled = array();
-    foreach ($content_types as $ctype=>$cname) {
-      if (variable_get('comment_'.$ctype,0)) { $comments_enabled[] = $ctype; }
+    foreach ($content_types as $ctype => $cname) {
+      if (variable_get('comment_' . $ctype, 0)) {
+        $comments_enabled[] = $ctype;
+      }
     }
     $form['configure_nodes']['comment_types'] = array(
       '#type' => 'checkboxes',
@@ -770,8 +813,10 @@ function orgright_admin_form (&$form_state = NULL) {
     // node types with file uploads
     unset($content_types['document']);
     $upload_enabled = array();
-    foreach ($content_types as $ctype=>$cname) {
-      if (variable_get('upload_'.$ctype,0)) { $upload_enabled[] = $ctype; }
+    foreach ($content_types as $ctype => $cname) {
+      if (variable_get('upload_' . $ctype, 0)) {
+        $upload_enabled[] = $ctype;
+      }
     }
     $form['configure_nodes']['upload_types'] = array(
       '#type' => 'checkboxes',
@@ -785,8 +830,10 @@ function orgright_admin_form (&$form_state = NULL) {
     if (user_access('administer content types')) {
       $content_types = orgright_get_node_types();
       $custom_fields_enabled = array();
-      foreach ($content_types as $ctype=>$cname) {
-        if (variable_get('orgright_custom_fields_'.$ctype,0)) { $custom_fields_enabled[] = $ctype; }
+      foreach ($content_types as $ctype => $cname) {
+        if (variable_get('orgright_custom_fields_' . $ctype, 0)) {
+          $custom_fields_enabled[] = $ctype;
+        }
       }
       $form['configure_nodes']['custom_fields'] = array(
         '#type' => 'checkboxes',
@@ -831,26 +878,27 @@ function orgright_form_validate($form, &$form_state) {
     $iz = strpos($helpdeskurl, '.');
     $iw = strpos($helpdeskurl, '/', $iz);
     if (!$ix || !$iy || !$iz || $iy < $ix || $iz < $iy || $iw) {
-      form_set_error('helpdeskurl',t('Specified URL is not in correct format.'));
+      form_set_error('helpdeskurl', t('Specified URL is not in correct format.'));
     }
   }
   elseif ($clicked_button == $form['site_info']['confirm']['#value']) {
     if ($form_state['values']['site_name'] != strip_tags($form_state['values']['site_name'])) {
-      form_set_error('site_name',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('site_name', t('HTML or PHP tags are not permitted in this field'));
     }
     if ($form_state['values']['site_slogan'] != strip_tags($form_state['values']['site_slogan'])) {
-      form_set_error('site_slogan',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('site_slogan', t('HTML or PHP tags are not permitted in this field'));
     }
   }
   elseif ($clicked_button == $form['configure_fields']['confirm']['#value']) {
     if (strlen($form_state['values']['newline_token']) < 2 ||
-        strlen($form_state['values']['newline_token']) > 5 ) {
-      form_set_error('newline_token',t('New-line replacement token must be between 2 and 5 characters in length'));
+      strlen($form_state['values']['newline_token']) > 5
+    ) {
+      form_set_error('newline_token', t('New-line replacement token must be between 2 and 5 characters in length'));
     }
   }
   elseif ($clicked_button == $form['configure_nodes']['confirm']['#value']) {
     if ($form_state['values']['upload_types']['document']) {
-      form_set_error('upload_types',t('File upload not permitted for some selected types'));
+      form_set_error('upload_types', t('File upload not permitted for some selected types'));
     }
   }
 }
@@ -862,66 +910,74 @@ function orgright_form_submit($form, &$form_state) {
   if ($clicked_button == $form['configure_systype']['confirm']['#value']) {
     // save the specified system type
     variable_set('orgright_system_type', $form_state['values']['system_type']);
-    $message = t('orgRight system type has been set'); 
+    $message = t('orgRight system type has been set');
   }
   if ($clicked_button == $form['configure_filters']['confirm']['#value']) {
     // save the specified filter value
     variable_set('orgright_field_filter', $form_state['values']['field_filter']);
-    $message = t('orgRight input filters have been saved'); 
+    $message = t('orgRight input filters have been saved');
   }
   elseif ($clicked_button == $form['configure_helpdeskurl']['confirm']['#value']) {
     // ensure that the specified URL is saved
     variable_set('orgright_helpdeskurl', $form_state['values']['helpdeskurl']);
-    $message = t('Helpdesk URL has been saved'); 
+    $message = t('Helpdesk URL has been saved');
   }
   elseif ($clicked_button == $form['site_info']['confirm']['#value']) {
     // ensure that the specified site information is saved
     variable_set('site_name', $form_state['values']['site_name']);
     variable_set('site_slogan', $form_state['values']['site_slogan']);
-    $message = t('Site information has been saved'); 
+    $message = t('Site information has been saved');
   }
   elseif ($clicked_button == $form['configure_fields']['confirm']['#value']) {
     // ensure that the specified field information is saved
     variable_set('orgright_newline_token', $form_state['values']['newline_token']);
-    $message = t('Field parameters have been saved'); 
+    $message = t('Field parameters have been saved');
   }
   elseif ($clicked_button == $form['configure_nodes']['confirm']['#value']) {
     // ensure that the defaults for each node type are configured
-    foreach ($form_state['values']['comment_types'] as $type=>$value) {
+    foreach ($form_state['values']['comment_types'] as $type => $value) {
       if ($value) {
         // enable the default comment module values
-        variable_set('comment_'.$type, '2'); // 0=disabled, 1=read only, 2=read/write
-        variable_set('comment_default_mode_'.$type, '2'); // 1&2=flat, 3&4=threaded, 1&3=collapsed, 2&4=expanded
-        variable_set('comment_default_order'.$type, '2'); // 1=newest first, 2=oldest first
-        variable_set('comment_default_per_page'.$type, '12'); // number of comments to display per page
-        variable_set('comment_controls_'.$type, '3'); // 0=above, 1=below, 2=both, 3=disabled
-        variable_set('comment_subject_field_'.$type, '0'); // 0=disabled, 1=enabled
-        variable_set('comment_preview_'.$type, '0'); // 0=optional, 1=required
-        variable_set('comment_form_location_'.$type, '0'); // 0=separate page, 1=below comments
+        variable_set('comment_' . $type, '2'); // 0=disabled, 1=read only, 2=read/write
+        variable_set('comment_default_mode_' . $type, '2'); // 1&2=flat, 3&4=threaded, 1&3=collapsed, 2&4=expanded
+        variable_set('comment_default_order' . $type, '2'); // 1=newest first, 2=oldest first
+        variable_set('comment_default_per_page' . $type, '12'); // number of comments to display per page
+        variable_set('comment_controls_' . $type, '3'); // 0=above, 1=below, 2=both, 3=disabled
+        variable_set('comment_subject_field_' . $type, '0'); // 0=disabled, 1=enabled
+        variable_set('comment_preview_' . $type, '0'); // 0=optional, 1=required
+        variable_set('comment_form_location_' . $type, '0'); // 0=separate page, 1=below comments
       }
       else {
         // disable the default comment module values
-        variable_set('comment_'.$type, '0'); // 0=disabled, 1=read only, 2=read/write
+        variable_set('comment_' . $type, '0'); // 0=disabled, 1=read only, 2=read/write
       }
     }
-    foreach ($form_state['values']['upload_types'] as $type=>$value) {
-      if ($value) { variable_set('upload_'.$type, '1'); } // 0=disabled, 1=enabled
-      else { variable_set('upload_'.$type, '0'); } // 0=disabled, 1=enabled
+    foreach ($form_state['values']['upload_types'] as $type => $value) {
+      if ($value) {
+        variable_set('upload_' . $type, '1');
+      } // 0=disabled, 1=enabled
+      else {
+        variable_set('upload_' . $type, '0');
+      } // 0=disabled, 1=enabled
     }
     // Force uploads to be disabled for document type nodes
     variable_set('upload_document', '0');
     // custom fields, if present
     if (isset($form_state['values']['custom_fields'])) {
-      foreach ($form_state['values']['custom_fields'] as $type=>$value) {
-        if ($value) { variable_set('orgright_custom_fields_'.$type, '1'); } // 0=disabled, 1=enabled
-        else { variable_set('upload_'.$type, '0'); } // 0=disabled, 1=enabled
+      foreach ($form_state['values']['custom_fields'] as $type => $value) {
+        if ($value) {
+          variable_set('orgright_custom_fields_' . $type, '1');
+        } // 0=disabled, 1=enabled
+        else {
+          variable_set('upload_' . $type, '0');
+        } // 0=disabled, 1=enabled
       }
     }
     // set the node options to published, but not promoted, sticky, or revision
     //variable_set('node_options_'.$type, array('status')); // status(=published), promote, sticky, revision
-    $message = t('Content type configuration options have been applied'); 
+    $message = t('Content type configuration options have been applied');
   }
-  drupal_set_message($message,'status');
+  drupal_set_message($message, 'status');
   $form_state['storage'] = array();
   $form_state['redirect'] = 'admin/orgright/orgright';
 }
@@ -934,9 +990,11 @@ function orgright_form_submit($form, &$form_state) {
  */
 function orgright_form_alter(&$form, $form_state, $form_id) {
   //orgright_debug_msg('orgright','Fn: orgright_form_alter, id='.$form_id);
-  if (!module_exists('taxonomy')) { return; }
+  if (!module_exists('taxonomy')) {
+    return;
+  }
   // Add taxonomy fields only to node forms
-  if (isset($form['type']) && isset($form['#node']) &&  $form_id == $form['type']['#value'] .'_node_form') {
+  if (isset($form['type']) && isset($form['#node']) && $form_id == $form['type']['#value'] . '_node_form') {
     $node = $form['#node'];
 
     if (!isset($node->taxonomy)) {
@@ -988,7 +1046,7 @@ function orgright_form_alter(&$form, $form_state, $form_id) {
           '#description' => $help,
           '#required' => $vocabulary->required,
           '#default_value' => $typed_string,
-          '#autocomplete_path' => 'taxonomy/autocomplete/'. $vocabulary->vid,
+          '#autocomplete_path' => 'taxonomy/autocomplete/' . $vocabulary->vid,
           '#weight' => $vocabulary->weight,
           '#maxlength' => 1024,
         );
@@ -1049,13 +1107,13 @@ function orgright_form($node, &$form_state) {
  */
 function orgright_mail($mail_id, &$message, $mail_args = array()) {
   switch ($mail_id) {
-  case 'send_to_member':
-    // Add the subject and message body fields
-    $message['subject'] = $mail_args['subject'];
-    $message['body'] = explode('\n', $mail_args['message']);
-    return;
-  default:
-    watchdog('orgright', 'Unrecognised mail message: id=@id', array('@id'=>$mail_id), WATCHDOG_WARNING);
+    case 'send_to_member':
+      // Add the subject and message body fields
+      $message['subject'] = $mail_args['subject'];
+      $message['body'] = explode('\n', $mail_args['message']);
+      return;
+    default:
+      watchdog('orgright', 'Unrecognised mail message: id=@id', array('@id' => $mail_id), WATCHDOG_WARNING);
   }
 }
 
@@ -1066,24 +1124,24 @@ function orgright_mailhandler($node, $result, $index, $header, $mailbox) {
   // Stop all attempts to create restricted orgright node types via mail messages
   // filecabinet documents are allowed
   switch ($node->type) {
-  case 'member':
-  case 'subscription':
-  case 'subpayment':
-  case 'committee':
-  case 'role':
-  case 'appointment':
-  case 'assignment':
-  case 'meeting':
-  case 'agenda_item':
-  case 'mtg_item':
-  case 'project':
-  case 'projactiviy':
-  case 'projreport':
-  case 'drawer':
-  case 'folder':
-    return NULL;
-  default:
-    return $node;
+    case 'member':
+    case 'subscription':
+    case 'subpayment':
+    case 'committee':
+    case 'role':
+    case 'appointment':
+    case 'assignment':
+    case 'meeting':
+    case 'agenda_item':
+    case 'mtg_item':
+    case 'project':
+    case 'projactiviy':
+    case 'projreport':
+    case 'drawer':
+    case 'folder':
+      return NULL;
+    default:
+      return $node;
   }
 }
 
@@ -1095,23 +1153,23 @@ function orgright_mailhandler($node, $result, $index, $header, $mailbox) {
  */
 function orgright_filter($op, $delta = 0, $format = -1, $text = '') {
   switch ($op) {
-  case 'list':
-    return array(0 => t('Enhanced URL filter'));
-  case 'description':
-    return t('Allows user to identify text that does not start with "www" or "http://" as URLs');
-  case 'settings':
-    // no settings yet
-    return;
-  case 'no cache':
-    // Its OK to cache this filter's output
-    return FALSE;
-  case 'prepare':
-    // no prepatory needs
-    return $text;
-  case 'process':
-    return preg_replace('|!([\w-]+(\.[\w-]+)+(/[\w-]+(\.[\w-]+)*)*)([\s\.])|', '<a href="http://$1" target="_blank">$1</a>$5', $text);
-  default:
-    return $text;
+    case 'list':
+      return array(0 => t('Enhanced URL filter'));
+    case 'description':
+      return t('Allows user to identify text that does not start with "www" or "http://" as URLs');
+    case 'settings':
+      // no settings yet
+      return;
+    case 'no cache':
+      // Its OK to cache this filter's output
+      return FALSE;
+    case 'prepare':
+      // no prepatory needs
+      return $text;
+    case 'process':
+      return preg_replace('|!([\w-]+(\.[\w-]+)+(/[\w-]+(\.[\w-]+)*)*)([\s\.])|', '<a href="http://$1" target="_blank">$1</a>$5', $text);
+    default:
+      return $text;
   }
 }
 
@@ -1176,7 +1234,7 @@ function theme_orgright_item($module, $class, $description, $item, $node_ref = 0
   }
   if ($item) {
     $output .= '<span class="item-val">';
-    $output .= ($node_ref) ? l($item, 'node/'.$node_ref) : $item;
+    $output .= ($node_ref) ? l($item, 'node/' . $node_ref) : $item;
     $output .= '</span>';
   }
   $output .= '</div>';
@@ -1188,9 +1246,11 @@ function theme_orgright_subitem($module, $class, $subitem, $node_ref, $attribute
   // General function for themeing a sub-item set of values to be displayed.
   $classes = $module . ' subitem ' . $class;
   $output = '<div class="' . $classes . '"><span class="subitem-tag">';
-  $output .= ($node_ref) ? l($subitem, 'node/'.$node_ref) : $subitem;
+  $output .= ($node_ref) ? l($subitem, 'node/' . $node_ref) : $subitem;
   $output .= '&nbsp;</span><span class="subitem-val">';
-  foreach ($attributes as $value) { $output .= $value; }
+  foreach ($attributes as $value) {
+    $output .= $value;
+  }
   $output .= '</span></div>';
   return $output;
 }
@@ -1209,7 +1269,7 @@ function orgright_breadcrumb($crumbs) {
   // set the breadcrumb trail base
   $breadcrumb = array(l('Home', '<front>'));
   // and add the passed links to breadcrumb
-  foreach ($crumbs as $text=>$link) {
+  foreach ($crumbs as $text => $link) {
     $breadcrumb[] = l($text, $link);
   }
   drupal_set_breadcrumb($breadcrumb);
@@ -1217,11 +1277,13 @@ function orgright_breadcrumb($crumbs) {
 
 function orgright_get_selectfield_max() {
   // will return the maximum number of entries that a selectfield drop-down list can contain
-  return variable_get('orgright_selectfield_max',24);
+  return variable_get('orgright_selectfield_max', 24);
 }
 
 function orgright_get_sitename() {
-  if ($sitesubdir = orgright_get_sitesubdir()) { return $sitesubdir; }
+  if ($sitesubdir = orgright_get_sitesubdir()) {
+    return $sitesubdir;
+  }
   $domain = orgright_get_domain();
   $ix = strpos($domain, '.');
   return substr($domain, 0, $ix);
@@ -1231,7 +1293,7 @@ function orgright_get_sitesubdir() {
   // will return site name if using sub-directories, else NULL
   global $base_url;
   $ix = strpos($base_url, '://') + 3;
-  return ($iy = strpos($base_url, '/', $ix)) ? substr($base_url, $iy+1) : NULL;
+  return ($iy = strpos($base_url, '/', $ix)) ? substr($base_url, $iy + 1) : NULL;
   //return ($iy = strpos($base_url, '/', $ix)) ? substr($base_url, $iy+1) : 'default';
 }
 
@@ -1239,7 +1301,7 @@ function orgright_get_domain() {
   // will return the site base url with the sub-directory (if any) stripped
   global $base_url;
   $ix = strpos($base_url, '://') + 3;
-  return ($iy = strpos($base_url, '/', $ix)) ? substr($base_url, $ix, $iy-$ix) : substr($base_url, $ix);
+  return ($iy = strpos($base_url, '/', $ix)) ? substr($base_url, $ix, $iy - $ix) : substr($base_url, $ix);
 }
 
 function orgright_get_helpdeskurl() {
@@ -1274,18 +1336,30 @@ function orgright_check_email_address($addr) {
   // Check whether the passed address is a valid email address
   // First strip out all characters outside the allowed ascii range
   $check = '';
-  for ($i=0; $i<strlen($addr); $i++) { if (ord($addr[$i])>32 && ord($addr[$i])<127) { $check .= $addr[$i]; } }
+  for ($i = 0; $i < strlen($addr); $i++) {
+    if (ord($addr[$i]) > 32 && ord($addr[$i]) < 127) {
+      $check .= $addr[$i];
+    }
+  }
   // then strip out all punctuation and special characters
   // only special chars allowed are period ".", underscore "_", & hyphen "-"
-  $illegal_chars = array(' ','(',')','[',']','\\',':','"',';','<','>',',');
+  $illegal_chars = array(' ', '(', ')', '[', ']', '\\', ':', '"', ';', '<', '>', ',');
   $check = str_replace($illegal_chars, '', $check);
   // ensure that there is only one "@" char, and it is not the first char
-  if (!$atpos = strpos($check, '@', 1)) { $check .= 'X'; }
-  if (strpos($check, '@', $atpos+1)) { $check .= 'X'; }
+  if (!$atpos = strpos($check, '@', 1)) {
+    $check .= 'X';
+  }
+  if (strpos($check, '@', $atpos + 1)) {
+    $check .= 'X';
+  }
   // ensure that is at least one period after the "@", separated by another char
-  if (!strpos($check, '.', $atpos+2)) { $check .= 'X'; }
+  if (!strpos($check, '.', $atpos + 2)) {
+    $check .= 'X';
+  }
   // ensure that the address does not start of finish with a period
-  if ($addr[0] == '.' || $addr[strlen($addr)-1] == '.') { $check .= 'X'; }
+  if ($addr[0] == '.' || $addr[strlen($addr) - 1] == '.') {
+    $check .= 'X';
+  }
   return $addr == $check;
 }
 
@@ -1293,7 +1367,7 @@ function orgright_get_date_ymd($offset = 0) {
   // Return a date string YYYY-MM-DD which is offset by specified days from today
   $timestamp = time() + ($offset * 86400);
   $now = getdate($timestamp);
-  return $now['year'].'-'.substr('0'.$now['mon'],-2).'-'.substr('0'.$now['mday'],-2);
+  return $now['year'] . '-' . substr('0' . $now['mon'], -2) . '-' . substr('0' . $now['mday'], -2);
 }
 
 function orgright_get_node_types() {
@@ -1302,9 +1376,9 @@ function orgright_get_node_types() {
   $node_types = array();
   foreach ($modules as $module) {
     if (module_exists($module)) {
-      $types = call_user_func($module.'_node_info');
+      $types = call_user_func($module . '_node_info');
       if ($types) {
-        foreach ($types as $type=>$details) {
+        foreach ($types as $type => $details) {
           $node_types[$type] = $details['name'];
         }
       }
@@ -1323,43 +1397,47 @@ function orgright_check_nodetype($node = 0, $type = '') {
   return ($node->type == $type);
 }
 
-function orgright_get_users($key='nid') {
+function orgright_get_users($key = 'nid') {
   // return an array of current users keyed by $key
   $sql = "SELECT uid, name FROM {users} u WHERE uid > %d";
   $result = db_query($sql, O_MAX_PROTECTED_USER);
   $users = array();
   while ($obj = db_fetch_object($result)) {
     $description = $obj->name;
-    if ($key == 'name') { $users[$obj->name] = $description; }
-    elseif ($key == 'nid') { $users[$obj->uid] = $description; }
+    if ($key == 'name') {
+      $users[$obj->name] = $description;
+    }
+    elseif ($key == 'nid') {
+      $users[$obj->uid] = $description;
+    }
   }
   return $users;
 }
 
-function orgright_system_types($key='name') {
+function orgright_system_types($key = 'name') {
   // Return an array of the available system types
   // The detail of each system type specifies any limits to be applied
   $systypes = array(
-    'free' => array(		// limits for "free" system type
-      'members' => 12,		// max of 12 members
-      'subscriptions' => 24,	// max of 24 subscriptions
-      'subpayments' => 24,	// max of 24 subscription payments
-      'committees' => 3,	// max of 3 committees
-      'projects' => -1,		// no projects allowed
-      'projactivities' => -1,	// no project activities allowed
-      'projreports' => -1,	// no project reports allowed
-      'drawers' => 1,		// max of 1 drawer
-      'folders' => 6,		// max of 6 folders
-      'documents' => 100,	// max of 100 documents
-      'users' => 10,		// max of 10 user logins
-      'maillists' => 1,		// max of 1 maillist
+    'free' => array( // limits for "free" system type
+      'members' => 12, // max of 12 members
+      'subscriptions' => 24, // max of 24 subscriptions
+      'subpayments' => 24, // max of 24 subscription payments
+      'committees' => 3, // max of 3 committees
+      'projects' => -1, // no projects allowed
+      'projactivities' => -1, // no project activities allowed
+      'projreports' => -1, // no project reports allowed
+      'drawers' => 1, // max of 1 drawer
+      'folders' => 6, // max of 6 folders
+      'documents' => 100, // max of 100 documents
+      'users' => 10, // max of 10 user logins
+      'maillists' => 1, // max of 1 maillist
     ),
-    'standard' => array(	// limits for standard system type
-      'projects' => -1,		// no projects allowed
-      'projactivities' => -1,	// no project activities allowed
-      'projreports' => -1,	// no project reports allowed
+    'standard' => array( // limits for standard system type
+      'projects' => -1, // no projects allowed
+      'projactivities' => -1, // no project activities allowed
+      'projreports' => -1, // no project reports allowed
     ),
-    'enhanced' => array(	// limits for enhanced system type
+    'enhanced' => array( // limits for enhanced system type
     ),
   );
   if (isset($systypes[$key])) {
@@ -1367,14 +1445,14 @@ function orgright_system_types($key='name') {
   }
   else {
     switch ($key) {
-    case 'name':
-      $sysnames = array();
-      foreach ($systypes as $name=>$limits) {
-        $sysnames[$name] = $name;
-      }
-      return $sysnames;
-    default:
-      return $systypes;
+      case 'name':
+        $sysnames = array();
+        foreach ($systypes as $name => $limits) {
+          $sysnames[$name] = $name;
+        }
+        return $sysnames;
+      default:
+        return $systypes;
     }
   }
 }
@@ -1392,27 +1470,31 @@ function orgright_limit_reached($type) {
     $maximum = $limits[$type];
   }
   // use an override value if one has been specified
-  if ($override = variable_get('orgright_'.$type.'_limit', 0)) {
+  if ($override = variable_get('orgright_' . $type . '_limit', 0)) {
     $maximum = $override;
   }
   // a negative maximum value means none allowed and a zero value means unlimited
-  if ($maximum < 0) { return TRUE; }
-  if ($maximum == 0) { return FALSE; }
+  if ($maximum < 0) {
+    return TRUE;
+  }
+  if ($maximum == 0) {
+    return FALSE;
+  }
   // Specify the SQL statement
   switch ($type) {
-  case 'users':
-    $count = db_result(db_query("SELECT COUNT(*) FROM {users} WHERE uid > %d", O_MAX_PROTECTED_USER));
-    break;
-  case 'maillists':
-    if (function_exists('maillist_get_maillists')) {
-      $count = count(maillist_get_maillists());
-    }
-    else {
-      $count = 0;
-    }
-    break;
-  default:
-    $count = db_result(db_query("SELECT COUNT(*) FROM {org_".$type."}"));
+    case 'users':
+      $count = db_result(db_query("SELECT COUNT(*) FROM {users} WHERE uid > %d", O_MAX_PROTECTED_USER));
+      break;
+    case 'maillists':
+      if (function_exists('maillist_get_maillists')) {
+        $count = count(maillist_get_maillists());
+      }
+      else {
+        $count = 0;
+      }
+      break;
+    default:
+      $count = db_result(db_query("SELECT COUNT(*) FROM {org_" . $type . "}"));
   }
   if ($count >= $maximum) {
     return TRUE;
@@ -1423,7 +1505,7 @@ function orgright_limit_reached($type) {
 function orgright_ajax_call() {
   //=IAM= This seems awfully adhoc, but apparently, this is the Drupal way
   // of doing something different for AJAX style requests vs standard requests
-  return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH'])=='xmlhttprequest';
+  return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
 }
 
 /**
@@ -1431,26 +1513,30 @@ function orgright_ajax_call() {
  */
 function orgright_debug_msg($module, $msg, $level = 5) {
   // Add a log message using watchdog function
-  if ($level < 9) { watchdog($module, $msg, NULL, WATCHDOG_DEBUG); }
+  if ($level < 9) {
+    watchdog($module, $msg, NULL, WATCHDOG_DEBUG);
+  }
 }
 
 function orgright_debug_dump($desc, $arg, $name = 'dump') {
   // dump contents of passed argument to file
   $ddir = file_create_path('debug');
   file_check_directory($ddir, FILE_CREATE_DIRECTORY);
-  $info = "========== Start $desc ==========\n"; 
+  $info = "========== Start $desc ==========\n";
   $info .= print_r($arg, TRUE);
   $info .= "\n=========== End $desc ===========";
-  file_save_data($info, $ddir.'/'.$name);
+  file_save_data($info, $ddir . '/' . $name);
 }
 
 function orgright_debug_show($desc, $arg) {
   // show contents of passed argument on screen
   print "<br>========== Start $desc ==========";
-  print('<pre>'); print_r($arg); print('</pre>');
+  print('<pre>');
+  print_r($arg);
+  print('</pre>');
   print "=========== End $desc ===========<br>";
 }
 /**
  * End of module
  */
- 
+

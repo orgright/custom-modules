@@ -1,6 +1,6 @@
 // $Id$
 if (Drupal.jsEnabled) {
-  $(document).ready(function() {
-    // 
+  $(document).ready(function () {
+    //
   });
 }

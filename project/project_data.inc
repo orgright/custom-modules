@@ -26,7 +26,6 @@ function project_projreport_load($node) {
 }
 
 
-
 /**
  * Node manipulation functions called from hook_nodeapi() in module file
  */
@@ -39,11 +38,15 @@ function project_project_nodeapi(&$node, $op, $teaser, $page) {
       $sql = "SELECT m.member FROM {node} n JOIN {org_members} m ON m.nid = n.nid WHERE m.vid = n.vid AND m.nid = %d";
       $node->manager = db_result(db_query($sql, $node->mnid));
       // Stop here if a teaser display is required
-      if ($teaser) { return; }
+      if ($teaser) {
+        return;
+      }
       // Specify the fields that are used for rules event triggers on change
-      $fields = array('mnid','project','projcategory','projstatus','projdatype','projdate');
+      $fields = array('mnid', 'project', 'projcategory', 'projstatus', 'projdatype', 'projdate');
       $original = array();
-      foreach ($fields as $field) { $original[$field] = $node->$field; }
+      foreach ($fields as $field) {
+        $original[$field] = $node->$field;
+      }
       $node->original = serialize($original);
       $node->rules_update = FALSE;
       // Load an array of activities
@@ -78,14 +81,16 @@ function project_project_nodeapi(&$node, $op, $teaser, $page) {
       return;
     case 'update':
       // Ignore updates caused by rules actions
-      if ($node->rules_update) { return; }
+      if ($node->rules_update) {
+        return;
+      }
       // Trigger the specified rules events
       if (module_exists('rules')) {
         rules_invoke_event('project_event_project_update', $node);
         if ($original = unserialize($node->original)) {
           foreach ($original as $field => $value) {
             if ($node->$field != $value) {
-              rules_invoke_event('project_event_project_'.$field.'_update', $node);
+              rules_invoke_event('project_event_project_' . $field . '_update', $node);
             }
           }
         }
@@ -116,12 +121,16 @@ function project_projactivity_nodeapi(&$node, $op, $teaser, $page) {
       $sql = "SELECT m.member FROM {node} n JOIN {org_members} m ON m.nid = n.nid WHERE m.vid = n.vid AND m.nid = %d";
       $node->member = db_result(db_query($sql, $node->mnid));
       // Stop here if a teaser display is required
-      if ($teaser) { return; }
+      if ($teaser) {
+        return;
+      }
       // Specify the fields that are used for rules event triggers on change
-      $fields = array('pnid','mnid','activity','activicategory','activistatus','duration','duratype',
-                      'actividatype','actividate','actualstart','actualfinish');
+      $fields = array('pnid', 'mnid', 'activity', 'activicategory', 'activistatus', 'duration', 'duratype',
+        'actividatype', 'actividate', 'actualstart', 'actualfinish');
       $original = array();
-      foreach ($fields as $field) { $original[$field] = $node->$field; }
+      foreach ($fields as $field) {
+        $original[$field] = $node->$field;
+      }
       $node->original = serialize($original);
       $node->rules_update = FALSE;
       // Load an array of project reports
@@ -148,14 +157,16 @@ function project_projactivity_nodeapi(&$node, $op, $teaser, $page) {
       return;
     case 'update':
       // Ignore updates caused by rules actions
-      if ($node->rules_update) { return; }
+      if ($node->rules_update) {
+        return;
+      }
       // Trigger the specified rules events
       if (module_exists('rules')) {
         rules_invoke_event('project_event_projactivity_update', $node);
         if ($original = unserialize($node->original)) {
           foreach ($original as $field => $value) {
             if ($node->$field != $value) {
-              rules_invoke_event('project_event_projactivity_'.$field.'_update', $node);
+              rules_invoke_event('project_event_projactivity_' . $field . '_update', $node);
             }
           }
         }
@@ -191,9 +202,11 @@ function project_projreport_nodeapi(&$node, $op, $teaser, $page) {
       $sql = "SELECT m.member FROM {node} n JOIN {org_members} m ON m.nid = n.nid WHERE m.vid = n.vid AND m.nid = %d";
       $node->member = db_result(db_query($sql, $node->mnid));
       // Specify the fields that are used for rules event triggers on change
-      $fields = array('pnid','anid','mnid','projreport','projrepdate');
+      $fields = array('pnid', 'anid', 'mnid', 'projreport', 'projrepdate');
       $original = array();
-      foreach ($fields as $field) { $original[$field] = $node->$field; }
+      foreach ($fields as $field) {
+        $original[$field] = $node->$field;
+      }
       $node->original = serialize($original);
       $node->rules_update = FALSE;
       return;
@@ -205,14 +218,16 @@ function project_projreport_nodeapi(&$node, $op, $teaser, $page) {
       return;
     case 'update':
       // Ignore updates caused by rules actions
-      if ($node->rules_update) { return; }
+      if ($node->rules_update) {
+        return;
+      }
       // Trigger the specified rules events
       if (module_exists('rules')) {
         rules_invoke_event('project_event_projreport_update', $node);
         if ($original = unserialize($node->original)) {
           foreach ($original as $field => $value) {
             if ($node->$field != $value) {
-              rules_invoke_event('project_event_projreport_'.$field.'_update', $node);
+              rules_invoke_event('project_event_projreport_' . $field . '_update', $node);
             }
           }
         }
@@ -332,7 +347,7 @@ function project_projreport_update($node) {
     $node->projrepdate,
     $node->notes,
     $node->uid,
-    $node->vid);      
+    $node->vid);
 }
 
 
@@ -340,15 +355,15 @@ function project_projreport_update($node) {
  * Delete functions called from hook_delete() in module file
  */
 function project_project_delete($node) {
-    db_query("DELETE FROM {org_projects} WHERE nid = %d", $node->nid);
+  db_query("DELETE FROM {org_projects} WHERE nid = %d", $node->nid);
 }
 
 function project_projactivity_delete($node) {
-    db_query("DELETE FROM {org_projactivities} WHERE nid = %d", $node->nid);
+  db_query("DELETE FROM {org_projactivities} WHERE nid = %d", $node->nid);
 }
 
 function project_projreport_delete($node) {
-    db_query("DELETE FROM {org_projreports} WHERE nid = %d", $node->nid);
+  db_query("DELETE FROM {org_projreports} WHERE nid = %d", $node->nid);
 }
 
 /**

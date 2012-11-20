@@ -134,7 +134,7 @@ function mailhandler_add_edit_mailbox($form_state, $mid, $clone = FALSE) {
 
   // Allow administrators to select the format of saved nodes/comments
   $form['format'] = filter_form($edit['format']);
-  
+
   $options = array();
   $descriptions = '';
   $options[0] = t('Choose method');
@@ -143,7 +143,7 @@ function mailhandler_add_edit_mailbox($form_state, $mid, $clone = FALSE) {
     foreach ($method as $name => $info) {
       $options[$name] = t($info['title']);
       // TODO: theme function
-      $descriptions .= t($info['title']) .": ". t($info['description']) . "\n";
+      $descriptions .= t($info['title']) . ": " . t($info['description']) . "\n";
     }
   }
   $form['authentication'] = array(
@@ -226,7 +226,7 @@ function mailhandler_add_edit_mailbox_validate($form, &$form_state) {
     // We don't want to save, so we set an 'invisible error' that means the form is not submitted
     form_set_error('mailhandler');
   }
-  
+
   // If POP3 mailbox is chosen, messages must be deleted after processing.
   if ($form_state['values']['imap'] == 0 && $form_state['values']['delete_after_read'] == 0) {
     form_set_error('delete_after_read', t('You must check off "Delete messages after they are processed" when using a POP3 mailbox.'));
@@ -259,7 +259,7 @@ function mailhandler_add_edit_mailbox_submit($form, &$form_state) {
  *  Redirect to delete handler if delete is clicked
  */
 function mailhandler_delete_mailbox_submit($form, &$form_state) {
-  $form_state['redirect'] = array('admin/content/mailhandler/delete/'.$form_state['values']['mid']);
+  $form_state['redirect'] = array('admin/content/mailhandler/delete/' . $form_state['values']['mid']);
 }
 
 
@@ -276,13 +276,13 @@ function mailhandler_admin_delete_confirm($form_state, $mid) {
   );
 
   return confirm_form(
-      $form,
-      t('Do you wish to delete mailbox %mailbox?', array('%mailbox' => $info->mail)),
-      'admin/content/mailhandler',
-      t('This action cannot be undone.'),
-      t('Delete'),
-      t('Cancel')
-    );
+    $form,
+    t('Do you wish to delete mailbox %mailbox?', array('%mailbox' => $info->mail)),
+    'admin/content/mailhandler',
+    t('This action cannot be undone.'),
+    t('Delete'),
+    t('Cancel')
+  );
 }
 
 
@@ -328,17 +328,17 @@ function mailhandler_list_mailboxes() {
   $result = db_query('SELECT * FROM {mailhandler} ORDER BY mail');
   while ($mailbox = db_fetch_object($result)) {
     $rows[] = array(
-      '<a href="mailto:'. $mailbox->mail .'">'. $mailbox->mail .'</a>',
+      '<a href="mailto:' . $mailbox->mail . '">' . $mailbox->mail . '</a>',
       $mailbox->folder ? check_plain($mailbox->folder) : '',
-      l(t('Retrieve'), 'admin/content/mailhandler/retrieve/'.$mailbox->mid, array('title' => t('Retrieve and process pending e-mails in this mailbox'))),
-      l(t('Edit'), 'admin/content/mailhandler/edit/'.$mailbox->mid, array('title' => t('Edit this mailbox configuration'))),
-      l(t('Clone'), 'admin/content/mailhandler/clone/'.$mailbox->mid, array('title' => t('Add a new mailbox, using this mailbox configuration as a template'))),
-      l(t('Delete'), 'admin/content/mailhandler/delete/'.$mailbox->mid, array('title' => t('Delete this mailbox'))),
+      l(t('Retrieve'), 'admin/content/mailhandler/retrieve/' . $mailbox->mid, array('title' => t('Retrieve and process pending e-mails in this mailbox'))),
+      l(t('Edit'), 'admin/content/mailhandler/edit/' . $mailbox->mid, array('title' => t('Edit this mailbox configuration'))),
+      l(t('Clone'), 'admin/content/mailhandler/clone/' . $mailbox->mid, array('title' => t('Add a new mailbox, using this mailbox configuration as a template'))),
+      l(t('Delete'), 'admin/content/mailhandler/delete/' . $mailbox->mid, array('title' => t('Delete this mailbox'))),
     );
   }
 
   if (empty($rows)) {
-    $rows[] = array(array('data' => '<em>'. t('No mailboxes have been defined.') .'</em>', 'colspan' => 4));
+    $rows[] = array(array('data' => '<em>' . t('No mailboxes have been defined.') . '</em>', 'colspan' => 4));
   }
 
   return theme('table', $header, $rows);
@@ -365,7 +365,7 @@ function mailhandler_admin_settings() {
     '#default_value' => variable_get('mailhandler_max_retrieval', 0),
     '#description' => t('To prevent timeout errors from large mailboxes you can limit the maximum number of messages that will be processed during each cron run. This is a global setting and applies to all mailboxes. A value of zero means that no limit will be applied. Some trial and error may be needed to find the optimum setting.'),
   );
-  
+
   $form['mailhandler_default_encoding'] = array(
     '#type' => 'textfield',
     '#title' => t('Default character encoding'),

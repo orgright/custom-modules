@@ -23,7 +23,7 @@ function membership_member_form_build(&$form_state, $node) {
     '#maxlength' => 64,
     '#size' => 40,
     '#required' => TRUE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -34,7 +34,7 @@ function membership_member_form_build(&$form_state, $node) {
     '#default_value' => $node->address,
     '#rows' => 3,
     '#resizable' => TRUE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -46,7 +46,7 @@ function membership_member_form_build(&$form_state, $node) {
     '#maxlength' => 64,
     '#size' => 40,
     '#required' => FALSE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -58,7 +58,7 @@ function membership_member_form_build(&$form_state, $node) {
     '#maxlength' => 16,
     '#size' => 16,
     '#required' => FALSE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -69,7 +69,7 @@ function membership_member_form_build(&$form_state, $node) {
     '#default_value' => $node->phone,
     '#rows' => 2,
     '#resizable' => TRUE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -80,7 +80,7 @@ function membership_member_form_build(&$form_state, $node) {
     '#default_value' => $node->email,
     '#rows' => 2,
     '#resizable' => TRUE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -91,7 +91,7 @@ function membership_member_form_build(&$form_state, $node) {
     '#description' => membership_field_description('member-details', 'category', t('Chose membership category from the list')),
     '#default_value' => $node->category,
     '#options' => $category_list,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -102,7 +102,7 @@ function membership_member_form_build(&$form_state, $node) {
     '#description' => membership_field_description('member-details', 'standing', t('Chose the membership status from the list')),
     '#default_value' => $node->standing,
     '#options' => $standing_list,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -116,7 +116,7 @@ function membership_member_form_build(&$form_state, $node) {
     '#date_format' => $dformat,
     //'#date_label_position' => 'within',
     '#date_year_range' => '-7:+1',
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -129,7 +129,7 @@ function membership_member_form_build(&$form_state, $node) {
     '#date_format' => $dformat,
     //'#date_label_position' => 'within',
     '#date_year_range' => '-7:+1',
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -144,7 +144,7 @@ function membership_member_form_build(&$form_state, $node) {
       '#maxlength' => 64,
       '#size' => 40,
       '#required' => FALSE,
-      '#attributes' => array('tabindex'=>$fix),
+      '#attributes' => array('tabindex' => $fix),
       '#weight' => $fix,
       '#autocomplete_path' => 'membership/autocomplete/members',
     );
@@ -158,7 +158,7 @@ function membership_member_form_build(&$form_state, $node) {
       '#default_value' => $node->pnid,
       '#options' => array('-- Select member --') + $members_list,
       '#required' => FALSE,
-      '#attributes' => array('tabindex'=>$fix),
+      '#attributes' => array('tabindex' => $fix),
       '#weight' => $fix,
     );
   }
@@ -170,7 +170,7 @@ function membership_member_form_build(&$form_state, $node) {
     '#default_value' => $node->notes,
     '#rows' => 3,
     '#resizable' => TRUE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   // create placeholders to be filled in during validation
@@ -191,7 +191,7 @@ function membership_member_form_build(&$form_state, $node) {
   $form['#validate'] = array('membership_form_validate');
   $form['#submit'] = array('membership_form_submit');
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Membership')=>'membership', t('Members')=>'membership/members'));
+  orgright_breadcrumb(array(t('Membership') => 'membership', t('Members') => 'membership/members'));
   return $form;
 }
 
@@ -212,7 +212,7 @@ function membership_subscription_form_build(&$form_state, $node) {
       '#maxlength' => 64,
       '#size' => 40,
       '#required' => TRUE,
-      '#attributes' => array('tabindex'=>$fix),
+      '#attributes' => array('tabindex' => $fix),
       '#weight' => $fix,
       '#autocomplete_path' => 'membership/autocomplete/members',
     );
@@ -226,7 +226,7 @@ function membership_subscription_form_build(&$form_state, $node) {
       '#default_value' => $node->mnid,
       '#options' => array('-- Select member --') + $members_list,
       '#required' => TRUE,
-      '#attributes' => array('tabindex'=>$fix),
+      '#attributes' => array('tabindex' => $fix),
       '#weight' => $fix,
     );
   }
@@ -239,7 +239,7 @@ function membership_subscription_form_build(&$form_state, $node) {
     '#maxlength' => 64,
     '#size' => 40,
     '#required' => TRUE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -253,7 +253,7 @@ function membership_subscription_form_build(&$form_state, $node) {
     '#date_format' => $dformat,
     //'#date_label_position' => 'within',
     '#required' => TRUE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -266,7 +266,7 @@ function membership_subscription_form_build(&$form_state, $node) {
     '#date_format' => $dformat,
     //'#date_label_position' => 'within',
     '#required' => TRUE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -278,7 +278,7 @@ function membership_subscription_form_build(&$form_state, $node) {
     '#maxlength' => 16,
     '#size' => 16,
     '#required' => TRUE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -289,7 +289,7 @@ function membership_subscription_form_build(&$form_state, $node) {
     '#default_value' => $node->notes,
     '#rows' => 3,
     '#resizable' => TRUE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   // create placeholders to be filled in during validation
@@ -310,7 +310,7 @@ function membership_subscription_form_build(&$form_state, $node) {
   $form['#validate'] = array('membership_form_validate');
   $form['#submit'] = array('membership_form_submit');
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Membership')=>'membership', t('Subscriptions')=>'membership/subscriptions'));
+  orgright_breadcrumb(array(t('Membership') => 'membership', t('Subscriptions') => 'membership/subscriptions'));
   return $form;
 }
 
@@ -331,7 +331,7 @@ function membership_subpayment_form_build(&$form_state, $node) {
       '#maxlength' => 64,
       '#size' => 40,
       '#required' => TRUE,
-      '#attributes' => array('tabindex'=>$fix),
+      '#attributes' => array('tabindex' => $fix),
       '#weight' => $fix,
       '#autocomplete_path' => 'membership/autocomplete/members',
     );
@@ -345,7 +345,7 @@ function membership_subpayment_form_build(&$form_state, $node) {
       '#default_value' => $node->mnid,
       '#options' => array('-- Select member --') + $members_list,
       '#required' => TRUE,
-      '#attributes' => array('tabindex'=>$fix),
+      '#attributes' => array('tabindex' => $fix),
       '#weight' => $fix,
     );
   }
@@ -358,7 +358,7 @@ function membership_subpayment_form_build(&$form_state, $node) {
     '#maxlength' => 64,
     '#size' => 40,
     '#required' => TRUE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
     '#autocomplete_path' => 'membership/autocomplete/scodes',
   );
@@ -372,7 +372,7 @@ function membership_subpayment_form_build(&$form_state, $node) {
     '#default_value' => ($node->datepaid) ? $node->datepaid : orgright_get_date_ymd(),
     '#date_format' => $dformat,
     //'#date_label_position' => 'within',
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -384,7 +384,7 @@ function membership_subpayment_form_build(&$form_state, $node) {
     '#maxlength' => 16,
     '#size' => 16,
     '#required' => TRUE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -395,7 +395,7 @@ function membership_subpayment_form_build(&$form_state, $node) {
     '#default_value' => $node->notes,
     '#rows' => 3,
     '#resizable' => TRUE,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   // create placeholders to be filled in during validation
@@ -420,7 +420,7 @@ function membership_subpayment_form_build(&$form_state, $node) {
   $form['#validate'] = array('membership_form_validate');
   $form['#submit'] = array('membership_form_submit');
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Membership')=>'membership', t('Payments')=>'membership/subpayments'));
+  orgright_breadcrumb(array(t('Membership') => 'membership', t('Payments') => 'membership/subpayments'));
   return $form;
 }
 
@@ -435,7 +435,7 @@ function membership_import_members_form_build(&$form_state) {
     '#title' => t('Import Member Details'),
     '#type' => 'item',
     '#description' => t('Member details can be imported from an existing membership database using a prepared CSV file.  The first line in this file must contain field names corresponding to the orgRight member details fields (see below).  These can be in any order. The "name" field is required, but all others are optional. Information from any unrecognised fields will be imported into the "notes" field. Any html and php tags will be removed from all imported fields, so convert all angle brackets ("&lt;" and "&gt;") to round, square, or curly brackets.'),
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -443,7 +443,7 @@ function membership_import_members_form_build(&$form_state) {
     '#title' => t('Member Details Fields'),
     '#type' => 'item',
     '#description' => t('The following fields are available for member details: "name", "address", "city", "postcode", "phone", "email", "category", "status", "date joined", "date left", "primary member", and "notes". The "address", "phone", "phone" and "notes" fields are multi-line capable, so encode line-breaks with semi-colon + question mark pairs (";?"). The "date joined" and "date left" fields should be formatted as "dd-mm-yyyy". Imported category and status values will be checked against the list of currently defined values, but there are options below to add new values to the current list.'),
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   // CSV file fieldset
@@ -457,7 +457,7 @@ function membership_import_members_form_build(&$form_state) {
     //'#description' => t(''),
     '#prefix' => '<div class="attachments">',
     '#suffix' => '</div>',
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -468,7 +468,7 @@ function membership_import_members_form_build(&$form_state) {
     '#title' => t('Select file'),
     '#size' => 40,
     '#description' => $description,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -479,7 +479,7 @@ function membership_import_members_form_build(&$form_state) {
     '#description' => membership_field_description('member-import', 'defaultcategory', t('Select a category to be given to imported members without a category specified')),
     '#default_value' => 0,
     '#options' => $category_list,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -489,7 +489,7 @@ function membership_import_members_form_build(&$form_state) {
     '#description' => membership_field_description('member-import', 'addnewcategory', t('Should new categories in the import file be added to the current list?')),
     '#default_value' => 1,
     '#options' => array('No', 'Yes'),
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -500,7 +500,7 @@ function membership_import_members_form_build(&$form_state) {
     '#description' => membership_field_description('member-import', 'defaultstatus', t('Select a status to be given to imported members without a status specified')),
     '#default_value' => 0,
     '#options' => $standing_list,
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
@@ -510,14 +510,14 @@ function membership_import_members_form_build(&$form_state) {
     '#description' => membership_field_description('member-import', 'addnewstatus', t('Should new status values in the import file be added to the current list?')),
     '#default_value' => 1,
     '#options' => array('No', 'Yes'),
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   $fix++;
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Import members'),
-    '#attributes' => array('tabindex'=>$fix),
+    '#attributes' => array('tabindex' => $fix),
     '#weight' => $fix,
   );
   // Create placeholder field
@@ -529,7 +529,7 @@ function membership_import_members_form_build(&$form_state) {
   $form['#validate'] = array('membership_form_validate');
   $form['#submit'] = array('membership_form_submit');
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Membership')=>'membership', t('Members')=>'membership/members'));
+  orgright_breadcrumb(array(t('Membership') => 'membership', t('Members') => 'membership/members'));
   return $form;
 }
 
@@ -551,29 +551,29 @@ function membership_export_members_form_build(&$form_state) {
       '#title' => t('Export Member Details'),
       '#type' => 'item',
       '#description' => t('Member details will be exported from the membership database to CSV file.  The first line in this file will contain field names corresponding to the orgRight member details fields.'),
-      '#attributes' => array('tabindex'=>$fix),
+      '#attributes' => array('tabindex' => $fix),
       '#weight' => $fix,
     );
     $fix++;
-    $category_list = array($any=>$any) + membership_get_categories();
+    $category_list = array($any => $any) + membership_get_categories();
     $form['category'] = array(
       '#type' => 'select',
       '#title' => t('Category'),
       '#description' => membership_field_description('member-export', 'category', t('Select member category (if required) to be exported')),
       '#default_value' => $any,
       '#options' => $category_list,
-      '#attributes' => array('tabindex'=>$fix),
+      '#attributes' => array('tabindex' => $fix),
       '#weight' => $fix,
     );
     $fix++;
-    $standing_list = array($any=>$any) + membership_get_standings();
+    $standing_list = array($any => $any) + membership_get_standings();
     $form['standing'] = array(
       '#type' => 'select',
       '#title' => t('Status'),
       '#description' => membership_field_description('member-export', 'standing', t('Select member status (if required) to be exported')),
       '#default_value' => $any,
       '#options' => $standing_list,
-      '#attributes' => array('tabindex'=>$fix),
+      '#attributes' => array('tabindex' => $fix),
       '#weight' => $fix,
     );
     // Create a fieldset for selection of fields
@@ -598,15 +598,15 @@ function membership_export_members_form_build(&$form_state) {
       '#type' => 'radios',
       '#title' => 'Multi-line fields',
       '#description' => membership_field_description('member-export', 'newlines', t('Specify how to handle new-lines in the data')),
-      '#options' => array(t('Leave field with embedded new-lines'), t('Replace new-lines with token: "@tkn"', array("@tkn"=>orgright_get_newline_token()))),
-      '#default_value' => 1,	// Replace with token
+      '#options' => array(t('Leave field with embedded new-lines'), t('Replace new-lines with token: "@tkn"', array("@tkn" => orgright_get_newline_token()))),
+      '#default_value' => 1, // Replace with token
       '#weight' => 2,
     );
     $fix++;
     $form['submit'] = array(
       '#type' => 'submit',
       '#value' => t('Next'),
-      '#attributes' => array('tabindex'=>$fix),
+      '#attributes' => array('tabindex' => $fix),
       '#weight' => $fix,
     );
     // Create placeholder field
@@ -622,8 +622,12 @@ function membership_export_members_form_build(&$form_state) {
     // Find a list of members and create form elements for each
     $members = array();
     $sql = "SELECT m.nid, m.member, m.address, m.city FROM {node} n JOIN {org_members} m ON m.nid = n.nid WHERE m.vid = n.vid";
-    if ($form_state['values']['category'] != $any) { $sql .= " AND m.category = '%s'"; }
-    if ($form_state['values']['standing'] != $any) { $sql .= " AND m.standing = '%s'"; }
+    if ($form_state['values']['category'] != $any) {
+      $sql .= " AND m.category = '%s'";
+    }
+    if ($form_state['values']['standing'] != $any) {
+      $sql .= " AND m.standing = '%s'";
+    }
     $sql .= " ORDER BY m.member";
     $result = db_query($sql, $form_state['values']['category'], $form_state['values']['standing']);
     while ($mbr = db_fetch_object($result)) {
@@ -635,10 +639,10 @@ function membership_export_members_form_build(&$form_state) {
     $fix = 0;
     $fix++;
     $form['instructions'] = array(
-      '#title' => t('Member Export - Category "@cat", Status "@sts"', array('@cat'=>$form_state['values']['category'], '@sts'=>$form_state['values']['standing'])),
+      '#title' => t('Member Export - Category "@cat", Status "@sts"', array('@cat' => $form_state['values']['category'], '@sts' => $form_state['values']['standing'])),
       '#type' => 'item',
       '#description' => t('Select the members from the list below to export'),
-      '#attributes' => array('tabindex'=>$fix),
+      '#attributes' => array('tabindex' => $fix),
       '#weight' => $fix,
     );
     $fix++;
@@ -646,14 +650,14 @@ function membership_export_members_form_build(&$form_state) {
       '#type' => 'checkboxes',
       '#title' => 'Select Members',
       '#options' => $members,
-      '#attributes' => array('tabindex'=>$fix),
+      '#attributes' => array('tabindex' => $fix),
       '#weight' => $fix,
     );
     $fix++;
     $form['submit'] = array(
       '#type' => 'submit',
       '#value' => t('Export member details'),
-      '#attributes' => array('tabindex'=>$fix),
+      '#attributes' => array('tabindex' => $fix),
       '#weight' => $fix,
     );
     $form['#validate'] = array('membership_form_validate');
@@ -666,11 +670,11 @@ function membership_export_members_form_build(&$form_state) {
     '#value' => $step,
   );
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Membership')=>'membership', t('Members')=>'membership/members'));
+  orgright_breadcrumb(array(t('Membership') => 'membership', t('Members') => 'membership/members'));
   return $form;
 }
 
-function membership_subscription_wizard_build (&$form_state) {
+function membership_subscription_wizard_build(&$form_state) {
   //orgright_debug_msg('membership','Fn: membership_subscription_wizard_build');
   // Build the forms required for the membership subscription wizard
   // Find out which step we are on. At beginning if $form_state is not set.
@@ -699,7 +703,7 @@ function membership_subscription_wizard_build (&$form_state) {
       '#title' => t('Subscription Wizard'),
       '#type' => 'item',
       '#description' => t('Enter the required subscription parameters on this page. On subsequent pages, you can select the members to receive this subscription notice.'),
-      '#attributes' => array('tabindex'=>$fix),
+      '#attributes' => array('tabindex' => $fix),
       '#weight' => $fix,
     );
     $fix++;
@@ -710,7 +714,7 @@ function membership_subscription_wizard_build (&$form_state) {
       '#description' => membership_field_description('subscription-details', 'category', t('Select membership category')),
       '#options' => $category_list,
       '#multiple' => FALSE,
-      '#attributes' => array('tabindex'=>$fix),
+      '#attributes' => array('tabindex' => $fix),
       '#weight' => $fix,
     );
     $fix++;
@@ -719,7 +723,7 @@ function membership_subscription_wizard_build (&$form_state) {
       '#value' => t('Next'),
       '#validate' => array('membership_subscription_wizard_validate'),
       '#submit' => array('membership_subscription_wizard_submit'),
-      '#attributes' => array('tabindex'=>$fix),
+      '#attributes' => array('tabindex' => $fix),
       '#weight' => $fix,
     );
   }
@@ -737,10 +741,10 @@ function membership_subscription_wizard_build (&$form_state) {
     $fix = 0;
     $fix++;
     $form['instructions'] = array(
-      '#title' => t('Subscription Wizard - Category "@cat"', array('@cat'=>$form_state['values']['category'])),
+      '#title' => t('Subscription Wizard - Category "@cat"', array('@cat' => $form_state['values']['category'])),
       '#type' => 'item',
       '#description' => t('Select the members from the list below to receive this subscription notice.'),
-      '#attributes' => array('tabindex'=>$fix),
+      '#attributes' => array('tabindex' => $fix),
       '#weight' => $fix,
     );
     $fix++;
@@ -748,14 +752,14 @@ function membership_subscription_wizard_build (&$form_state) {
       '#type' => 'checkboxes',
       '#title' => 'Select Members',
       '#options' => $members,
-      '#attributes' => array('tabindex'=>$fix),
+      '#attributes' => array('tabindex' => $fix),
       '#weight' => $fix,
     );
     $fix++;
     $form['submit'] = array(
       '#type' => 'submit',
       '#value' => t('Generate subscriptions'),
-      '#attributes' => array('tabindex'=>$fix),
+      '#attributes' => array('tabindex' => $fix),
       '#weight' => $fix,
     );
     $form['#validate'] = array('membership_subscription_wizard_validate');
@@ -768,7 +772,7 @@ function membership_subscription_wizard_build (&$form_state) {
     '#value' => $step,
   );
   // Set page breadcrumb
-  orgright_breadcrumb(array(t('Membership')=>'membership', t('Subscriptions')=>'membership/subscriptions'));
+  orgright_breadcrumb(array(t('Membership') => 'membership', t('Subscriptions') => 'membership/subscriptions'));
   return $form;
 }
 
@@ -776,7 +780,7 @@ function membership_subscription_wizard_build (&$form_state) {
  *  Function to generate a field description with popup help for each form field
  */
 function membership_field_description($helpfile, $field, $description) {
-  return theme('helpservice_topic','membership',$helpfile.'/'.$field).$description;
+  return theme('helpservice_topic', 'membership', $helpfile . '/' . $field) . $description;
 }
 
 /**
@@ -789,16 +793,16 @@ function membership_form_member_node_form_alter(&$form, &$form_state) {
     // Yes, so check and act on each
     $args = $form['#parameters'][3];
     foreach ($args as $parameter) {
-      $paraname = substr($parameter,0,strpos($parameter,'~'));
-      $parvalue = substr($parameter,strpos($parameter,'~')+1);
+      $paraname = substr($parameter, 0, strpos($parameter, '~'));
+      $parvalue = substr($parameter, strpos($parameter, '~') + 1);
       switch ($paraname) {
-      case 'parent':
-        // fill in the parent field information
-        $sql = "SELECT member FROM {node} n JOIN {org_members} m on m.nid = n.nid WHERE m.vid = n.vid AND m.nid = %d";
-        $parent = db_result(db_query($sql, $parvalue));
-        $form['parent']['#default_value'] = $parent;
-        break;
-      default:
+        case 'parent':
+          // fill in the parent field information
+          $sql = "SELECT member FROM {node} n JOIN {org_members} m on m.nid = n.nid WHERE m.vid = n.vid AND m.nid = %d";
+          $parent = db_result(db_query($sql, $parvalue));
+          $form['parent']['#default_value'] = $parent;
+          break;
+        default:
       }
     }
   }
@@ -812,17 +816,17 @@ function membership_form_member_node_form_alter(&$form, &$form_state) {
   // Remove preview button and change label on submit button
   // and specify the redirect page on successful submission
   unset($form['buttons']['preview']);
-  if (empty($form['nid']['#value'])) {  
+  if (empty($form['nid']['#value'])) {
     $form['buttons']['submit']['#value'] = 'Add Member';
     $form['#goto'] = 'membership/members/add';
   }
   else {
     $form['buttons']['submit']['#value'] = 'Save Changes';
-    $form['#goto'] = 'node/'.$form['nid']['#value'];
+    $form['#goto'] = 'node/' . $form['nid']['#value'];
   }
   // Set the weight and tab index for the submit button
   $fix = $form['fix']['#value'];
-  $form['buttons']['submit']['#attributes'] = array('tabindex'=>$fix);
+  $form['buttons']['submit']['#attributes'] = array('tabindex' => $fix);
   $form['buttons']['submit']['#weight'] = $fix;
 }
 
@@ -833,16 +837,16 @@ function membership_form_subscription_node_form_alter(&$form, &$form_state) {
     // Yes, so check and act on each
     $args = $form['#parameters'][3];
     foreach ($args as $parameter) {
-      $paraname = substr($parameter,0,strpos($parameter,'~'));
-      $parvalue = substr($parameter,strpos($parameter,'~')+1);
+      $paraname = substr($parameter, 0, strpos($parameter, '~'));
+      $parvalue = substr($parameter, strpos($parameter, '~') + 1);
       switch ($paraname) {
-      case 'member':
-        // fill in the member field information
-        $sql = "SELECT member FROM {node} n JOIN {org_members} m on m.nid = n.nid WHERE m.vid = n.vid AND m.nid = %d";
-        $member = db_result(db_query($sql, $parvalue));
-        $form['member']['#default_value'] = $member;
-        break;
-      default:
+        case 'member':
+          // fill in the member field information
+          $sql = "SELECT member FROM {node} n JOIN {org_members} m on m.nid = n.nid WHERE m.vid = n.vid AND m.nid = %d";
+          $member = db_result(db_query($sql, $parvalue));
+          $form['member']['#default_value'] = $member;
+          break;
+        default:
       }
     }
   }
@@ -856,17 +860,17 @@ function membership_form_subscription_node_form_alter(&$form, &$form_state) {
   // Remove preview button and change label on submit button
   // and specify the redirect page on successful submission
   unset($form['buttons']['preview']);
-  if (empty($form['nid']['#value'])) {  
+  if (empty($form['nid']['#value'])) {
     $form['buttons']['submit']['#value'] = 'Add Subscription';
     $form['#goto'] = 'membership/subscriptions/add';
   }
   else {
     $form['buttons']['submit']['#value'] = 'Save Changes';
-    $form['#goto'] = 'node/'.$form['nid']['#value'];
+    $form['#goto'] = 'node/' . $form['nid']['#value'];
   }
   // Set the weight and tab index for the submit button
   $fix = $form['fix']['#value'];
-  $form['buttons']['submit']['#attributes'] = array('tabindex'=>$fix);
+  $form['buttons']['submit']['#attributes'] = array('tabindex' => $fix);
   $form['buttons']['submit']['#weight'] = $fix;
 }
 
@@ -877,22 +881,22 @@ function membership_form_subpayment_node_form_alter(&$form, &$form_state) {
     // Yes, so check and act on each
     $args = $form['#parameters'][3];
     foreach ($args as $parameter) {
-      $paraname = substr($parameter,0,strpos($parameter,'~'));
-      $parvalue = substr($parameter,strpos($parameter,'~')+1);
+      $paraname = substr($parameter, 0, strpos($parameter, '~'));
+      $parvalue = substr($parameter, strpos($parameter, '~') + 1);
       switch ($paraname) {
-      case 'member':
-        // fill in the member field information
-        $sql = "SELECT member FROM {node} n JOIN {org_members} m on m.nid = n.nid WHERE m.vid = n.vid AND m.nid = %d";
-        $member = db_result(db_query($sql, $parvalue));
-        $form['member']['#default_value'] = $member;
-        break;
-      case 'subscription':
-        // fill in the subscription field information
-        $sql = "SELECT scode FROM {node} n JOIN {org_subscriptions} s on s.nid = n.nid WHERE s.vid = n.vid AND s.nid = %d";
-        $scode = db_result(db_query($sql, $parvalue));
-        $form['scode']['#default_value'] = $scode;
-        break;
-      default:
+        case 'member':
+          // fill in the member field information
+          $sql = "SELECT member FROM {node} n JOIN {org_members} m on m.nid = n.nid WHERE m.vid = n.vid AND m.nid = %d";
+          $member = db_result(db_query($sql, $parvalue));
+          $form['member']['#default_value'] = $member;
+          break;
+        case 'subscription':
+          // fill in the subscription field information
+          $sql = "SELECT scode FROM {node} n JOIN {org_subscriptions} s on s.nid = n.nid WHERE s.vid = n.vid AND s.nid = %d";
+          $scode = db_result(db_query($sql, $parvalue));
+          $form['scode']['#default_value'] = $scode;
+          break;
+        default:
       }
     }
   }
@@ -906,17 +910,17 @@ function membership_form_subpayment_node_form_alter(&$form, &$form_state) {
   // Remove preview button and change label on submit button
   // and specify the redirect page on successful submission
   unset($form['buttons']['preview']);
-  if (empty($form['nid']['#value'])) {  
+  if (empty($form['nid']['#value'])) {
     $form['buttons']['submit']['#value'] = 'Add Payment';
     $form['#goto'] = 'membership/subpayments/add';
-   }
+  }
   else {
     $form['buttons']['submit']['#value'] = 'Save Changes';
-    $form['#goto'] = 'node/'.$form['nid']['#value'];
+    $form['#goto'] = 'node/' . $form['nid']['#value'];
   }
   // Set the weight and tab index for the submit button
   $fix = $form['fix']['#value'];
-  $form['buttons']['submit']['#attributes'] = array('tabindex'=>$fix);
+  $form['buttons']['submit']['#attributes'] = array('tabindex' => $fix);
   $form['buttons']['submit']['#weight'] = $fix;
 }
 
@@ -949,28 +953,28 @@ function membership_member_form_validate($form, &$form_state) {
     $parent = strip_tags($form_state['values']['parent']);
     // Check that entered details are acceptable
     if ($member != $form_state['values']['member']) {
-        form_set_error('member',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('member', t('HTML or PHP tags are not permitted in this field'));
     }
     if ($address != $form_state['values']['address']) {
-        form_set_error('address',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('address', t('HTML or PHP tags are not permitted in this field'));
     }
     if ($city != $form_state['values']['city']) {
-        form_set_error('city',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('city', t('HTML or PHP tags are not permitted in this field'));
     }
     if ($postcode != $form_state['values']['postcode']) {
-        form_set_error('postcode',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('postcode', t('HTML or PHP tags are not permitted in this field'));
     }
     if ($phone != $form_state['values']['phone']) {
-        form_set_error('phone',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('phone', t('HTML or PHP tags are not permitted in this field'));
     }
     if ($email != $form_state['values']['email']) {
-        form_set_error('email',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('email', t('HTML or PHP tags are not permitted in this field'));
     }
     if ($notes != $form_state['values']['notes']) {
-        form_set_error('notes',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('notes', t('HTML or PHP tags are not permitted in this field'));
     }
     if ($parent != $form_state['values']['parent']) {
-        form_set_error('parent',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('parent', t('HTML or PHP tags are not permitted in this field'));
     }
     // Check that any name returned in "parent" is a valid member and is different from this member
     if ($parent) {
@@ -979,10 +983,10 @@ function membership_member_form_validate($form, &$form_state) {
         form_set_value($form['pnid'], $pnid, $form_state);
       }
       else {
-        form_set_error('parent',t('The parent member specified is not a known member'));
+        form_set_error('parent', t('The parent member specified is not a known member'));
       }
       if ($pnid == $form_state['values']['nid']) {
-        form_set_error('parent',t('The parent member specified is the same as this member'));
+        form_set_error('parent', t('The parent member specified is the same as this member'));
       }
     }
     // Prevent duplicate records
@@ -991,31 +995,31 @@ function membership_member_form_validate($form, &$form_state) {
     if ($nid) {
       // Already exists on the database, so flag an error unless it is same record being updated
       if ($nid != $form['nid']['#value']) {
-        form_set_error('member',t('The member name is already in use'));
+        form_set_error('member', t('The member name is already in use'));
       }
     }
     // Build a composite node title and save in $form_state
-    $form_state['values']['title'] = t('Member: !mbr', array('!mbr'=>$member));
- //orgright_debug_dump('Fn: membership_member_form_validate - $form_state',$form_state);
+    $form_state['values']['title'] = t('Member: !mbr', array('!mbr' => $member));
+    //orgright_debug_dump('Fn: membership_member_form_validate - $form_state',$form_state);
   }
   elseif ($clicked_button == $form['buttons']['delete']['#value']) {
     // Check for attached children - delete not permitted in this case
     $sql = "SELECT COUNT(m.nid) from {node} n JOIN {org_members} m ON m.nid = n.nid WHERE m.vid = n.vid AND m.pnid = %d";
     $count = db_result(db_query($sql, $form_state['values']['nid']));
     if ($count) {
-      form_set_error('member',t('This member still has @num children attached!', array('@num'=>$count)));
+      form_set_error('member', t('This member still has @num children attached!', array('@num' => $count)));
     }
     // Check for attached subscriptions - delete not permitted in this case
     $sql = "SELECT COUNT(s.nid) from {node} n JOIN {org_subscriptions} s ON s.nid = n.nid WHERE s.vid = n.vid AND s.mnid = %d";
     $count = db_result(db_query($sql, $form_state['values']['nid']));
     if ($count) {
-      form_set_error('member',t('This member still has @num subscriptions attached!', array('@num'=>$count)));
+      form_set_error('member', t('This member still has @num subscriptions attached!', array('@num' => $count)));
     }
     // Check for attached payments - delete not permitted in this case
     $sql = "SELECT COUNT(p.nid) from {node} n JOIN {org_subpayments} p ON p.nid = n.nid WHERE p.vid = n.vid AND p.mnid = %d";
     $count = db_result(db_query($sql, $form_state['values']['nid']));
     if ($count) {
-      form_set_error('member',t('This subscription still has @num payments attached!', array('@num'=>$count)));
+      form_set_error('member', t('This subscription still has @num payments attached!', array('@num' => $count)));
     }
     // Also check for committee appointments and role assignments if the committee module is enabled
     if (module_exists('committee')) {
@@ -1023,13 +1027,13 @@ function membership_member_form_validate($form, &$form_state) {
       $sql = "SELECT COUNT(p.nid) from {node} n JOIN {org_appointments} p ON p.nid = n.nid WHERE p.vid = n.vid AND p.mnid = %d";
       $count = db_result(db_query($sql, $form_state['values']['nid']));
       if ($count) {
-        form_set_error('member',t('This member still has @num committee appointments!', array('@num'=>$count)));
+        form_set_error('member', t('This member still has @num committee appointments!', array('@num' => $count)));
       }
       // Check for assignments - delete not permitted in this case
       $sql = "SELECT COUNT(s.nid) from {node} n JOIN {org_assignments} s ON s.nid = n.nid WHERE s.vid = n.vid AND s.rnid = %d";
       $count = db_result(db_query($sql, $form_state['values']['nid']));
       if ($count) {
-        form_set_error('member',t('This member still has @num role assigments!', array('@num'=>$count)));
+        form_set_error('member', t('This member still has @num role assigments!', array('@num' => $count)));
       }
     }
     // Check for file cabinet documents if the filecabinet module is enabled
@@ -1038,7 +1042,7 @@ function membership_member_form_validate($form, &$form_state) {
       $sql = "SELECT COUNT(d.nid) from {node} n JOIN {org_documents} d ON d.nid = n.nid WHERE d.vid = n.vid AND d.mnid = %d";
       $count = db_result(db_query($sql, $form_state['values']['nid']));
       if ($count) {
-        form_set_error('member',t('This member still has @num documents in the file cabinet!', array('@num'=>$count)));
+        form_set_error('member', t('This member still has @num documents in the file cabinet!', array('@num' => $count)));
       }
     }
   }
@@ -1055,16 +1059,16 @@ function membership_subscription_form_validate($form, &$form_state) {
     $notes = strip_tags($form_state['values']['notes']);
     // Check that entered details are acceptable
     if ($member != $form_state['values']['member']) {
-        form_set_error('member',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('member', t('HTML or PHP tags are not permitted in this field'));
     }
     if ($scode != $form_state['values']['scode']) {
-        form_set_error('scode',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('scode', t('HTML or PHP tags are not permitted in this field'));
     }
     if ($amount != $form_state['values']['amount']) {
-        form_set_error('amount',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('amount', t('HTML or PHP tags are not permitted in this field'));
     }
     if ($notes != $form_state['values']['notes']) {
-        form_set_error('notes',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('notes', t('HTML or PHP tags are not permitted in this field'));
     }
     // Check that the name returned in "member" is valid
     $mnid = membership_validate_member($member);
@@ -1072,7 +1076,7 @@ function membership_subscription_form_validate($form, &$form_state) {
       form_set_value($form['mnid'], $mnid, $form_state);
     }
     else {
-      form_set_error('member',t('The name specified is not a known member'));
+      form_set_error('member', t('The name specified is not a known member'));
     }
     // Prevent duplicate records
     $sql = "SELECT n.nid FROM {node} n JOIN {org_subscriptions} s ON s.nid = n.nid WHERE s.vid = n.vid AND s.scode = '%s' AND s.mnid = %d";
@@ -1080,18 +1084,18 @@ function membership_subscription_form_validate($form, &$form_state) {
     if ($nid) {
       // Already exists on the database, so flag an error unless it is same record being updated
       if ($nid != $form['nid']['#value']) {
-        form_set_error('scode',t('Subscription already exists for this member'));
+        form_set_error('scode', t('Subscription already exists for this member'));
       }
     }
     // Build a composite node title and save in $form_state
-    $form_state['values']['title'] = t('Subscription: !mbr - !sub', array('!mbr'=>$member, '!sub'=>$scode));
+    $form_state['values']['title'] = t('Subscription: !mbr - !sub', array('!mbr' => $member, '!sub' => $scode));
   }
   elseif ($clicked_button == $form['buttons']['delete']['#value']) {
     // Check for attached payments - delete not permitted in this case
     $sql = "SELECT COUNT(p.nid) from {node} n JOIN {org_subpayments} p ON p.nid = n.nid WHERE p.vid = n.vid AND p.snid = %d";
     $count = db_result(db_query($sql, $form_state['values']['nid']));
     if ($count) {
-      form_set_error('scode',t('This subscription still has @num payments attached!', array('@num'=>$count)));
+      form_set_error('scode', t('This subscription still has @num payments attached!', array('@num' => $count)));
     }
   }
 }
@@ -1105,19 +1109,19 @@ function membership_subpayment_form_validate($form, &$form_state) {
     $scode = strip_tags($form_state['values']['scode']);
     $payment = strip_tags($form_state['values']['payment']);
     $notes = strip_tags($form_state['values']['notes']);
-  //$pdate = date_format_date(date_make_date($form_state['values']['datepaid']), 'custom', 'd M Y');
+    //$pdate = date_format_date(date_make_date($form_state['values']['datepaid']), 'custom', 'd M Y');
     // Check that entered details are acceptable
     if ($member != $form_state['values']['member']) {
-        form_set_error('member',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('member', t('HTML or PHP tags are not permitted in this field'));
     }
     if ($scode != $form_state['values']['scode']) {
-        form_set_error('scode',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('scode', t('HTML or PHP tags are not permitted in this field'));
     }
     if ($payment != $form_state['values']['payment']) {
-        form_set_error('payment',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('payment', t('HTML or PHP tags are not permitted in this field'));
     }
     if ($notes != $form_state['values']['notes']) {
-        form_set_error('notes',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('notes', t('HTML or PHP tags are not permitted in this field'));
     }
     // Check that the name returned in "member" is valid
     $mnid = membership_validate_member($member);
@@ -1125,7 +1129,7 @@ function membership_subpayment_form_validate($form, &$form_state) {
       form_set_value($form['mnid'], $mnid, $form_state);
     }
     else {
-      form_set_error('member',t('The name specified is not a known member'));
+      form_set_error('member', t('The name specified is not a known member'));
     }
     // Check that the code returned in "scode" is valid for this member (already have mnid)
     // Query the database to ensure that the subscription code is valid, and to find the snid
@@ -1136,10 +1140,10 @@ function membership_subpayment_form_validate($form, &$form_state) {
       form_set_value($form['snid'], $snid, $form_state);
     }
     else {
-      form_set_error('scode',t('The subscription specified is not valid for this member'));
+      form_set_error('scode', t('The subscription specified is not valid for this member'));
     }
     // Build a composite node title and save in $form_state
-    $form_state['values']['title'] = t('Subscription payment: !mbr - !date', array('!mbr'=>$member, '!date'=>$pdate));
+    $form_state['values']['title'] = t('Subscription payment: !mbr - !date', array('!mbr' => $member, '!date' => $pdate));
   }
   elseif ($clicked_button == $form['buttons']['delete']['#value']) {
     //orgright_debug_msg('membership','--- Delete button clicked ---');
@@ -1151,23 +1155,23 @@ function membership_import_members_form_validate($form, &$form_state) {
   // Check upload file
   if (isset($_FILES['files']['name']['import'])) {
     if ($_FILES['files']['error']['import']) {
-      form_set_error('import',t('File upload error: @err', array('@err'=>$_FILES['files']['error']['import'])));
+      form_set_error('import', t('File upload error: @err', array('@err' => $_FILES['files']['error']['import'])));
     }
     elseif ($file = membership_validate_import_file($form, $form_state)) {
       form_set_value($form['afid'], $file->fid, $form_state);
       $form_state['storage']['file'] = (array)$file;
     }
     else {
-      form_set_error('import',t('Error saving import CSV file'));
+      form_set_error('import', t('Error saving import CSV file'));
     }
   }
   else {
-    form_set_error('import',t('Must specify an import CSV file'));
+    form_set_error('import', t('Must specify an import CSV file'));
   }
   // If we have a valid file, then check contents
   if (isset($form_state['storage']['file'])) {
     $import_file = $form_state['storage']['file']['filepath'];
-    $import_lines = file($import_file, FILE_IGNORE_NEW_LINES|FILE_SKIP_EMPTY_LINES);
+    $import_lines = file($import_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     if ($import_lines) {
       // process the first array element (line) to find the field names
       $import_fields = membership_import_csv_line($import_lines[0], TRUE);
@@ -1176,11 +1180,11 @@ function membership_import_members_form_validate($form, &$form_state) {
       array_shift($import_lines);
       // check the field names
       if (!isset($import_fields[t('name')])) {
-        form_set_error('import',t('Import CSV file must include a "name" field'));
+        form_set_error('import', t('Import CSV file must include a "name" field'));
       }
       // check for any custom fields
       $custom_fields = array();
-      if (variable_get('orgright_custom_fields_member',0)) {
+      if (variable_get('orgright_custom_fields_member', 0)) {
         // are allowed, so check to see whether any are defined
         $sql = "SELECT field_name, label FROM {content_node_field_instance} WHERE type_name = '%s' ORDER BY weight";
         $result = db_query($sql, 'member');
@@ -1194,11 +1198,13 @@ function membership_import_members_form_validate($form, &$form_state) {
         ++$import_count;
         // trim line and skip if empty
         $this_line = trim($this_line);
-        if (strlen($this_line) < 1) { continue; }
+        if (strlen($this_line) < 1) {
+          continue;
+        }
         $this_member = membership_import_csv_line($this_line);
         // check that there are the correct number of fields
         if (count($this_member) != $num_fields) {
-          drupal_set_message(t('Member record has wrong number of fields - record @num ignored', array('@num'=>$import_count)), 'warning');
+          drupal_set_message(t('Member record has wrong number of fields - record @num ignored', array('@num' => $import_count)), 'warning');
           continue;
         }
         // Define an empty member details array
@@ -1211,9 +1217,9 @@ function membership_import_members_form_validate($form, &$form_state) {
           'email' => '',
           'category' => '',
           'standing' => '',
-          'joindate' => array('day'=>'', 'month'=>'', 'year'=>''),
+          'joindate' => array('day' => '', 'month' => '', 'year' => ''),
           'date joined' => '',
-          'leavedate' => array('day'=>'', 'month'=>'', 'year'=>''),
+          'leavedate' => array('day' => '', 'month' => '', 'year' => ''),
           'date left' => '',
           'parent' => '',
           'notes' => '',
@@ -1226,21 +1232,47 @@ function membership_import_members_form_validate($form, &$form_state) {
         // now validate imported membership details and
         // translate field names to database column names
         $unknown_fields = '';
-        foreach ($import_fields as $field=>$index) {
+        foreach ($import_fields as $field => $index) {
           switch ($field) {
-            case t('name'): $column = 'member'; break;
-            case t('address'): $column = 'address'; break;
-            case t('city'): $column = 'city'; break;
-            case t('postcode'): $column = 'postcode'; break;
-            case t('phone'): $column = 'phone'; break;
-            case t('email'): $column = 'email'; break;
-            case t('category'): $column = 'category'; break;
-            case t('status'): $column = 'standing'; break;
-            case t('date joined'): $column = 'date joined'; break;
-            case t('date left'): $column = 'date left'; break;
-            case t('primary member'): $column = 'parent'; break;
-            case t('notes'): $column = 'notes'; break;
-            default: $column = 'unknown'; break;
+            case t('name'):
+              $column = 'member';
+              break;
+            case t('address'):
+              $column = 'address';
+              break;
+            case t('city'):
+              $column = 'city';
+              break;
+            case t('postcode'):
+              $column = 'postcode';
+              break;
+            case t('phone'):
+              $column = 'phone';
+              break;
+            case t('email'):
+              $column = 'email';
+              break;
+            case t('category'):
+              $column = 'category';
+              break;
+            case t('status'):
+              $column = 'standing';
+              break;
+            case t('date joined'):
+              $column = 'date joined';
+              break;
+            case t('date left'):
+              $column = 'date left';
+              break;
+            case t('primary member'):
+              $column = 'parent';
+              break;
+            case t('notes'):
+              $column = 'notes';
+              break;
+            default:
+              $column = 'unknown';
+              break;
           }
           if ($column == 'unknown') {
             if (isset($custom_fields[$field])) {
@@ -1261,12 +1293,12 @@ function membership_import_members_form_validate($form, &$form_state) {
         if ($member_details['member']) {
           $mnid = membership_validate_member($member_details['member']);
           if ($mnid) {
-            drupal_set_message(t('Member @name already exists in database - record @num ignored', array('@name'=>$member_details['member'], '@num'=>$import_count)), 'warning');
+            drupal_set_message(t('Member @name already exists in database - record @num ignored', array('@name' => $member_details['member'], '@num' => $import_count)), 'warning');
             $ignore = TRUE;
           }
         }
         else {
-          drupal_set_message(t('Name not specified - record @num ignored', array('@num'=>$import_count)), 'warning');
+          drupal_set_message(t('Name not specified - record @num ignored', array('@num' => $import_count)), 'warning');
           $ignore = TRUE;
         }
         // If a parent member specified, then check that it is valid
@@ -1276,7 +1308,7 @@ function membership_import_members_form_validate($form, &$form_state) {
             $member_details['pnid'] = $pnid;
           }
           else {
-            drupal_set_message(t('Primary member @name not a valid member - record @num ignored', array('@name'=>$member_details['parent'], '@num'=>$import_count)), 'warning');
+            drupal_set_message(t('Primary member @name not a valid member - record @num ignored', array('@name' => $member_details['parent'], '@num' => $import_count)), 'warning');
             $ignore = TRUE;
           }
         }
@@ -1287,10 +1319,10 @@ function membership_import_members_form_validate($form, &$form_state) {
             if ($form_state['values']['add_categories']) {
               $category_list[] = $member_details['category'];
               variable_set('membership_categories', array_values($category_list));
-              drupal_set_message (t('The membership category "@cat" has been added.', array('@cat'=>$member_details['category'])));
+              drupal_set_message(t('The membership category "@cat" has been added.', array('@cat' => $member_details['category'])));
             }
             else {
-              drupal_set_message (t('The membership category "@cat" does not exist - record @num ignored.', array('@cat'=>$member_details['category'], '@num'=>$import_count)));
+              drupal_set_message(t('The membership category "@cat" does not exist - record @num ignored.', array('@cat' => $member_details['category'], '@num' => $import_count)));
               $ignore = TRUE;
             }
           }
@@ -1305,10 +1337,10 @@ function membership_import_members_form_validate($form, &$form_state) {
             if ($form_state['values']['add_standings']) {
               $standing_list[] = $member_details['standing'];
               variable_set('membership_standings', array_values($standing_list));
-              drupal_set_message (t('The membership status "@status" has been added.', array('@status'=>$member_details['standing'])));
+              drupal_set_message(t('The membership status "@status" has been added.', array('@status' => $member_details['standing'])));
             }
             else {
-              drupal_set_message (t('The membership status "@status" does not exist - record @num ignored.', array('@status'=>$member_details['standing'], '@num'=>$import_count)));
+              drupal_set_message(t('The membership status "@status" does not exist - record @num ignored.', array('@status' => $member_details['standing'], '@num' => $import_count)));
               $ignore = TRUE;
             }
           }
@@ -1322,24 +1354,28 @@ function membership_import_members_form_validate($form, &$form_state) {
           $joindate = str_replace(array('/', '.', ':'), '-', $member_details['date joined']);
           if (strlen($joindate) == 10) {
             // reformat yyyy-mm-dd dates
-            if (substr($joindate,4,1) == '-' && substr($joindate,7,1) == '-') {
-              $joindate = substr($joindate,8,2) . substr($joindate,4,4) . substr($joindate,0,4);
+            if (substr($joindate, 4, 1) == '-' && substr($joindate, 7, 1) == '-') {
+              $joindate = substr($joindate, 8, 2) . substr($joindate, 4, 4) . substr($joindate, 0, 4);
             }
-            if (substr($joindate,2,1) == '-' && substr($joindate,5,1) == '-') {
-              $member_details['joindate']['day'] = substr($joindate,0,2);
-              if (substr($joindate,0,1) == '0') { $member_details['joindate']['day'] = substr($joindate,1,1); }
-              $member_details['joindate']['month'] = substr($joindate,3,2);
-              if (substr($joindate,3,1) == '0') { $member_details['joindate']['month'] = substr($joindate,4,1); }
-              $member_details['joindate']['year'] = substr($joindate,6,4);
+            if (substr($joindate, 2, 1) == '-' && substr($joindate, 5, 1) == '-') {
+              $member_details['joindate']['day'] = substr($joindate, 0, 2);
+              if (substr($joindate, 0, 1) == '0') {
+                $member_details['joindate']['day'] = substr($joindate, 1, 1);
+              }
+              $member_details['joindate']['month'] = substr($joindate, 3, 2);
+              if (substr($joindate, 3, 1) == '0') {
+                $member_details['joindate']['month'] = substr($joindate, 4, 1);
+              }
+              $member_details['joindate']['year'] = substr($joindate, 6, 4);
               unset($member_details['date joined']);
             }
             else {
-              drupal_set_message (t('The date joined "@date" is in wrong format - record @num ignored.', array('@date'=>$member_details['date joined'], '@num'=>$import_count)));
+              drupal_set_message(t('The date joined "@date" is in wrong format - record @num ignored.', array('@date' => $member_details['date joined'], '@num' => $import_count)));
               $ignore = TRUE;
             }
           }
           else {
-            drupal_set_message (t('The date joined "@date" is wrong length - record @num ignored.', array('@date'=>$member_details['date joined'], '@num'=>$import_count)));
+            drupal_set_message(t('The date joined "@date" is wrong length - record @num ignored.', array('@date' => $member_details['date joined'], '@num' => $import_count)));
             $ignore = TRUE;
           }
         }
@@ -1349,35 +1385,41 @@ function membership_import_members_form_validate($form, &$form_state) {
           $leavedate = str_replace(array('/', '.', ':'), '-', $member_details['date left']);
           if (strlen($leavedate) == 10) {
             // reformat yyyy-mm-dd dates
-            if (substr($leavedate,4,1) == '-' && substr($leavedate,7,1) == '-') {
-              $leavedate = substr($leavedate,8,2) . substr($leavedate,4,4) . substr($leavedate,0,4);
+            if (substr($leavedate, 4, 1) == '-' && substr($leavedate, 7, 1) == '-') {
+              $leavedate = substr($leavedate, 8, 2) . substr($leavedate, 4, 4) . substr($leavedate, 0, 4);
             }
-            if (substr($leavedate,2,1) == '-' && substr($leavedate,5,1) == '-') {
-              $member_details['leavedate']['day'] = substr($leavedate,0,2);
-              if (substr($leavedate,0,1) == '0') { $member_details['leavedate']['day'] = substr($leavedate,1,1); }
-              $member_details['leavedate']['month'] = substr($leavedate,3,2);
-              if (substr($leavedate,3,1) == '0') { $member_details['leavedate']['month'] = substr($leavedate,4,1); }
-              $member_details['leavedate']['year'] = substr($leavedate,6,4);
+            if (substr($leavedate, 2, 1) == '-' && substr($leavedate, 5, 1) == '-') {
+              $member_details['leavedate']['day'] = substr($leavedate, 0, 2);
+              if (substr($leavedate, 0, 1) == '0') {
+                $member_details['leavedate']['day'] = substr($leavedate, 1, 1);
+              }
+              $member_details['leavedate']['month'] = substr($leavedate, 3, 2);
+              if (substr($leavedate, 3, 1) == '0') {
+                $member_details['leavedate']['month'] = substr($leavedate, 4, 1);
+              }
+              $member_details['leavedate']['year'] = substr($leavedate, 6, 4);
               unset($member_details['date left']);
             }
             else {
-              drupal_set_message (t('The date left "@date" is in wrong format - record @num ignored.', array('@date'=>$member_details['date left'], '@num'=>$import_count)));
+              drupal_set_message(t('The date left "@date" is in wrong format - record @num ignored.', array('@date' => $member_details['date left'], '@num' => $import_count)));
               $ignore = TRUE;
             }
           }
           else {
-            drupal_set_message (t('The date left "@date" is wrong length - record @num ignored.', array('@date'=>$member_details['date left'], '@num'=>$import_count)));
+            drupal_set_message(t('The date left "@date" is wrong length - record @num ignored.', array('@date' => $member_details['date left'], '@num' => $import_count)));
             $ignore = TRUE;
           }
         }
         // Check that the "notes" field has not overflowed
         if ($member_details['notes'] && strlen($member_details['notes']) > 255) {
-          $member_details['notes'] = substr($member_details['notes'],0,255);
-          drupal_set_message (t('The "notes" field overflowed and has been truncated to 255 chars'));
+          $member_details['notes'] = substr($member_details['notes'], 0, 255);
+          drupal_set_message(t('The "notes" field overflowed and has been truncated to 255 chars'));
         }
         // save this member details if there have been no errors
-        $member_details['title'] = t('Member: !mbr', array('!mbr'=>$member_details['member']));
-        if (!$ignore) { $form_state['storage']['members'][] = $member_details; }
+        $member_details['title'] = t('Member: !mbr', array('!mbr' => $member_details['member']));
+        if (!$ignore) {
+          $form_state['storage']['members'][] = $member_details;
+        }
       }
       //orgright_debug_dump('imported members',$form_state);
       // save the array of custom fields
@@ -1385,9 +1427,9 @@ function membership_import_members_form_validate($form, &$form_state) {
     }
     else {
       // The specified file was empty or there is another error
-      form_set_error('import',t('Unable to read records from import CSV file'));
+      form_set_error('import', t('Unable to read records from import CSV file'));
     }
-  }    
+  }
 }
 
 function membership_export_members_form_validate($form, &$form_state) {
@@ -1396,13 +1438,13 @@ function membership_export_members_form_validate($form, &$form_state) {
   if ($step == 1) {
     // ensure that at least one field is selected
     if (count(array_filter($form_state['values']['field_list'])) < 1) {
-      form_set_error('field_list',t('You must select at least one field value to export'));
+      form_set_error('field_list', t('You must select at least one field value to export'));
     }
   }
   else {
     // ensure that at least one member has been selected
     if (count(array_filter($form_state['values']['select'])) < 1) {
-      form_set_error('select',t('You must select at least one member to export'));
+      form_set_error('select', t('You must select at least one member to export'));
     }
   }
 }
@@ -1413,13 +1455,13 @@ function membership_subscription_wizard_validate($form, &$form_state) {
   if ($step == 1) {
     // Check that entered details are acceptable - use PHP strip_tags function to check
     if ($form_state['values']['scode'] != strip_tags($form_state['values']['scode'])) {
-        form_set_error('scode',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('scode', t('HTML or PHP tags are not permitted in this field'));
     }
     if ($form_state['values']['amount'] != strip_tags($form_state['values']['amount'])) {
-        form_set_error('amount',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('amount', t('HTML or PHP tags are not permitted in this field'));
     }
     if ($form_state['values']['notes'] != strip_tags($form_state['values']['notes'])) {
-        form_set_error('notes',t('HTML or PHP tags are not permitted in this field'));
+      form_set_error('notes', t('HTML or PHP tags are not permitted in this field'));
     }
   }
   else {
@@ -1435,8 +1477,12 @@ function membership_validate_member(&$member) {
     $mnid = $member;
     $sql = "SELECT n.type, m.member FROM {node} n JOIN {org_members} m ON m.nid = n.nid WHERE m.vid = n.vid AND m.nid = %d";
     $obj = db_fetch_object(db_query($sql, $mnid));
-    if ($obj->type == 'member') { $member = $obj->member; }
-    else { $mnid = 0; }
+    if ($obj->type == 'member') {
+      $member = $obj->member;
+    }
+    else {
+      $mnid = 0;
+    }
     return $mnid;
   }
   else {
@@ -1448,7 +1494,7 @@ function membership_validate_member(&$member) {
 function membership_validate_import_file($form, &$form_state) {
   // Specify some values required for validating the import file
   $extensions = 'csv';
-  $max_file_size = 1024*1024;
+  $max_file_size = 1024 * 1024;
   $validators = array(
     'file_validate_extensions' => array($extensions),
     'file_validate_size' => array($max_file_size),
@@ -1475,8 +1521,12 @@ function membership_import_csv_line($csv_line, $invert = FALSE) {
   $currfield = '';
   for ($i = 0; $i < strlen($csv_line); $i++) {
     if ($csv_line{$i} == '"') {
-      if ($insidequotes) $insidequotes = false;
-      else $insidequotes = true;
+      if ($insidequotes) {
+        $insidequotes = FALSE;
+      }
+      else {
+        $insidequotes = TRUE;
+      }
     }
     elseif ($csv_line{$i} == ',') {
       if ($insidequotes) {
@@ -1494,7 +1544,7 @@ function membership_import_csv_line($csv_line, $invert = FALSE) {
   $csv_fields[$fieldno++] = $currfield;
 
   $csv_array = array();
-  foreach ($csv_fields as $key=>$field) {
+  foreach ($csv_fields as $key => $field) {
     $field = strip_tags(trim($field));
     if ($invert) {
       $csv_array[strtolower($field)] = $key;
@@ -1517,7 +1567,7 @@ function membership_member_form_submit($form, &$form_state) {
   if ($form_state['#import'] > 1) {
     // Set the title
     $member = strip_tags($form_state['values']['member']);
-    $form_state['values']['title'] = t('Member: !mbr', array('!mbr'=>$member));
+    $form_state['values']['title'] = t('Member: !mbr', array('!mbr' => $member));
     // Recover the joining and leaving dates
     $form_state['values']['joindate'] = $form_state['storage']['joindate'];
     $form_state['values']['leavedate'] = $form_state['storage']['leavedate'];
@@ -1538,7 +1588,7 @@ function membership_subscription_form_submit($form, &$form_state) {
   // a Drupal bug means that the form does not get validated after the first time
   if ($form_state['#wizard'] > 1) {
     // Set the title
-    $form_state['values']['title'] = 'Subscription: '.$form_state['values']['member'].' - '.$form_state['values']['scode'];
+    $form_state['values']['title'] = 'Subscription: ' . $form_state['values']['member'] . ' - ' . $form_state['values']['scode'];
     // Massage the dates
     $form_state['values']['datefrom'] = $form_state['storage']['datefrom_string'];
     $form_state['values']['dateto'] = $form_state['storage']['dateto_string'];
@@ -1575,7 +1625,7 @@ function membership_import_members_form_submit($form, &$form_state) {
     $import_count = 0;
     foreach ($form_state['storage']['members'] as $this_member) {
       // replace any of the special line delimiters with newlines in specified fields
-      $multi_fields = array('address','phone','email','notes');
+      $multi_fields = array('address', 'phone', 'email', 'notes');
       foreach ($multi_fields as $field) {
         $this_member[$field] = orgright_string_to_multi_field($this_member[$field]);
       }
@@ -1590,21 +1640,23 @@ function membership_import_members_form_submit($form, &$form_state) {
       // populate $form_state with the values for this member
       $this_form_state['values'] = $this_member;
       // change any custom fields
-      if (variable_get('orgright_custom_fields_member',0)) {
+      if (variable_get('orgright_custom_fields_member', 0)) {
         $custom_fields = $form_state['storage']['custom_fields'];
         foreach ($custom_fields as $field) {
           if (isset($this_form_state['values'][$field])) {
             $value = $this_form_state['values'][$field];
           }
-          else { $value = NULL; }
+          else {
+            $value = NULL;
+          }
           $this_form_state['values'][$field] = array(
             array('value' => orgright_string_to_multi_field($value))
           );
         }
       }
       // Save the date fields for later use
-      $this_form_state['storage']['joindate'] = $this_member['joindate']['year'].'-'.$this_member['joindate']['month'].'-'.$this_member['joindate']['day'];
-      $this_form_state['storage']['leavedate'] = $this_member['leavedate']['year'].'-'.$this_member['leavedate']['month'].'-'.$this_member['leavedate']['day'];
+      $this_form_state['storage']['joindate'] = $this_member['joindate']['year'] . '-' . $this_member['joindate']['month'] . '-' . $this_member['joindate']['day'];
+      $this_form_state['storage']['leavedate'] = $this_member['leavedate']['year'] . '-' . $this_member['leavedate']['month'] . '-' . $this_member['leavedate']['day'];
       // Build a composite node title and save in $form_state
       //$this_form_state['values']['title'] = t('Member: !mbr', array('!mbr'=>$this_member['member']));
       $this_form_state['#validate'] = array('membership_form_validate');
@@ -1643,7 +1695,7 @@ function membership_export_members_form_submit($form, &$form_state) {
     // generate an array of selected members
     $selected = array_filter($form_state['values']['select']);
     // create a temporary file to hold the export
-    $file_name = 'member-export-'.orgright_get_date_ymd().'.csv';
+    $file_name = 'member-export-' . orgright_get_date_ymd() . '.csv';
     $file_temp = file_directory_temp() . '/' . $file_name;
     $csv_file = fopen($file_temp, 'wb');
     $field_list = array_filter($form_state['storage']['field_list']);
@@ -1657,7 +1709,7 @@ function membership_export_members_form_submit($form, &$form_state) {
     // and write header record to the temporary file
     fwrite($csv_file, $csv_fields);
     // check for any member custom fields
-    if (variable_get('orgright_custom_fields_member',0)) {
+    if (variable_get('orgright_custom_fields_member', 0)) {
       // are allowed, so check to see whether any are defined
       $sql = "SELECT field_name, label, widget_type FROM {content_node_field_instance} WHERE type_name = '%s' ORDER BY weight";
       $custom_fields = array();
@@ -1671,30 +1723,58 @@ function membership_export_members_form_submit($form, &$form_state) {
     foreach ($selected as $mnid) {
       $member = db_fetch_object(db_query($sql, $mnid));
       $mbr_details = '';
-      if (isset($field_list['member'])) { $mbr_details .= '"' . $member->member . '",'; }
-      if (isset($field_list['address'])) { $mbr_details .= '"' . $member->address . '",'; }
-      if (isset($field_list['city'])) { $mbr_details .= '"' . $member->city . '",'; }
-      if (isset($field_list['postcode'])) { $mbr_details .= '"' . $member->postcode . '",'; }
-      if (isset($field_list['phone'])) { $mbr_details .= '"' . $member->phone . '",'; }
-      if (isset($field_list['email'])) { $mbr_details .= '"' . $member->email . '",'; }
-      if (isset($field_list['category'])) { $mbr_details .= '"' . $member->category . '",'; }
-      if (isset($field_list['standing'])) { $mbr_details .= '"' . $member->standing . '",'; }
-      if (isset($field_list['joindate'])) { $mbr_details .= '"' . date_format_date(date_make_date($member->joindate), 'custom', 'd M Y') . '",'; }
-      if (isset($field_list['leavedate'])) { $mbr_details .= '"' . date_format_date(date_make_date($member->leavedate), 'custom', 'd M Y') . '",'; }
-      if (isset($field_list['parent'])) { $mbr_details .= '"' . $member->parent . '",'; }
-      if (isset($field_list['notes'])) { $mbr_details .= '"' . $member->notes . '",'; }
+      if (isset($field_list['member'])) {
+        $mbr_details .= '"' . $member->member . '",';
+      }
+      if (isset($field_list['address'])) {
+        $mbr_details .= '"' . $member->address . '",';
+      }
+      if (isset($field_list['city'])) {
+        $mbr_details .= '"' . $member->city . '",';
+      }
+      if (isset($field_list['postcode'])) {
+        $mbr_details .= '"' . $member->postcode . '",';
+      }
+      if (isset($field_list['phone'])) {
+        $mbr_details .= '"' . $member->phone . '",';
+      }
+      if (isset($field_list['email'])) {
+        $mbr_details .= '"' . $member->email . '",';
+      }
+      if (isset($field_list['category'])) {
+        $mbr_details .= '"' . $member->category . '",';
+      }
+      if (isset($field_list['standing'])) {
+        $mbr_details .= '"' . $member->standing . '",';
+      }
+      if (isset($field_list['joindate'])) {
+        $mbr_details .= '"' . date_format_date(date_make_date($member->joindate), 'custom', 'd M Y') . '",';
+      }
+      if (isset($field_list['leavedate'])) {
+        $mbr_details .= '"' . date_format_date(date_make_date($member->leavedate), 'custom', 'd M Y') . '",';
+      }
+      if (isset($field_list['parent'])) {
+        $mbr_details .= '"' . $member->parent . '",';
+      }
+      if (isset($field_list['notes'])) {
+        $mbr_details .= '"' . $member->notes . '",';
+      }
       // and add any custom fields if required
       if ($custom_fields) {
         $sql2 = "SELECT * FROM {content_type_member} WHERE vid = %d";
         $result = db_query($sql2, $member->vid);
         while ($field_values = db_fetch_array($result)) {
-          foreach ($custom_fields as $name=>$label) {
-            if (isset($field_list[$name])) { $mbr_details = '"' . $field_values[$name.'_value'] . '",'; }
+          foreach ($custom_fields as $name => $label) {
+            if (isset($field_list[$name])) {
+              $mbr_details = '"' . $field_values[$name . '_value'] . '",';
+            }
           }
         }
       }
       // now convert newlines if required and add a new-line at the end of the record
-      if ($form_state['storage']['newlines']) { $mbr_details = orgright_multi_field_to_string($mbr_details); }
+      if ($form_state['storage']['newlines']) {
+        $mbr_details = orgright_multi_field_to_string($mbr_details);
+      }
       $mbr_details = substr($mbr_details, 0, -1) . "\r\n";
       fwrite($csv_file, $mbr_details);
     }
@@ -1702,16 +1782,16 @@ function membership_export_members_form_submit($form, &$form_state) {
     fclose($csv_file);
     file_transfer($file_temp, array(
       'Content-Type: octet/stream',
-      'Content-Disposition: attachment; filename="'.$file_name.'";',
-      'Content-Length: '.filesize($file_temp),
-      ));
+      'Content-Disposition: attachment; filename="' . $file_name . '";',
+      'Content-Length: ' . filesize($file_temp),
+    ));
     // clear the form_state storage area so that the redirect will work and set redirect
     $form_state['storage'] = array();
     $form_state['redirect'] = $form['#goto'];
   }
 }
 
-function membership_subscription_wizard_submit ($form, &$form_state) {
+function membership_subscription_wizard_submit($form, &$form_state) {
   // Callback specified for the "submit" button
   //orgright_debug_msg('membership','Fn: membership_subscription_wizard_submit');
   // Check the step that thw wizard has got to
